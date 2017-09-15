@@ -20,3 +20,4 @@ rmarkdown::render("/projects/ps-epigen/software/setQC/setQC_report.R",
                   ),
                   output_dir=setQC_dir)
 
+#source activate bds_atac_py3;  Rscript $(which compile_setQC_report.R) 8085 6 42 43 44 45 46 47

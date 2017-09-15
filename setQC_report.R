@@ -86,18 +86,6 @@ tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y = Mitochondrial.reads..out
 tagList(tlist)
 
 
-#' ## Insert size distribution 
-
-#+ echo =F
-thumbnail(img = "./multiqc_plots/png/mqc_picard_insert_size_Percentages.png",colsize = "col-sm-12")
-
-
-#' ## GC bias in final bam 
-#+ echo =F
-thumbnail(img = "./multiqc_plots/png/mqc_picard_gcbias_plot_1.png",colsize = "col-sm-12")
-
-
-
 #' ## TSS enrichement plots
 
 #+ echo =F, warning=F
@@ -193,6 +181,15 @@ tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.pr
 tagList(tlist)
 
 
+#' ## Insert size distribution 
+
+#+ echo =F
+thumbnail(img = "./multiqc_plots/png/mqc_picard_insert_size_Percentages.png",colsize = "col-sm-12")
+
+
+#' ## GC bias in final bam 
+#+ echo =F
+thumbnail(img = "./multiqc_plots/png/mqc_picard_gcbias_plot_1.png",colsize = "col-sm-12")
 
 
 #' # QC of peaks {.tabset .tabset-fade .tabset-pills}
