@@ -11,10 +11,12 @@ require(dplyr)
 require(tidyr)
 #require(evaluate)
 
+#libQC_dir <- "~/mnt/tscc_home/data/outputs/libQCs/"
+libQC_dir <- "/projects/ps-epigen/outputs/libQCs/"
 # load sample info from msTracking --------------------------------------
 
 getSampleTable <- function(lib_ids){
-  
+  system(paste0("cd ", libQC_dir))
   if(file.exists("./sample_table.csv")){
     if (system("wc -l sample_table.csv|grep -o '[0-9]\\+'",intern = T)!="1")
       return(read.csv(file = "./sample_table.csv",
@@ -35,8 +37,8 @@ getSampleTable <- function(lib_ids){
 
 
 # load enrionment varialbes -----------------------------------------------
-#libQC_dir <- "~/mnt/tscc_home/data/outputs/libQCs/"
-libQC_dir <- "/projects/ps-epigen/outputs/libQCs/"
+
+
 
 # parse libQC results -----------------------------------------------------
 getLibQCtable <- function(lib_ids,trim=T){
