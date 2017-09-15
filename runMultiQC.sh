@@ -31,11 +31,8 @@ libs_array=($@)
 libs_array=("${libs_array[@]/#/JYH_}") #add prefix
 
 echo "copying files:...."
-echo "${libs_array[@]}"
-
 
 libs_array=("${libs_array[@]/%/${n}}") #add postfix, seqlib Number
-echo ${libs_array[@]}
 
 libQC_dir="/projects/ps-epigen/outputs/"
 out_dir="/projects/ps-epigen/outputs/setQCs/Set_${s}/"
@@ -48,18 +45,17 @@ echo ${libs_array[@]} > ${out_dir}including_libs.txt
 if [ -n "$t" ] ; then suffix="/*trim*"; else suffix="/*";fi
 file1=("${libs_array[@]/#/${libQC_dir}libQCs/}")
 file1=("${file1[@]/%/${suffix}}")
-echo "log files: ${file1[@]}"
+
 
 file2=("${libs_array[@]/#/${libQC_dir}libQCs/}")
 file2=("${file2[@]/%/${suffix}}")
 
-echo "peak files: ${file2[@]}"
 
 logs_dir=$out_dir"logs/"
 mkdir -p $logs_dir
 
-for f in ${file1[@]}; do echo $f; cp -u $f $logs_dir;done
-for f in ${file2[@]}; do echo $f; cp -u $f $logs_dir; done 
+for f in ${file1[@]}; do  cp -u $f $logs_dir;done
+for f in ${file2[@]}; do  cp -u $f $logs_dir; done 
 
 # load the multiQC environment
 source activate bds_atac_py3

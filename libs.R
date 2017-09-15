@@ -95,8 +95,8 @@ getherTSSplot <- function(lib_ids,trim=T){
     })}
 
   if(trim){
-    paste0("./images/",list.files(path = "./images",pattern = "trim.PE2SE_large_tss-enrich.png"))}else{
-    paste0("./images/",list.files(path = "./images",pattern = "*.png"))}
+    paste0("./images/",list.files(path = image_dir,pattern = "trim.PE2SE_large_tss-enrich.png"))}else{
+    paste0("./images/",list.files(path = image_dir,pattern = "*.png"))}
 }
 
 require(htmltools)

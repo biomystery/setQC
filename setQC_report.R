@@ -107,13 +107,48 @@ tss_enrich <- libQC_table[grep('TSS',rownames(libQC_table)),]
 show_tss <- function(i) paste(i,signif(as.numeric(tss_enrich[i]),4),sep = ' : ')
 
 
-seq_by_4 <- seq(1,length(libs),by = 4)
+#seq_by_4 <- seq(1,length(libs),by = 4)
 
 #for(i in seq_by_4[-1]){
 #  for (j in seq(i-4,i-1))
 #    evaluate("thumbnail(show_tss(libs[j]),tss_plots[j],colsize ='col-sm-3' )")
 #  evaluate("div(class='row')")
-#}
+                                        #}
+
+if(F){
+    lib_no <- length(libs)
+    n_row <- ceiling(lib_no/4)
+    n_remain <- lib_no%%4
+
+    tlist <- list()
+    if (n_row ==1){
+        for (i in  1:n_remain)
+            tlist[[i]] <-    thumbnail(show_tss(libs[i]),tss_plots[i],colsize ='col-sm-3' )
+        tagList(tlist)
+        div(class=paste0("col-sm-",12-3*n_remain))
+        div(class='row')    
+    }else{
+
+        for (i in 1:(n_row-1)){
+            for (j in  1:4) {
+                itmp <- (i-1)*4+j
+                tlist[[itmp]]<- thumbnail(show_tss(libs[itmp]),tss_plots[itmp],colsize ='col-sm-3' )
+            }
+                                        # div(class='row')        
+        }
+        for (i in 1:n_remain){
+            itmp <- (n_row-1)*4+i
+            tlist[[itmp]] <- thumbnail(show_tss(libs[itmp]),tss_plots[itmp],colsize ='col-sm-3' )
+        }
+        tagList(tlist)
+        
+        div(class=paste0("col-sm-",12-3*n_remain))
+        div(class='row')    
+        
+    }
+
+}
+
 
 thumbnail(show_tss(libs[1]),tss_plots[1],colsize ='col-sm-3' )
 thumbnail(show_tss(libs[2]),tss_plots[2],colsize ='col-sm-3' )
@@ -124,14 +159,9 @@ div(class='row')
 
 thumbnail(show_tss(libs[5]),tss_plots[5],colsize ='col-sm-3' )
 thumbnail(show_tss(libs[6]),tss_plots[6],colsize ='col-sm-3' )
-thumbnail(show_tss(libs[7]),tss_plots[7],colsize ='col-sm-3' )
-thumbnail(show_tss(libs[8]),tss_plots[8],colsize ='col-sm-3' )
-div(class='row')
+div(class=paste0("col-sm-",12-3*2))
+div(class='row')    
 
-thumbnail(show_tss(libs[9]),tss_plots[9],colsize ='col-sm-3' )
-thumbnail(show_tss(libs[10]),tss_plots[10],colsize ='col-sm-3' )
-div(class=paste0("col-sm-",3*(4-length(seq_by_4[length(seq_by_4)]:length(libs)))))
-div(class='row')
 
 
 #' ## Peak TSS enrichment and FRiT {.tabset .tabset-fade .tabset-pills}

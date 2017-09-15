@@ -12,7 +12,7 @@ libs
 
 setQC_dir <- paste0("/projects/ps-epigen/outputs/setQCs/Set_",set)
 
-rmarkdown::render("/projects/ps-epigen/software/bin/setQC_report.R", 
+rmarkdown::render("/projects/ps-epigen/software/setQC/setQC_report.R", 
                   params = list(
                     port = port_,
                     libs_no = libs,
