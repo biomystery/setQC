@@ -46,9 +46,10 @@ Rscript $(which genWashUtracks.R) $PORT
 # 5. Final: set up the sharing web site
 echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
 rsync -v -r -u $SETQC_DIR zhc268@epigenomics.sdsc.edu:/home/zhc268/setQC_reports/Set_${SET_NO}
-ssh zhc268@epigenomics.sdsc.edu "screen -d -m http-server -p $PORT ./setQC_reports/Set_${SET_NO}"
+ssh zhc268@epigenomics.sdsc.edu "screen -d -m http-server -s -d false -p $PORT ./setQC_reports/Set_${SET_NO}"
 
 
 
 
 # setQC_wrapper.sh "42 43 44 45 46 47" 6 8085
+
