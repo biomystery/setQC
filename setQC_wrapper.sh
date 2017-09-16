@@ -9,8 +9,7 @@ LIB_LEN=${#LIB_ARRAY[@]}
 
 BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/"
 SET_NO=$2; #"4_1"
-if [ -n $4 ]; then LIB_RUN=$4;fi; #"_2"
-PORT=$3; # 8083
+if [ -n $3 ]; then LIB_RUN=$3;fi; #"_2"
 SETQC_DIR="${BASE_OUTPUT_DIR}setQCs/Set_${SET_NO}/"
 LOG_FILE="${SETQC_DIR}log.txt"
 
@@ -38,18 +37,17 @@ echo -e "(`date`): copy track files" | tee -a $LOG_FILE
 echo $cmd | tee -a $LOG_FILE
 eval $cmd
 #exit 1
-
 cd $SETQC_DIR"/data"
-find . -name '*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
-Rscript $(which genWashUtracks.R) $PORT 
+find . -name 'JYH*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
+Rscript $(which genWashUtracks.R) "Set_${SET_NO}"
 
 # 5. Final: set up the sharing web site
 echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
 rsync -v -r -u $SETQC_DIR zhc268@epigenomics.sdsc.edu:/home/zhc268/setQC_reports/Set_${SET_NO}
-ssh zhc268@epigenomics.sdsc.edu "screen -d -m http-server -s -d false -p $PORT ./setQC_reports/Set_${SET_NO}"
+#ssh zhc268@epigenomics.sdsc.edu "screen -d -m http-server -s -d false -p $PORT ./setQC_reports/Set_${SET_NO}"
 
 
 
 
-# setQC_wrapper.sh "42 43 44 45 46 47" 6 8085
+# setQC_wrapper.sh "42 43 44 45 46 47" 6 
 

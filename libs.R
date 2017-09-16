@@ -16,10 +16,10 @@ libQC_dir <- "/projects/ps-epigen/outputs/libQCs/"
 # load sample info from msTracking --------------------------------------
 
 getSampleTable <- function(lib_ids){
-  system(paste0("cd ", libQC_dir))
-  if(file.exists("./sample_table.csv")){
-    if (system("wc -l sample_table.csv|grep -o '[0-9]\\+'",intern = T)!="1")
-      return(read.csv(file = "./sample_table.csv",
+    sample_file <- paste0(libQC_dir,"./sample_table.csv")
+  if(file.exists(sample_file)){
+    if (system(paste0("wc -l ",sample_file,"|grep -o '[0-9]\\+'"),intern = T)!="1")
+      return(read.csv(file = sample_file,
                       stringsAsFactors = F,check.names = F))
   }else{
     #print("get Sample info from gs")
@@ -29,10 +29,11 @@ getSampleTable <- function(lib_ids){
     gs_mseqts <- gs_key("1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y")
     sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,15)))
     sample_table <- subset(sample_table, `Sequencing ID` %in% lib_ids)[,-c(5,6,7)] #member initial, date, lib ID 
-    write.csv(file="sample_table.csv",sample_table,row.names = F)
+    write.csv(file=sample_file,sample_table,row.names = F)
     sample_table
   }
 }
+
 
 
 
