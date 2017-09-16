@@ -18,13 +18,14 @@ libQC_dir <- "/projects/ps-epigen/outputs/libQCs/"
 getSampleTable <- function(lib_ids){
     sample_file <- paste0(setQC_dir,"/sample_table.csv")
   if(file.exists(sample_file)){
-    if (system(paste0("wc -l ",sample_file,"|grep -o '[0-9]\\+'"),intern = T)!="1")
+    if (system(paste0("wc -l ",sample_file,"|awk  '{print $1}'"),intern = T)!="1")
       return(read.csv(file = sample_file,
                       stringsAsFactors = F,check.names = F))
   }else{
     #print("get Sample info from gs")
     require(googlesheets)
-    suppressPackageStartupMessages(require(dplyr))
+      suppressPackageStartupMessages(require(dplyr))
+      gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
     gs_ls() # for the auth
     gs_mseqts <- gs_key("1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y")
     sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,15)))
@@ -64,8 +65,7 @@ getLibQCtable <- function(lib_ids,trim=T){
   }
   qc_table <- do.call(what = cbind,args = lapply(lib_ids,parseLibQC))
   qc_table<-qc_table[-c(1:2,16:24,26:27,35,37),]
-  sample_table$`Sequencing ID`
-  colnames(qc_table)
+
   if(all.equal(sample_table$`Sequencing ID`, colnames(qc_table))){
     qc_table<-rbind(sample_table$`sample ID (from MSTS)`,qc_table)
     rownames(qc_table)[1] <- "sampleId"

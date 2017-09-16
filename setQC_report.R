@@ -22,7 +22,6 @@
 attach(params)
 setQC_dir <- paste0("/projects/ps-epigen/outputs/setQCs/Set_",set_no)
 #ibs_no <- unlist(strsplit(libs_no,split = " "))
-require(knitr)
 libs <- sapply(libs_no, function(x) paste0("JYH_",x) )# will replaced by inputs ; ,"_2" for second run
 source('./libs.R') # libQC_dir environment 
 
@@ -31,7 +30,7 @@ source('./libs.R') # libQC_dir environment
 #' # Sample info. 
 #+ echo=F,warning=F,cache=F,message=F
 
-gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
+
 sample_table<- getSampleTable(libs)
 kable(sample_table)
 
