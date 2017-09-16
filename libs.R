@@ -16,7 +16,7 @@ libQC_dir <- "/projects/ps-epigen/outputs/libQCs/"
 # load sample info from msTracking --------------------------------------
 
 getSampleTable <- function(lib_ids){
-    sample_file <- paste0(libQC_dir,"./sample_table.csv")
+    sample_file <- paste0(setQC_dir,"/sample_table.csv")
   if(file.exists(sample_file)){
     if (system(paste0("wc -l ",sample_file,"|grep -o '[0-9]\\+'"),intern = T)!="1")
       return(read.csv(file = sample_file,
