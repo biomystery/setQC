@@ -1,4 +1,4 @@
-args <- commandArgs(trailingOnly = TRUE)
+lsargs <- commandArgs(trailingOnly = TRUE)
 
 set_dir<- args[1]; 
 track.json.simple <- readLines("./tracks_merged.json")
