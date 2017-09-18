@@ -21,30 +21,39 @@ echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
 if [ -n "$3" ];
 then
     LIB_RUN=${3};
-    cmd="runMultiQC.sh  -s $SET_NO ${LIB_IDS[@]} -n $LIB_RUN" # trim;
+    cmd="runMultiQC.sh  -s $SET_NO -n $LIB_RUN ${LIB_IDS[@]} " # trim;
 else
     cmd="runMultiQC.sh  -s $SET_NO ${LIB_IDS[@]}" # no trim;
 fi; #"_2"
 
-echo $cmd
+echo $cmd 
 #eval $cmd
 
 
 # 3. genSetQCreport
 # use envrionment bds_atac_py3 (installed R-3.4.1)
 echo -e "(`date`): running comple setQC html" | tee -a $LOG_FILE
-source activate bds_atac_py3
 cd $SETQC_DIR
 
-Rscript $(which compile_setQC_report.R) $PORT $SET_NO ${LIB_IDS[@]} ; ##"48 49 50 51 52 53 54 55 56 57 58" "4_1"
+#LIB_IDS=("${LIB_IDS[@]/%/${LIB_RUN}}")
+source activate bds_atac_py3
+
+echo "Rscript $(which compile_setQC_report.R)  $SET_NO ${LIB_IDS[@]} "
+Rscript $(which compile_setQC_report.R)  $SET_NO ${LIB_IDS[@]} ; ##"48 49 50 51 52 53 54 55 56 57 58" "4_1"
 
 
 # 4. prepare tracks
-cmd="transferTracks.sh -d $SETQC_DIR  ${LIB_IDS[@]}"
+if [ -n "$3" ]
+then
+    cmd="transferTracks.sh -d $SETQC_DIR -r $LIB_RUN ${LIB_IDS[@]}"
+else
+    cmd="transferTracks.sh -d $SETQC_DIR  ${LIB_IDS[@]}"
+fi
+
 echo -e "(`date`): copy track files" | tee -a $LOG_FILE
 echo $cmd | tee -a $LOG_FILE
 eval $cmd
-#exit 1
+
 cd $SETQC_DIR"/data"
 find . -name 'JYH*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
 Rscript $(which genWashUtracks.R) "Set_${SET_NO}"

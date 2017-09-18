@@ -2,6 +2,7 @@
 #'params:
 #'  libs_no: "48 49 50 51 52 53 54 55 56 57"
 #'  set_no: "4_1"
+#'  didTrim: "F"
 #'title: "Report for Set`r params$set_no `: JYH_`r paste(params$libs_no,collapse=' ')`"
 #'output:
 #'  html_document:
@@ -21,7 +22,6 @@
 # load the candidate files 
 attach(params)
 setQC_dir <- paste0("/projects/ps-epigen/outputs/setQCs/Set_",set_no)
-#ibs_no <- unlist(strsplit(libs_no,split = " "))
 libs <- sapply(libs_no, function(x) paste0("JYH_",x) )# will replaced by inputs ; ,"_2" for second run
 source('./libs.R') # libQC_dir environment 
 
@@ -57,7 +57,7 @@ div(class="row")
 
 #' ### Read yield (%) after each step
 #+ echo=F
-libQC_table <- getLibQCtable(libs,trim = F) # need determined by the input 
+libQC_table <- getLibQCtable(libs,trim = didTrim) # need determined by the input 
 reads_list <- getReadsTable(libQC_table)
 kable(apply(reads_list$reads_yield,2, function(x) sapply(1:length(x), function(i) round(x[i]*100))),caption = "")
 
@@ -87,12 +87,12 @@ tagList(tlist)
 
 #+ echo =F, warning=F
 #require(evaluate)
-tss_plots <- getherTSSplot(libs,trim = F)
+tss_plots <- getherTSSplot(libs,trim = didTrim)
 tss_enrich <- libQC_table[grep('TSS',rownames(libQC_table)),]
 show_tss <- function(i) paste(i,signif(as.numeric(tss_enrich[i]),4),sep = ' : ')
 
 tmp <- sapply( 1:length(libs), function(i)
-  thumbnail((libs[i]),tss_plots[i],colsize ='col-sm-3' ))
+  thumbnail(show_tss(libs[i]),tss_plots[i],colsize ='col-sm-3' ))
 tagList(tmp)
 div(class='row')    
 
