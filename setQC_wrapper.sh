@@ -9,7 +9,7 @@ LIB_LEN=${#LIB_ARRAY[@]}
 
 BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/"
 SET_NO=$2; #"4_1"
-if [ -n $3 ]; then LIB_RUN=$3;fi; #"_2"
+
 SETQC_DIR="${BASE_OUTPUT_DIR}setQCs/Set_${SET_NO}/"
 LOG_FILE="${SETQC_DIR}log.txt"
 
@@ -17,8 +17,16 @@ LOG_FILE="${SETQC_DIR}log.txt"
 # TODO - fix the input here 
 #runMultiQC.sh -l "${LIB_IDS[@]}" -s $SET_NO -n $LIB_RUN  #for the second set
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
-cmd="runMultiQC.sh  -s $SET_NO ${LIB_IDS[@]}" # no trim;
-echo $cmd 
+
+if [ -n "$3" ];
+then
+    LIB_RUN=${3};
+    cmd="runMultiQC.sh  -s $SET_NO ${LIB_IDS[@]} -n $LIB_RUN" # trim;
+else
+    cmd="runMultiQC.sh  -s $SET_NO ${LIB_IDS[@]}" # no trim;
+fi; #"_2"
+
+echo $cmd
 #eval $cmd
 
 

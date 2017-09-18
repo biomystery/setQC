@@ -6,8 +6,8 @@ usage() { echo "Usage: $0 [-l <ints>] [-s <int>] [-n <_2|_3|etc.>] [-t <strings|
 while getopts "s:n:" o; do
     case $o in
 #        l) l+=("${OPTARG}");;
-        s) s="${OPTARG}";;
-        n) n="$OPTARG" ;;
+        s) s="${OPTARG}";; # set 
+        n) n="$OPTARG" ;; # _2 (no of seq of the lib)
         t) t="$OPTARG" ;;  
         *) usage;;
     esac
@@ -23,7 +23,7 @@ echo "input lib number: $@"
 echo "input lib run number = ${n} /blank for the first lib"
 echo "output set number = ${s}"
 echo "input trimmed or not = ${t}"
-
+echo
 
 # take the input as array
 libs_array=($@)
@@ -42,7 +42,7 @@ echo ${libs_array[@]} > ${out_dir}including_libs.txt
 
 # paste the command 
 #cmd="multiqc -k tsv -f -p ${libs_array[@]/#/${libQC_dir}libQCs/}  ${libs_array[@]/#/${libQC_dir}peaks/} -o $out_dir --tag  "
-if [ -n "$t" ] ; then suffix="/*trim*"; else suffix="/*";fi
+if [ -n "$n" ] ; then suffix="/*trim*"; else suffix="/*";fi
 file1=("${libs_array[@]/#/${libQC_dir}libQCs/}")
 file1=("${file1[@]/%/${suffix}}")
 
