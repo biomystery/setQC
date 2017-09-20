@@ -166,7 +166,7 @@ tagList(tlist)
 
 #' # LibQC table 
 #+ echo=F,message=F
-datatable(t(libQC_table)) 
+datatable(libQC_table)
 
 
 
