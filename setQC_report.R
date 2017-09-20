@@ -23,6 +23,7 @@
 attach(params)
 setQC_dir <- paste0("/projects/ps-epigen/outputs/setQCs/Set_",set_no)
 libs <- sapply(libs_no, function(x) paste0("JYH_",x) )# will replaced by inputs ; ,"_2" for second run
+no_libs <- length(libs)
 source('./libs.R') # libQC_dir environment 
 
 
@@ -82,8 +83,8 @@ tlist <- list()
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y = Mitochondrial.reads..out.of.total. ))
 tagList(tlist)
 
-
-#' ## TSS enrichement plots
+#' ##  TSS enrichment {.tabset .tabset-fade .tabset-pills}
+#' ### TSS enrichement plots
 
 #+ echo =F, warning=F
 #require(evaluate)
@@ -96,7 +97,7 @@ tmp <- sapply( 1:length(libs), function(i)
 tagList(tmp)
 div(class='row')    
 
-#' ## Peak TSS enrichment and FRiT {.tabset .tabset-fade .tabset-pills}
+
 
 #' ### Max TSS enrichement compare
 #+ echo=F,warning=F,message=F
@@ -118,22 +119,28 @@ div(class="row")
 
 
 
-#' ### FRiT (Fraction of reads in TSS) 
+#' ### FROT (Fraction of reads overlap TSS) 
 
 #+ echo=F
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.promoter.regions ))
 tagList(tlist)
 
 
-#' ## Insert size distribution 
+#' ## Insert size & GC bias {.tabset .tabset-fade .tabset-pills}
+#' ### Insert size distribution
 
-#+ echo =F
-thumbnail(img = "./multiqc_plots/png/mqc_picard_insert_size_Percentages.png",colsize = "col-sm-12")
+#+ echo =F,warning=F
+#thumbnail(img = "./multiqc_plots/png/mqc_picard_insert_size_Percentages.png",colsize = "col-sm-12")
+tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_insert_size_Percentages.txt"),
+                         xlab="Insert Size (bp)",ylab="Percentage of Counts")
+tagList(tlist)
 
+#' ### GC bias in final bam 
+#+ echo =F,warning=F
 
-#' ## GC bias in final bam 
-#+ echo =F
-thumbnail(img = "./multiqc_plots/png/mqc_picard_gcbias_plot_1.png",colsize = "col-sm-12")
+tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_gcbias_plot_1.txt"))
+tagList(tlist)
+
 
 
 #' # QC of peaks {.tabset .tabset-fade .tabset-pills}
@@ -159,7 +166,7 @@ tagList(tlist)
 
 #' # LibQC table 
 #+ echo=F,message=F
-datatable(libQC_table)
+datatable(t(libQC_table)) 
 
 
 
