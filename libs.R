@@ -43,7 +43,7 @@ getSampleTable <- function(lib_ids){
 require(highcharter)
 require(tidyverse)
 
-plotMultiQC <- function(data.file="../Set_6/multiqc_data/mqc_picard_gcbias_plot_1.txt",xlab="Normalized Coverage",ylab="GC%"){
+plotMultiQC <- function(data.file="../Set_6/multiqc_data/mqc_picard_gcbias_plot_1.txt",ylab="Normalized Coverage",xlab="GC%"){
   
   r2.list <- lapply(readLines(data.file),function(x) as.numeric((unlist(strsplit(x,split = "\t")))[-1]))
   
