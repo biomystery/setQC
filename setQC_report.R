@@ -143,8 +143,10 @@ tagList(tlist)
 
 
 
-#' # QC of peaks {.tabset .tabset-fade .tabset-pills}
-#' ## Raw peak numbers 
+#' # QC of peaks
+#' ## Peak basics {.tabset .tabset-fade .tabset-pills}
+
+#' ### Raw peak numbers 
 #+ echo =F
 raw_peak_number <- libQC_table[grep("Raw peaks",rownames(libQC_table)),]
 raw_peak_number<- sapply(raw_peak_number,function(x)
@@ -156,12 +158,40 @@ tagList(tlist)
 
 
 
-#' ## FRiP (Fraction of reads in Peak region)
+#' ### FRiP (Fraction of reads in Peak region)
 
 #+ echo=F
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
 tagList(tlist)
 
+#' ## Peak advanced {.tabset .tabset-fade .tabset-pills}
+
+#' ### Intensity Scatter
+#+ echo=F,message=F,warning=F
+require(rbokeh)
+pd <- read.table(paste0(setQC_dir,"/avgOverlapFC.tab"))
+pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
+cols<- c(3,4)
+pd.2 <- subset(pd.log2[,cols],apply(pd.log2[,cols],1,max)>log2(2+1));
+colnames(pd.2)<- libs[cols]
+tlist[[1]]<- figure(tools = c("pan", "wheel_zoom", "box_select",  "reset", "save")) %>%
+    ly_hexbin(pd.2[,1],pd.2[,2],xbins = 50,trans=log2,palette="RdYlBu11")%>%
+    ly_abline(a=0,b=1)
+tagList(tlist)
+
+
+#' ### PCA
+#+ echo=F,message=F,warning=F
+require(scatterD3)
+pd.pca <- prcomp(t(pd.log2),center =T,scale. = T )
+perct <- as.numeric(round(tmp$importance[2,1:2]*100))
+
+tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs),point_size = 100,
+                      xlab = paste0("PC1: ",perct[1],"%"),
+                      ylab = paste0("PC2: ",perct[2],"%"),
+                      point_opacity = 0.5,hover_size = 4, hover_opacity = 1,lasso = T,
+                      width = "500px",height = "500px")
+tagList(tlist)
 
 
 #' # LibQC table 
