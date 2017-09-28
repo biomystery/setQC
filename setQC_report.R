@@ -166,25 +166,21 @@ tagList(tlist)
 
 #' ## Peak advanced {.tabset .tabset-fade .tabset-pills}
 
-#' ### Intensity Scatter
+#' ### Correlation matrix & Peak Intensity Scatter
 #+ echo=F,message=F,warning=F
-require(rbokeh)
-pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
-pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
-cols<- c(3,4)
-pd.2 <- subset(pd.log2[,cols],apply(pd.log2[,cols],1,max)>log2(2+1));
-colnames(pd.2)<- libs[cols]
-tlist[[1]]<- figure(tools = c("pan", "wheel_zoom", "box_select",  "reset", "save")) %>%
-    ly_hexbin(pd.2[,1],pd.2[,2],xbins = 50,trans=log2,palette="RdYlBu11")%>%
-    ly_abline(a=0,b=1)
-tagList(tlist)
+tags$iframe(class="embed-responsive-item",
+            width="90%",
+            height="750px",
+            src= paste0("http://epigenomics.sdsc.edu:3838/setQCs/Set_",set_no))
 
 
 #' ### PCA
 #+ echo=F,message=F,warning=F
 require(scatterD3)
+pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
+pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
 pd.pca <- prcomp(t(pd.log2),center =T,scale. = T )
-perct <- as.numeric(round(tmp$importance[2,1:2]*100))
+perct <- as.numeric(round(pd.pca$importance[2,1:2]*100))
 
 tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs),point_size = 100,
                       xlab = paste0("PC1: ",perct[1],"%"),

@@ -13,7 +13,7 @@ while read line
 do
     for w in $line
     do
-        echo $w;
+        echo "for lib:$w  - calculating avarage fc overlap in merged peaks";
         bigWigAverageOverBed ./data/${w}_R1.fastq.bz2.PE2SE.nodup.tn5.pf.fc.signal.bigwig merged_peak.srt.clip.named.bed ${w}.tab 
         awk '{print $6}' ${w}.tab > ${w}_avg.tab; rm ${w}.tab
     done;
@@ -25,7 +25,5 @@ done < including_libs.txt
 
 rm *_avg.tab; rm merged.tmp.bed; rm merged.clip.bed;
 mv merged_peak.srt.clip.named.bed ./data
-
-
 
 

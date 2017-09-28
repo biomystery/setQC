@@ -60,13 +60,23 @@ cd $SETQC_DIR"/data"
 find . -name 'JYH*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
 Rscript $(which genWashUtracks.R) "Set_${SET_NO}"
 
+
 # 5. Final: set up the sharing web site
 echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
 rsync -v -r -u $SETQC_DIR zhc268@epigenomics.sdsc.edu:/home/zhc268/setQC_reports/Set_${SET_NO}
-#ssh zhc268@epigenomics.sdsc.edu "screen -d -m http-server -s -d false -p $PORT ./setQC_reports/Set_${SET_NO}"
 
 
+# 6. prepare shiny apps
+cd $SETQC_DIR
+mkdir -p $SETQC_DIR"/app"
+cp $(which app.R) ./app/;
+cp including_libs.txt ./app;
+cp ./data/avgOverlapFC.tab ./app;
+cd $SETQC_DIR"/app"
+rsync -v -r -u ./  zhc268@epigenomics.sdsc.edu:/home/zhc268/shiny-server/setQCs/Set_${SET_NO}
+rm -r ../app
 
 
+#EXAMPLES:
 # setQC_wrapper.sh "42 43 44 45 46 47" 6 
 
