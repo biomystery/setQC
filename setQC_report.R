@@ -180,7 +180,7 @@ require(scatterD3)
 pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
 pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
 pd.pca <- prcomp(t(pd.log2),center =T,scale. = T )
-perct <- as.numeric(round(pd.pca$importance[2,1:2]*100))
+perct <- as.numeric(round(summary(pd.pca)$importance[2,1:2]*100))
 
 tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs),point_size = 100,
                       xlab = paste0("PC1: ",perct[1],"%"),
