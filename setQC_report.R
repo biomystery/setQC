@@ -19,16 +19,16 @@
 #'<hr style="border: 1px dashed grey;" />
 
 #+ echo=F,warning=F,message=F
-# load the candidate files 
+# load the candidate files
 attach(params)
 setQC_dir <- paste0("/projects/ps-epigen/outputs/setQCs/Set_",set_no)
 libs <- sapply(libs_no, function(x) paste0("JYH_",x) )# will replaced by inputs ; ,"_2" for second run
 no_libs <- length(libs)
-source('./libs.R') # libQC_dir environment 
+source('./libs.R') # libQC_dir environment
 
 
 
-#' # Sample info. 
+#' # Sample info.
 #+ echo=F,warning=F,cache=F,message=F
 
 
@@ -37,7 +37,7 @@ kable(sample_table)
 
 #' # QC of Fastq files
 #+ echo=F,message=F,warning=F
-# need runMutliQC and move the figures to here first 
+# need runMutliQC and move the figures to here first
 fastqcfils <- list.files(path = paste0(setQC_dir,"/multiqc_plots/png/"),pattern = "fastqc*")
 img_f<- sapply(fastqcfils,function(x){
   paste0("./multiqc_plots/png/",x)
@@ -58,7 +58,7 @@ div(class="row")
 
 #' ### Read yield (%) after each step
 #+ echo=F
-libQC_table <- getLibQCtable(libs,trim = didTrim) # need determined by the input 
+libQC_table <- getLibQCtable(libs,trim = didTrim) # need determined by the input
 reads_list <- getReadsTable(libQC_table)
 datatable(reads_list$reads_yield)%>% formatPercentage(1:length(libs),digits=0)
 
@@ -69,7 +69,7 @@ datatable(reads_list$reads_yield)%>% formatPercentage(1:length(libs),digits=0)
 #https://github.com/rstudio/DT/issues/133
 datatable(reads_list$reads_count)%>% formatCurrency(1:length(libs),currency="",digits=0)
 
-#' ##  Mitochondrial reads fraction 
+#' ##  Mitochondrial reads fraction
 #+ echo=F,warning=F
 
 pd <- libQC_table[grep('(Mitochondrial reads)|( peak regions)|(Fraction of reads in promoter regions)',rownames(libQC_table)),]
@@ -95,13 +95,13 @@ show_tss <- function(i) paste(i,signif(as.numeric(tss_enrich[i]),4),sep = ' : ')
 tmp <- sapply( 1:length(libs), function(i)
   thumbnail(show_tss(libs[i]),tss_plots[i],colsize ='col-sm-3' ))
 tagList(tmp)
-div(class='row')    
+div(class='row')
 
 
 
 #' ### Max TSS enrichement compare
 #+ echo=F,warning=F,message=F
-# bargraph for the 
+# bargraph for the
 
 tss_enrich.pd <- data.frame(libs=colnames(tss_enrich),
                             TSS_enrichment = as.numeric(tss_enrich))
@@ -119,7 +119,7 @@ div(class="row")
 
 
 
-#' ### FROT (Fraction of reads overlap TSS) 
+#' ### FROT (Fraction of reads overlap TSS)
 
 #+ echo=F
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.promoter.regions ))
@@ -135,7 +135,7 @@ tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_in
                          xlab="Insert Size (bp)",ylab="Percentage of Counts")
 tagList(tlist)
 
-#' ### GC bias in final bam 
+#' ### GC bias in final bam
 #+ echo =F,warning=F
 
 tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_gcbias_plot_1.txt"))
@@ -146,7 +146,7 @@ tagList(tlist)
 #' # QC of peaks
 #' ## Peak basics {.tabset .tabset-fade .tabset-pills}
 
-#' ### Raw peak numbers 
+#' ### Raw peak numbers
 #+ echo =F
 raw_peak_number <- libQC_table[grep("Raw peaks",rownames(libQC_table)),]
 raw_peak_number<- sapply(raw_peak_number,function(x)
@@ -169,7 +169,7 @@ tagList(tlist)
 #' ### Intensity Scatter
 #+ echo=F,message=F,warning=F
 require(rbokeh)
-pd <- read.table(paste0(setQC_dir,"/avgOverlapFC.tab"))
+pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
 pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
 cols<- c(3,4)
 pd.2 <- subset(pd.log2[,cols],apply(pd.log2[,cols],1,max)>log2(2+1));
@@ -194,14 +194,14 @@ tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs),point_s
 tagList(tlist)
 
 
-#' # LibQC table 
+#' # LibQC table
 #+ echo=F,message=F
 datatable(libQC_table)
 
 
 
 #' # Tracks
-#+ echo=F 
+#+ echo=F
 
 json_src=paste0("http://epigenomegateway.wustl.edu/browser/?genome=",
                 libQC_table["Genome",1],
@@ -210,11 +210,11 @@ json_src=paste0("http://epigenomegateway.wustl.edu/browser/?genome=",
                 "/data/tracks_merged_pf.json")
 a(href=json_src,class="btn btn-primary","Open WashU Genome Browser")
 
-tags$iframe(class="embed-responsive-item", 
+tags$iframe(class="embed-responsive-item",
             width="1340px",
             height="750px",
             src= json_src)
 
 
-  
-  
+
+

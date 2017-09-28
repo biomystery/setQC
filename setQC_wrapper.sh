@@ -14,8 +14,6 @@ SETQC_DIR="${BASE_OUTPUT_DIR}setQCs/Set_${SET_NO}/"
 LOG_FILE="${SETQC_DIR}log.txt"
 
 # 1. runMultiQC
-# TODO - fix the input here 
-#runMultiQC.sh -l "${LIB_IDS[@]}" -s $SET_NO -n $LIB_RUN  #for the second set
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
 
 if [ -n "$3" ];
@@ -35,8 +33,12 @@ echo $cmd
 echo -e "(`date`): running comple setQC html" | tee -a $LOG_FILE
 cd $SETQC_DIR
 
+
 #LIB_IDS=("${LIB_IDS[@]/%/${LIB_RUN}}")
 source activate bds_atac_py3
+
+echo "preparing setQC: get merged peaks..."
+#calcOverlapAvgFC.sh 
 
 echo "Rscript $(which compile_setQC_report.R)  $SET_NO ${LIB_IDS[@]} "
 Rscript $(which compile_setQC_report.R)  $SET_NO ${LIB_IDS[@]} ; ##"48 49 50 51 52 53 54 55 56 57 58" "4_1"
