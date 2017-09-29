@@ -176,6 +176,7 @@ tags$iframe(class="embed-responsive-item",
 
 #' ### PCA
 #+ echo=F,message=F,warning=F
+if(length(libs)>2){
 require(scatterD3)
 pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
 pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
@@ -187,8 +188,9 @@ tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs),point_s
                       ylab = paste0("PC2: ",perct[2],"%"),
                       point_opacity = 0.5,hover_size = 4, hover_opacity = 1,lasso = T,
                       width = "500px",height = "500px")
-tagList(tlist)
-
+tagList(tlist)}else{
+tags$p('Lib number in this set is <=2 ')
+}
 
 #' # LibQC table
 #+ echo=F,message=F
