@@ -1,11 +1,8 @@
 #!/bin/bash
 # Prepare the files and etc for runSetQCreport.sh
-
-
 LIB_IDS=$1 #;(`seq 48 57`) # array
 LIB_ARRAY=($LIB_IDS)
 LIB_LEN=${#LIB_ARRAY[@]}
-
 
 BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/"
 SET_NO=$2; #"4_1"
@@ -25,23 +22,8 @@ else
 fi; #"_2"
 
 echo $cmd 
-#eval $cmd
+eval $cmd
 
-
-# 3. genSetQCreport
-# use envrionment bds_atac_py3 (installed R-3.4.1)
-echo -e "(`date`): running comple setQC html" | tee -a $LOG_FILE
-cd $SETQC_DIR
-
-
-#LIB_IDS=("${LIB_IDS[@]/%/${LIB_RUN}}")
-source activate bds_atac_py3
-
-echo "preparing setQC: get merged peaks..."
-#calcOverlapAvgFC.sh 
-
-echo "Rscript $(which compile_setQC_report.R)  $SET_NO ${LIB_IDS[@]} "
-Rscript $(which compile_setQC_report.R)  $SET_NO ${LIB_IDS[@]} ; ##"48 49 50 51 52 53 54 55 56 57 58" "4_1"
 
 
 # 4. prepare tracks
@@ -59,6 +41,23 @@ eval $cmd
 cd $SETQC_DIR"/data"
 find . -name 'JYH*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
 Rscript $(which genWashUtracks.R) "Set_${SET_NO}"
+
+
+# 3. genSetQCreport
+# use envrionment bds_atac_py3 (installed R-3.4.1)
+echo -e "(`date`): running comple setQC html" | tee -a $LOG_FILE
+cd $SETQC_DIR
+
+
+#LIB_IDS=("${LIB_IDS[@]/%/${LIB_RUN}}")
+source activate bds_atac_py3
+
+echo "preparing setQC: get merged peaks..."
+#calcOverlapAvgFC.sh 
+
+echo "Rscript $(which compile_setQC_report.R)  $SET_NO ${LIB_IDS[@]} "
+Rscript $(which compile_setQC_report.R)  $SET_NO ${LIB_IDS[@]} ; ##"48 49 50 51 52 53 54 55 56 57 58" "4_1"
+
 
 
 # 5. Final: set up the sharing web site
