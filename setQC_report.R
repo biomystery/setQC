@@ -35,7 +35,7 @@ source('./libs.R') # libQC_dir environment
 sample_table<- getSampleTable(libs)
 kable(sample_table)
 
-#' # QC of Fastq files
+#' # Fastq files
 #+ echo=F,message=F,warning=F
 # need runMutliQC and move the figures to here first
 fastqcfils <- list.files(path = paste0(setQC_dir,"/multiqc_plots/png/"),pattern = "fastqc*")
@@ -52,7 +52,7 @@ thumbnail("", img_f[7])
 div(class="row")
 
 
-#' # QC of mappability
+#' # Mappability
 
 #' ## Reads yeild table {.tabset .tabset-fade .tabset-pills}
 
@@ -143,7 +143,7 @@ tagList(tlist)
 
 
 
-#' # QC of peaks
+#' # Peaks
 #' ## Peak basics {.tabset .tabset-fade .tabset-pills}
 
 #' ### Raw peak numbers

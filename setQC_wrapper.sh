@@ -22,7 +22,7 @@ else
 fi; #"_2"
 
 echo $cmd 
-eval $cmd
+#eval $cmd
 
 
 

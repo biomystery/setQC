@@ -9,14 +9,15 @@ libs<- unlist(strsplit(readLines("./including_libs.txt"),split = " "))
 pd <- read.table("./avgOverlapFC.tab")
 pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
 names(pd.log2)<- libs
-correlation <- round(cor(pd.log2), 3)
+correlation <- round(cor(pd.log2,method="spearman"), 3)
 
 
 ui <- fluidPage(
   fluidRow(
-    column(6,
+    column(7,
            plotlyOutput("heat")),
-    column(6,
+    column(5,
+#           textOutput("selection"),
            rbokehOutput("scatterplot")
            )
   )
@@ -24,9 +25,8 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   output$heat <- renderPlotly({
-    heatmaply(correlation,colors = Reds(n = 9),margins = c(40,40,NA,20))
-    #heatmaply_cor(correlation,margins = c(40,40,NA,20))
-  })
+    heatmaply(correlation,colors = Reds(n = 9),margins = c(60,100,NA,20))
+   })
 
   output$selection <- renderPrint({
     s <- event_data("plotly_click")

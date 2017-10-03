@@ -30,7 +30,28 @@ getSampleTable <- function(lib_ids){
     gs_ls() # for the auth
     gs_mseqts <- gs_key("1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y")
     sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,15)))
-    sample_table <- subset(sample_table, `Sequencing ID` %in% lib_ids)[,-c(5,6,7)] #member initial, date, lib ID 
+    sample_table <- subset(sample_table, `Sequencing ID` %in% lib_ids)[,-c(5,6,7)] #member initial, date, lib ID
+    write.csv(file=sample_file,sample_table,row.names = F)
+    sample_table
+  }
+}
+
+
+updateSetQCgs <- function(lib_ids){
+    sample_file <- paste0(setQC_dir,"/sample_table.csv")
+  if(file.exists(sample_file)){
+    if (system(paste0("wc -l ",sample_file,"|awk  '{print $1}'"),intern = T)!="1")
+      return(read.csv(file = sample_file,
+                      stringsAsFactors = F,check.names = F))
+  }else{
+    #print("get Sample info from gs")
+    require(googlesheets)
+      suppressPackageStartupMessages(require(dplyr))
+      gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
+    gs_ls() # for the auth
+    gs_mseqts <- gs_key("1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y")
+    sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,15)))
+    sample_table <- subset(sample_table, `Sequencing ID` %in% lib_ids)[,-c(5,6,7)] #member initial, date, lib ID
     write.csv(file=sample_file,sample_table,row.names = F)
     sample_table
   }
@@ -40,21 +61,18 @@ getSampleTable <- function(lib_ids){
 
 
 # re plot MultiQC file  -----------------------------------------------
-require(highcharter)
-require(tidyverse)
-
 plotMultiQC <- function(data.file="../Set_6/multiqc_data/mqc_picard_gcbias_plot_1.txt",ylab="Normalized Coverage",xlab="GC%"){
-  
+
   r2.list <- lapply(readLines(data.file),function(x) as.numeric((unlist(strsplit(x,split = "\t")))[-1]))
-  
+
   if(length(r2.list) > 2* no_libs){
-    df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[2*i-1]],y=r2.list[[2*i]],libs_=libs[i]))  
+    df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[2*i-1]],y=r2.list[[2*i]],libs_=libs[i]))
   }else{
     df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[1]],y=r2.list[[i+1]],libs_=libs[i]))
   }
-  
+
   df <- do.call(rbind,c(df,row.name=NULL))
-  
+
   hchart(df,"spline",hcaes(x=x,y=y,group=libs_)) %>%
     hc_plotOptions(series=list(
       marker = list(enabled =FALSE)
@@ -75,9 +93,9 @@ getLibQCtable <- function(lib_ids,trim=T){
     if(trim){
       libQC_report_file <- paste0(libQC_report_dir,list.files(libQC_report_dir,pattern = "trim.PE2SE_qc.txt"))
     }else{
-      libQC_report_file <- paste0(libQC_report_dir,list.files(libQC_report_dir,pattern = "_qc.txt"))  
+      libQC_report_file <- paste0(libQC_report_dir,list.files(libQC_report_dir,pattern = "_qc.txt"))
     }
-      
+
     qc <- read.table(libQC_report_file,sep = "\t",header = F,fill = T,col.names = paste0("v",seq(3)),
                      stringsAsFactors = F)
     qc$v3 <- signif(qc$v3,digits = 3)
@@ -94,9 +112,9 @@ getLibQCtable <- function(lib_ids,trim=T){
     qc_table<-rbind(sample_table$`sample ID (from MSTS)`,qc_table)
     rownames(qc_table)[1] <- "sampleId"
   }
-  qc_table  
+  qc_table
 }
-  
+
 
 getReadsTable <- function(qc_table=libQC_table){
   rtable <- data.matrix(subset(qc_table,grepl("Read count",rownames(qc_table))))
@@ -118,7 +136,7 @@ getherTSSplot <- function(lib_ids,trim=T){
       cmd <- paste0("find ",libQC_dir,x," -name '*large_tss*' -exec cp -n {} ",image_dir," \\;")
       system(cmd)
       cmd <- paste0("find ",libQC_dir,x," -name '*tss-enrich.txt' -exec cp -n {} ",image_dir," \\;")
-      system(cmd)  
+      system(cmd)
     })}
 
   if(trim){
@@ -126,7 +144,7 @@ getherTSSplot <- function(lib_ids,trim=T){
     paste0("./images/",list.files(path = image_dir,pattern = "*.png"))}
 }
 
-require(htmltools)
+
 thumbnail <- function(title="", img, caption = TRUE,colsize="col-sm-4") {
   tagList(div(class =colsize ,
       a(class = "thumbnail", title = title, href = img,
@@ -138,5 +156,5 @@ thumbnail <- function(title="", img, caption = TRUE,colsize="col-sm-4") {
   ))
 }
 
-parse_func <- function (x="10844795 | 0.21") 
+parse_func <- function (x="10844795 | 0.21")
   unlist(strsplit(x,split = " [|] "))[2]
