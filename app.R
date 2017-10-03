@@ -11,6 +11,11 @@ pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
 names(pd.log2)<- libs
 correlation <- round(cor(pd.log2,method="spearman"), 3)
 
+getXYlabel <- function(p=heatmaply(correlation,colors = Reds(n = 9),margins = c(60,100,NA,20))){
+  as.character(p$x$layout$xaxis$categoryarray)
+};
+
+xlab_correct <- getXYlabel()
 
 ui <- fluidPage(
   fluidRow(
@@ -42,11 +47,14 @@ server <- function(input, output, session) {
     s <- event_data("plotly_click")
     if (length(s)) {
       vars <- c(s[["x"]], s[["y"]])
-      print(vars)
-      figure(data=pd.log2, title=paste0("cor=",correlation[vars[1],vars[2]]),
+
+      x.lab<- xlab_correct[vars[2]];y.lab <- xlab_correct[vars[1]]
+
+      figure(data=pd.log2, title=paste0("cor=",correlation[x.lab,y.lab]),
              tools = c("pan", "wheel_zoom", "box_select",  "reset", "save")) %>%
-        ly_hexbin(libs[vars[1]], libs[vars[2]],xbins = 50,trans=log2,palette="RdYlBu11")%>%
-        ly_abline(a=0,b=1)
+        ly_hexbin(x.lab, y.lab, xbins = 50,trans=log2,palette="RdYlBu11")%>%
+          ly_abline(a=0,b=1)
+
     } else {
      figure(data=pd.log2,title=paste0("cor=",correlation[1,2]),
             tools = c("pan", "wheel_zoom", "box_select",  "reset", "save")) %>%
@@ -54,7 +62,6 @@ server <- function(input, output, session) {
         ly_abline(a=0,b=1)
     }
   })
-
 }
 
 shinyApp(ui, server)
