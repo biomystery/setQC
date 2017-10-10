@@ -101,10 +101,10 @@ div(class='row')
 #+ echo=F,warning=F,message=F
 # read data
 
-rd<-lapply(list.files("./images/","*.txt"),
+rd<-lapply(list.files(paste0(setQC_dir,"./images/","*.txt"),
            function(f){
-             read.delim(paste0("./images/",f),header = F)
-           });rd <- do.call(cbind,rd); colnames(rd) <- libs
+             read.delim(paste0(setQC_dir,"./images/",f),header = F)
+}); rd <- do.call(cbind,rd); names(rd) <- libs
 rd$TSS <- seq(-2000,2000,length.out = nrow(rd));
 
 # hchart function: https://cran.r-project.org/web/packages/highcharter/vignettes/charting-data-frames.html
