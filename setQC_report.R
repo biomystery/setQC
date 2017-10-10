@@ -97,8 +97,20 @@ tmp <- sapply( 1:length(libs), function(i)
 tagList(tmp)
 div(class='row')
 
+#' ### Average TSS enrichement compare
+#+ echo=F,warning=F,message=F
+# read data 
+rd<-lapply(list.files("./images/","*.txt"),
+           function(f){
+             read.delim(paste0("./images/",f),header = F)
+           })
+ rd <- do.call(cbind,rd);rd$TSS <- seq(-2000,2000,length.out = nrow(rd)); colnames(rd) <- libs
 
-
+# hchart function: https://cran.r-project.org/web/packages/highcharter/vignettes/charting-data-frames.html
+ tlist <- list()
+ tlist[[1]]<-hchart(rd %>% gather(key = "libs",value = "avg_tss_enrichment",c(1:3)),
+       "line",hcaes(x=TSS,y=avg_tss_enrichment,group=libs))
+tagList(tlist)
 #' ### Max TSS enrichement compare
 #+ echo=F,warning=F,message=F
 # bargraph for the
@@ -115,7 +127,6 @@ tlist[[1]]<- hchart(tss_enrich.pd, "column", hcaes(x = libs, y = TSS_enrichment)
 
 #insert_thumbnail(libs[13],col.size="col-sm-3")
 tagList(tlist)
-div(class="row")
 
 
 

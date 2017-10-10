@@ -11,7 +11,6 @@ while getopts "s:n:" o; do
     esac
 done
 
-
 shift $((OPTIND-1))
 
 #if [ -z "${l}" ] || [ -z "${s}" ]; then
@@ -45,7 +44,7 @@ file1=("${file1[@]/%/${suffix}}")
 
 
 file2=("${libs_array[@]/#/${libQC_dir}libQCs/}")
-file2=("${file2[@]/%/${suffix}}")
+ofile2=("${file2[@]/%/${suffix}}")
 
 
 logs_dir=$out_dir"logs/"
