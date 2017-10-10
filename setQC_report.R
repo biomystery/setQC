@@ -99,18 +99,20 @@ div(class='row')
 
 #' ### Average TSS enrichement compare
 #+ echo=F,warning=F,message=F
-# read data 
+# read data
+
 rd<-lapply(list.files("./images/","*.txt"),
            function(f){
              read.delim(paste0("./images/",f),header = F)
-           })
- rd <- do.call(cbind,rd);rd$TSS <- seq(-2000,2000,length.out = nrow(rd)); colnames(rd) <- libs
+           });rd <- do.call(cbind,rd); colnames(rd) <- libs
+rd$TSS <- seq(-2000,2000,length.out = nrow(rd));
 
 # hchart function: https://cran.r-project.org/web/packages/highcharter/vignettes/charting-data-frames.html
- tlist <- list()
- tlist[[1]]<-hchart(rd %>% gather(key = "libs",value = "avg_tss_enrichment",c(1:3)),
+tlist <- list()
+tlist[[1]]<-hchart(rd %>% gather(key = "libs",value = "avg_tss_enrichment",1:no_libs),
        "line",hcaes(x=TSS,y=avg_tss_enrichment,group=libs))
 tagList(tlist)
+
 #' ### Max TSS enrichement compare
 #+ echo=F,warning=F,message=F
 # bargraph for the

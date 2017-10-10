@@ -53,7 +53,7 @@ cd $SETQC_DIR
 source activate bds_atac_py3
 
 echo "preparing setQC: get merged peaks..."
-calcOverlapAvgFC.sh 
+#calcOverlapAvgFC.sh 
 
 echo "Rscript $(which compile_setQC_report.R)  $SET_NO ${LIB_IDS[@]} "
 Rscript $(which compile_setQC_report.R)  $SET_NO ${LIB_IDS[@]} ; ##"48 49 50 51 52 53 54 55 56 57 58" "4_1"
