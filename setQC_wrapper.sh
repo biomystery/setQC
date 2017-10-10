@@ -45,7 +45,7 @@ Rscript $(which genWashUtracks.R) "Set_${SET_NO}"
 
 # 3. genSetQCreport
 # use envrionment bds_atac_py3 (installed R-3.4.1)
-echo -e "(`date`): running comple setQC html" | tee -a $LOG_FILE
+echo -e "(`date`):  compiling setQC html" | tee -a $LOG_FILE
 cd $SETQC_DIR
 
 

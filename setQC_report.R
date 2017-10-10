@@ -101,10 +101,11 @@ div(class='row')
 #+ echo=F,warning=F,message=F
 # read data
 
-rd<-lapply(list.files(paste0(setQC_dir,"./images/","*.txt"),
-           function(f){
-             read.delim(paste0(setQC_dir,"./images/",f),header = F)
-}); rd <- do.call(cbind,rd); names(rd) <- libs
+ rd<-lapply(list.files(paste0(setQC_dir,"/images/"),"*.txt"),
+           function(f)
+    read.delim(paste0(setQC_dir,"/images/",f),header = F))
+
+rd <- do.call(cbind,rd); names(rd) <- libs
 rd$TSS <- seq(-2000,2000,length.out = nrow(rd));
 
 # hchart function: https://cran.r-project.org/web/packages/highcharter/vignettes/charting-data-frames.html
@@ -219,7 +220,8 @@ json_src=paste0("http://epigenomegateway.wustl.edu/browser/?genome=",
                 "&tknamewidth=275&datahub=http://epigenomics.sdsc.edu:8084/Set_",
                 set_no,
                 "/data/tracks_merged_pf.json")
-a(href=json_src,class="btn btn-primary","Open WashU Genome Browser")
+
+a(href=json_src,class="btn btn-success btn-sm","Open WashU Genome Browser in a new window")
 
 tags$iframe(class="embed-responsive-item",
             width="1340px",
