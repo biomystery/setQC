@@ -2,18 +2,15 @@
 # load library ------------------------------------------------------------
 require(knitr)
 #require(kableExtra)
+require(RColorBrewer)
 require(googlesheets)
 require(DT)
 # devtools::install_github("jennybc/googlesheets")
 require(htmltools)
 require(highcharter)
 require(tidyverse)
-#require(dplyr)
-#require(tidyr)
-#require(evaluate)
+require(ggplot2)
 
-#libQC_dir <- "~/mnt/tscc_home/data/outputs/libQCs/"
-libQC_dir <- "/projects/ps-epigen/outputs/libQCs/"
 # load sample info from msTracking --------------------------------------
 
 getSampleTable <- function(lib_ids){
@@ -57,6 +54,57 @@ updateSetQCgs <- function(lib_ids){
   }
 }
 
+# contamination plot  --------------------------------------
+
+parseFastqScreen<- function(fn="JYH_109_R1_screen.txt"){
+  pd <- read.delim(paste0(libQC_dir,sub("_R[1-2]_screen.txt","",fn),"/",fn),
+                   skip = 1,check.names=F,stringsAsFactors = F)
+  pd <- pd[,c(1,grep("\\%",colnames(pd)))]
+  pd <- pd[,-2] # drop unmapped 
+  um <- as.numeric(unlist(strsplit(pd$Genome[7],split = ":"))[2])
+  pd$Genome[7] <- "No hits"; pd$`%One_hit_one_genome`[7] <- um
+  pd[is.na(pd)] <- 0 
+  #pd$`%total_alignment` <- apply(pd[,2:ncol(pd)],1,sum)
+  pd %>% gather("type","Percentage_Aligned",-1) %>% mutate(sample=sub("_screen.txt","",fn)) 
+  #pd %>% mutate(sample=sub("_screen.txt","",fn))
+}
+
+parseFastqScreen_perLib <- function(lib)
+  rbind(parseFastqScreen(fn=paste0(lib,"_R1_screen.txt")),
+        parseFastqScreen(fn=paste0(lib,"_R2_screen.txt")))
+
+plotSource <- function(pd=do.call(rbind,lapply(libs, parseFastqScreen_perLib))){
+  pd.new <-pd %>% group_by(name=type,
+                           stack=sample)%>% do(data = .$Percentage_Aligned,
+                                               categories= .$Genome)
+  pd.new$color = rep(brewer.pal(4,"Set3"),each=nrow(pd.new)/4)
+  pd.new$linkedTo = rep(":previous",nrow(pd.new))
+  pd.new.list <- list_parse(pd.new)
+  for(i in seq(1,nrow(pd.new),by = nrow(pd.new)/4)) pd.new.list[[i]]$linkedTo =NULL 
+  
+  # ref = https://stackoverflow.com/questions/38093229/multiple-series-in-highcharter-r-stacked-barchart
+  highchart() %>% 
+    hc_chart(type = "column") %>% 
+    hc_xAxis(categories= pd.new$categories[[1]]
+    )%>%
+    hc_yAxis(title = list(text = "Percentage Aligned"),
+             min=0,
+             max=100) %>% 
+    hc_plotOptions(column = list(
+      dataLabels = list(enabled = FALSE),
+      groupPadding = .02,
+      pointPadding = 0,
+      stacking = "normal")
+    ) %>% 
+    hc_add_series_list(pd.new.list) %>% 
+    hc_tooltip(formatter=JS("function (){
+                            return '<b>' + this.series.stackKey.replace('column','') + ' - ' + this.x + '</b><br/>' + \n\
+                            this.series.name + ': ' + this.y + '%<br/>' + \n\
+                            'Total Alignment: ' + this.point.stackTotal + '%';}"))
+  # ref: https://github.com/jbkunst/highcharter/issues/54 
+  # ref: https://github.com/ewels/MultiQC/blob/master/multiqc/modules/fastq_screen/fastq_screen.py
+  
+  }
 
 
 

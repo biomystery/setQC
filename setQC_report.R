@@ -22,9 +22,13 @@
 # load the candidate files
 attach(params)
 setQC_dir <- paste0("/projects/ps-epigen/outputs/setQCs/Set_",set_no)
+#setQC_dir <- paste0("~/mnt/tscc_home/data/outputs/setQCs/Set_",set_no) #testing
 libs <- sapply(libs_no, function(x) paste0("JYH_",x) )# will replaced by inputs ; ,"_2" for second run
 no_libs <- length(libs)
-source('./libs.R') # libQC_dir environment
+#libQC_dir <- "~/mnt/tscc_home/data/outputs/libQCs/" #testing
+libQC_dir <- "/projects/ps-epigen/outputs/libQCs/"
+
+source('./libs.R') 
 
 
 
@@ -51,9 +55,14 @@ thumbnail("Per Sequence GC content", img_f[4])
 thumbnail("Sequence Duplication Levels", img_f[6])
 thumbnail("Sequence Length Distribution", img_f[7])
 div(class="row")
-a(href="./multiqc_report.html",class="btn btn-link","see other details (leave setQC)")
+a(href="./multiqc_report.html",class="btn btn-link","see  details (leave setQC)")
 
-#' ## Sequence sources (potential contamniation)
+#' ## Sequence sources (potential contamination)
+#+ echo=F,message=F,warning=F
+tlist <- list()
+tlist[[1]]<- plotSource()
+tagList(tlist)
+
 
 #' # Mappability
 
