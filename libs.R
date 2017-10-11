@@ -34,24 +34,20 @@ getSampleTable <- function(lib_ids){
 }
 
 
-updateSetQCgs <- function(lib_ids){
-    sample_file <- paste0(setQC_dir,"/sample_table.csv")
-  if(file.exists(sample_file)){
-    if (system(paste0("wc -l ",sample_file,"|awk  '{print $1}'"),intern = T)!="1")
-      return(read.csv(file = sample_file,
-                      stringsAsFactors = F,check.names = F))
-  }else{
-    #print("get Sample info from gs")
-    require(googlesheets)
-      suppressPackageStartupMessages(require(dplyr))
-      gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
-    gs_ls() # for the auth
-    gs_mseqts <- gs_key("1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y")
-    sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,15)))
-    sample_table <- subset(sample_table, `Sequencing ID` %in% lib_ids)[,-c(5,6,7)] #member initial, date, lib ID
-    write.csv(file=sample_file,sample_table,row.names = F)
-    sample_table
-  }
+updateSetQC_gs <- function(){
+  gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
+    gs_mseqts <- gs_key("1ZD223K4A7SJ0_uw4OvhUOm9BecqDAposRflE9i1Ocms")
+    sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(1,1),c(NA,7)))
+    rid <- which(sample_table$`Set QC index`==paste0("Set_",set_no))
+    ## edit: https://rawgit.com/jennybc/googlesheets/master/vignettes/basic-usage.html
+    
+    # 1. updated - time 
+    sample_table$Updated[rid] <- date()
+    gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample_table$Updated,  anchor="F2")
+    
+    # 2. version 
+    sample_table$version[rid] <- system("git rev-parse --short HEAD", intern = TRUE)
+    gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample_table$version,  anchor="G2")
 }
 
 # contamination plot  --------------------------------------

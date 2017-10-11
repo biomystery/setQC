@@ -27,15 +27,12 @@ libs <- sapply(libs_no, function(x) paste0("JYH_",x) )# will replaced by inputs 
 no_libs <- length(libs)
 #libQC_dir <- "~/mnt/tscc_home/data/outputs/libQCs/" #testing
 libQC_dir <- "/projects/ps-epigen/outputs/libQCs/"
-
 source('./libs.R') 
-
+updateSetQC_gs()
 
 
 #' # Sample info.
 #+ echo=F,warning=F,cache=F,message=F
-
-
 sample_table<- getSampleTable(libs)
 kable(sample_table)
 
