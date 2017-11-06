@@ -26,7 +26,7 @@ echo $cmd
 
 
 
-# 4. prepare tracks
+# 2. prepare tracks
 if [ -n "$3" ]
 then
     cmd="transferTracks.sh -d $SETQC_DIR -r $LIB_RUN ${LIB_IDS[@]}"

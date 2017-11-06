@@ -6,7 +6,7 @@ usage() { echo "Usage: $0 [-l <ints>] [-s <int>] [-n <_2|_3|etc.>] [-t <strings|
 while getopts "s:n:" o; do
     case $o in
         s) s="${OPTARG}";; # set 
-        n) n="$OPTARG" ;; # _2 (no of seq of the lib)
+        n) n="$OPTARG" ;;
         *) usage;;
     esac
 done

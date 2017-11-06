@@ -1,13 +1,45 @@
-#!/bin/bash
-# Prepare the files and etc for runSetQCreport.sh
-LIB_IDS=$1 #;(`xx xx`) any prefix name 
-LIB_ARRAY=($LIB_IDS)
+#!/usr/bin/env bash
+#Time-stamp: "2017-11-06 15:04:19"
+
+# PART I dependency check 
+
+# PART II usage info
+usage(){
+cat << EOF
+      'scATAC_debarcode -a I1.fastq.gz -b I2.fastq.gz -c R2.fastq.gz | gzip - > R2.decomplex.fastq.gz' 
+EOF
+} 
+
+# PART III  params
+# default 
+LIB_IDS=$1
+BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/setQCs/other/"
+RAND_D=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
+
+
+# receiving arguments
+while getopts ":l:o:n:" opt;
+do
+	case "$opt" in
+		l) LIB_IDS=$OPTARG;;  #;(`xx xx`) any prefix name 
+		o) BASE_OUTPUT_DIR=$OPTARG;;
+		n) SET_NAME=$OPTARG;;
+		\?) usage
+			echo "input error"
+			exit 1
+			;;
+	esac
+done
+
+LIB_ARRAY=($LIB_IDS) # assume all the single libs in the same dir 
 LIB_LEN=${#LIB_ARRAY[@]}
 
-BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/setQCs/other/"
-SET_NO=$2; #"test"
 
-SETQC_DIR="${BASE_OUTPUT_DIR}/${SET_NO}/"
+# PART III: Main 
+
+# Prepare the files and etc for runSetQCreport.sh
+
+SETQC_DIR="${BASE_OUTPUT_DIR}/${RAND_D}/${SET_NAME}/"
 LOG_FILE="${SETQC_DIR}log.txt"
 
 # 1. runMultiQC
@@ -16,9 +48,9 @@ echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
 if [ -n "$3" ]; # options for trim 
 then
     LIB_RUN=${3};
-    cmd="runMultiQC.sh  -s $SET_NO -n $LIB_RUN ${LIB_IDS[@]} " # trim;
+    cmd="runMultiQC_any.sh  -s $SET_NAME -n $LIB_RUN ${LIB_IDS[@]} " # trim;
 else
-    cmd="runMultiQC.sh  -s $SET_NO ${LIB_IDS[@]}" # no trim;
+    cmd="runMultiQC_any.sh  -s $SET_NAME ${LIB_IDS[@]}" # no trim;
 fi; #"_2"
 
 echo $cmd 
@@ -26,7 +58,7 @@ echo $cmd
 
 
 
-# 4. prepare tracks
+# 2. prepare tracks
 if [ -n "$3" ]
 then
     cmd="transferTracks.sh -d $SETQC_DIR -r $LIB_RUN ${LIB_IDS[@]}"
@@ -40,7 +72,7 @@ eval $cmd
 
 cd $SETQC_DIR"/data"
 find . -name 'JYH*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
-Rscript $(which genWashUtracks.R) "Set_${SET_NO}"
+Rscript $(which genWashUtracks.R) "Set_${SET_NAME}"
 
 
 # 3. genSetQCreport
@@ -53,16 +85,16 @@ cd $SETQC_DIR
 source activate bds_atac_py3
 
 echo "preparing setQC: get merged peaks..."
-#calcOverlapAvgFC.sh 
+calcOverlapAvgFC.sh 
 
-echo "Rscript $(which compile_setQC_report.R)  $SET_NO ${LIB_IDS[@]} "
-Rscript $(which compile_setQC_report.R)  $SET_NO ${LIB_IDS[@]} ; ##"48 49 50 51 52 53 54 55 56 57 58" "4_1"
+echo "Rscript $(which compile_setQC_report.R)  $SET_NAME ${LIB_IDS[@]} "
+Rscript $(which compile_setQC_report_any.R)  $SET_NAME ${LIB_IDS[@]} ; ##"48 49 50 51 52 53 54 55 56 57 58" "4_1"
 
 
 
 # 5. Final: set up the sharing web site
 echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
-rsync -v -r -u $SETQC_DIR zhc268@epigenomics.sdsc.edu:/home/zhc268/setQC_reports/Set_${SET_NO}
+rsync -v -r -u $SETQC_DIR zhc268@epigenomics.sdsc.edu:/home/zhc268/setQC_reports/Set_${SET_NAME}
 
 
 # 6. prepare shiny apps
@@ -72,7 +104,7 @@ cp $(which app.R) ./app/;
 cp including_libs.txt ./app;
 cp ./data/avgOverlapFC.tab ./app;
 cd $SETQC_DIR"/app"
-rsync -v -r -u ./  zhc268@epigenomics.sdsc.edu:/home/zhc268/shiny-server/setQCs/Set_${SET_NO}
+rsync -v -r -u ./  zhc268@epigenomics.sdsc.edu:/home/zhc268/shiny-server/setQCs/Set_${SET_NAME}
 rm -r ../app
 
 
