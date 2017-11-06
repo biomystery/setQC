@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-06 15:29:36"
+#Time-stamp: "2017-11-06 15:47:53"
 
 # PART I dependency check 
 
 # PART II usage info
 usage(){
-cat << EOF
-      'scATAC_debarcode -a I1.fastq.gz -b I2.fastq.gz -c R2.fastq.gz | gzip - > R2.decomplex.fastq.gz' 
-EOF
+    exit 1
 } 
 
 # PART III  params
@@ -17,12 +15,14 @@ RAND_D=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
 
 
 # receiving arguments
-while getopts ":s:b:n:" opt;
+while getopts ":s:b:t:n:l:" opt;
 do
 	case "$opt" in
 	    s) SAMPLE_FILE=$OPTARG;;  #;(`xx xx`) any prefix name
-#	    b) B_NAME=$OPTARG;;  #;(`xx xx`) any prefix name             
+            b) B_NAME=$OPTARG;; # a higher level base name on top of set name 
+	    t) HAS_TRIM=$OPTARG;;  # include trim or not 
 	    n) SET_NAME=$OPTARG;;
+            l: LIBQC_DIR=$OPTARG;; # proessed lib dir 
 	    \?) usage
 		echo "input error"
 		exit 1
@@ -40,7 +40,7 @@ fi
 # Prepare the files and etc for runSetQCreport.sh
 LIB_ARRAY=(`cat $SAMPLE_FILE | sort -n`) # assume all the single libs in the same dir 
 LIB_LEN=${#LIB_ARRAY[@]}
-#BASE_OUTPUT_DIR="${BASE_OUTPUT_DIR}/${B_NAME}/"
+BASE_OUTPUT_DIR="${BASE_OUTPUT_DIR}/${B_NAME}/"
 SETQC_DIR="${BASE_OUTPUT_DIR}/${RAND_D}/${SET_NAME}/"
 LOG_FILE="${SETQC_DIR}log.txt"
 
@@ -48,23 +48,14 @@ mkdir -p $SETQC_DIR
 
 # PART III: Main 
 
-
-
-
 # 1. runMultiQC
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
-
-if [ -n "$3" ]; # options for trim 
-then
-    LIB_RUN=${3};
-    cmd="runMultiQC_any.sh  -s $SET_NAME -n $LIB_RUN ${LIB_IDS[@]} " # trim;
-else
-    cmd="runMultiQC_any.sh  -s $SET_NAME ${LIB_IDS[@]}" # no trim;
-fi; #"_2"
-
+source activate bds_atac_py3
+cmd="multiqc -k tsv -f -p $LIBQC_DIR -o $SETQC_DIR"
 echo $cmd 
-#eval $cmd
-
+eval $cmd
+wait
+source deactivate bds_atac_py3
 
 
 # 2. prepare tracks
