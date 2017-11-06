@@ -44,7 +44,7 @@ file1=("${file1[@]/%/${suffix}}")
 
 
 file2=("${libs_array[@]/#/${libQC_dir}libQCs/}")
-ofile2=("${file2[@]/%/${suffix}}")
+file2=("${file2[@]/%/${suffix}}")
 
 
 logs_dir=$out_dir"logs/"
