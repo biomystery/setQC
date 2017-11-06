@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-06 15:04:19"
+#Time-stamp: "2017-11-06 15:29:36"
 
 # PART I dependency check 
 
@@ -12,35 +12,44 @@ EOF
 
 # PART III  params
 # default 
-LIB_IDS=$1
-BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/setQCs/other/"
+BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/setQCs/"
 RAND_D=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
 
 
 # receiving arguments
-while getopts ":l:o:n:" opt;
+while getopts ":s:b:n:" opt;
 do
 	case "$opt" in
-		l) LIB_IDS=$OPTARG;;  #;(`xx xx`) any prefix name 
-		o) BASE_OUTPUT_DIR=$OPTARG;;
-		n) SET_NAME=$OPTARG;;
-		\?) usage
-			echo "input error"
-			exit 1
-			;;
+	    s) SAMPLE_FILE=$OPTARG;;  #;(`xx xx`) any prefix name
+#	    b) B_NAME=$OPTARG;;  #;(`xx xx`) any prefix name             
+	    n) SET_NAME=$OPTARG;;
+	    \?) usage
+		echo "input error"
+		exit 1
+		;;
 	esac
 done
 
-LIB_ARRAY=($LIB_IDS) # assume all the single libs in the same dir 
-LIB_LEN=${#LIB_ARRAY[@]}
+# check if input sample name file exists
 
+if [ ! -f "$SAMPLE_FILE" ]; then
+       echo "sample file not found!"
+       exit 1
+fi
+     
+# Prepare the files and etc for runSetQCreport.sh
+LIB_ARRAY=(`cat $SAMPLE_FILE | sort -n`) # assume all the single libs in the same dir 
+LIB_LEN=${#LIB_ARRAY[@]}
+#BASE_OUTPUT_DIR="${BASE_OUTPUT_DIR}/${B_NAME}/"
+SETQC_DIR="${BASE_OUTPUT_DIR}/${RAND_D}/${SET_NAME}/"
+LOG_FILE="${SETQC_DIR}log.txt"
+
+mkdir -p $SETQC_DIR
 
 # PART III: Main 
 
-# Prepare the files and etc for runSetQCreport.sh
 
-SETQC_DIR="${BASE_OUTPUT_DIR}/${RAND_D}/${SET_NAME}/"
-LOG_FILE="${SETQC_DIR}log.txt"
+
 
 # 1. runMultiQC
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
