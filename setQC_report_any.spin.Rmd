@@ -1,43 +1,48 @@
-#'---
-#'params:
-#'  set_name: "tmp"
-#'  libs: "48 49 50 51 52 53 54 55 56 57"
-#'  setQC_dir: "./"
-#'  libQC_dir: "./"
-#'  update_gs: F
-#'  has_sample_table: F
-#'title: "Report for `params$set_name`:  `r paste(params$libs,collapse=',')`"
-#'output:
-#'  html_document:
-#'    theme: united
-#'    number_sections: no
-#'    highlight: tango
-#'    smart: TRUE
-#'    toc: true
-#'    toc_depth: 2
-#'    toc_float: true
-#'author: "Frank (zhangc518@gmail.com) @ UCSD Center for Epigenomics"
-#'date: "`r date()`"
-#'---
-#'<hr style="border: 1px dashed grey;" />
-#+ init, echo=F,warning=F,message=F
+---
+params:
+ set_name: "tmp"
+ libs: "48 49 50 51 52 53 54 55 56 57"
+ setQC_dir: "./"
+ libQC_dir: "./"
+ update_gs: F
+ has_sample_table: F
+title: "Report for `params$set_name`:  `r paste(params$libs,collapse=',')`"
+output:
+ html_document:
+   theme: united
+   number_sections: no
+   highlight: tango
+   smart: TRUE
+   toc: true
+   toc_depth: 2
+   toc_float: true
+author: "Frank (zhangc518@gmail.com) @ UCSD Center for Epigenomics"
+date: "`r date()`"
+---
+<hr style="border: 1px dashed grey;" />
+
+```{r init, echo=F,warning=F,message=F}
 # load the candidate files
 attach(params)
 no_libs <- length(libs)
 source('./libs.R')
 if(update_gs)
     updateSetQC_gs()
+```
 
-#' # Sample info.
-#+ check_sample_info,echo=F,warning=F,cache=F,message=F
+# Sample info.
+
+```{r check_sample_info,echo=F,warning=F,cache=F,message=F}
 if(has_sample_table) {
     sample_table<- getSampleTable(libs)
     kable(sample_table)
 }
+```
 
-#' # Fastq files {.tabset .tabset-fade .tabset-pills}
-#' ## Sequencing Quality
-#+ fastq_module,echo=F,message=F,warning=F
+# Fastq files {.tabset .tabset-fade .tabset-pills}
+## Sequencing Quality
+
+```{r fastq_module,echo=F,message=F,warning=F}
 # need runMutliQC and move the figures to here first
 fastqcfils <- list.files(path = paste0(setQC_dir,"/multiqc_plots/png/"),pattern = "fastqc*")
 img_f<- sapply(fastqcfils,function(x){
@@ -52,31 +57,35 @@ thumbnail("Sequence Duplication Levels", img_f[6])
 thumbnail("Sequence Length Distribution", img_f[7])
 div(class="row")
 a(href="./multiqc_report.html",class="btn btn-link","see  details (leave setQC)")
+```
 
-#' ## Sequence sources (potential contamination)
-#+ fastq_screen,echo=F,message=F,warning=F
+## Sequence sources (potential contamination)
+
+```{r fastq_screen,echo=F,message=F,warning=F}
 tlist <- list()
 tlist[[1]]<- plotSource()
 tagList(tlist)
+```
 
+# Mappability
+## Reads yeild table {.tabset .tabset-fade .tabset-pills}
+### Read yield (%) after each step
 
-#' # Mappability
-
-#' ## Reads yeild table {.tabset .tabset-fade .tabset-pills}
-
-#' ### Read yield (%) after each step
-#+ reads_yeild,echo=F
+```{r reads_yeild,echo=F}
 libQC_table <- getLibQCtable(libs) # need determined by the input
 reads_list <- getReadsTable(libQC_table)
 datatable(reads_list$reads_yield)%>% formatPercentage(1:length(libs),digits=0)
+```
 
+### Read counts after each step
 
-#' ### Read counts after each step
-#+ reads_counts_table, echo=F
+```{r reads_counts_table, echo=F}
 datatable(reads_list$reads_count)%>% formatCurrency(1:length(libs),currency="",digits=0)
+```
 
-#' ##  Mitochondrial reads fraction
-#+ mito_frac,echo=F,warning=F
+##  Mitochondrial reads fraction
+
+```{r mito_frac,echo=F,warning=F}
 
 pd <- libQC_table[grep('(Mitochondrial reads)|( peak regions)|(Fraction of reads in promoter regions)',rownames(libQC_table)),]
 pd.2 <- t(pd)
@@ -88,11 +97,12 @@ pd.3<- data.frame(apply(pd.2,2,function(x) as.numeric(x)),
 tlist <- list()
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y = Mitochondrial.reads..out.of.total. ))
 tagList(tlist)
+```
 
-#' ##  TSS enrichment {.tabset .tabset-fade .tabset-pills}
-#' ### TSS enrichement plots
+##  TSS enrichment {.tabset .tabset-fade .tabset-pills}
+### TSS enrichement plots
 
-#+ tss_enrich_plot,echo =F, warning=F
+```{r tss_enrich_plot,echo =F, warning=F}
 #require(evaluate)
 tss_plots <- getherTSSplot(libs)
 tss_enrich <- libQC_table[grep('TSS',rownames(libQC_table)),]
@@ -102,9 +112,11 @@ tmp <- sapply( 1:length(libs), function(i)
   thumbnail(show_tss(libs[i]),tss_plots[i],colsize ='col-sm-3' ))
 tagList(tmp)
 div(class='row')
+```
 
-#' ### Average TSS enrichement compare
-#+ avg_tss,echo=F,warning=F,message=F
+### Average TSS enrichement compare
+
+```{r avg_tss,echo=F,warning=F,message=F}
 # read data
 
  rd<-lapply(list.files(paste0(setQC_dir,"/images/"),"*.txt"),
@@ -119,9 +131,11 @@ tlist <- list()
 tlist[[1]]<-hchart(rd %>% gather(key = "libs",value = "avg_tss_enrichment",1:no_libs),
        "line",hcaes(x=TSS,y=avg_tss_enrichment,group=libs))
 tagList(tlist)
+```
 
-#' ### Max TSS enrichement compare
-#+ max_tss,echo=F,warning=F,message=F
+### Max TSS enrichement compare
+
+```{r max_tss,echo=F,warning=F,message=F}
 # bargraph for the
 
 tss_enrich.pd <- data.frame(libs=colnames(tss_enrich),
@@ -136,38 +150,38 @@ tlist[[1]]<- hchart(tss_enrich.pd, "column", hcaes(x = libs, y = TSS_enrichment)
 
 #insert_thumbnail(libs[13],col.size="col-sm-3")
 tagList(tlist)
+```
 
+### FROT (Fraction of reads overlap TSS)
 
-
-#' ### FROT (Fraction of reads overlap TSS)
-
-#+ FRoT, echo=F
+```{r FRoT, echo=F}
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.promoter.regions ))
 tagList(tlist)
+```
 
+## Insert size & GC bias {.tabset .tabset-fade .tabset-pills}
+### Insert size distribution
 
-#' ## Insert size & GC bias {.tabset .tabset-fade .tabset-pills}
-#' ### Insert size distribution
-
-#+ insert_size,echo =F,warning=F
+```{r insert_size,echo =F,warning=F}
 #thumbnail(img = "./multiqc_plots/png/mqc_picard_insert_size_Percentages.png",colsize = "col-sm-12")
 tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_insert_size_Percentages.txt"),
                          xlab="Insert Size (bp)",ylab="Percentage of Counts")
 tagList(tlist)
+```
 
-#' ### GC bias in final bam
-#+ gc,echo =F,warning=F
+### GC bias in final bam
+
+```{r gc,echo =F,warning=F}
 
 tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_gcbias_plot_1.txt"))
 tagList(tlist)
+```
 
+# Peaks
+## Peak basics {.tabset .tabset-fade .tabset-pills}
+### Raw peak numbers
 
-
-#' # Peaks
-#' ## Peak basics {.tabset .tabset-fade .tabset-pills}
-
-#' ### Raw peak numbers
-#+ raw_peak_num,echo =F
+```{r raw_peak_num,echo =F}
 raw_peak_number <- libQC_table[grep("Raw peaks",rownames(libQC_table)),]
 raw_peak_number<- sapply(raw_peak_number,function(x)
   as.numeric(unlist(strsplit(as.character(x),split = " [-] "))[1]))
@@ -175,28 +189,29 @@ pd.raw_peak_number <- data.frame(raw_peak_number=raw_peak_number,
                                  lib=names(raw_peak_number))
 tlist[[1]]<- hchart(pd.raw_peak_number, "column", hcaes(x = libs, y =  raw_peak_number ))
 tagList(tlist)
+```
 
+### FRiP (Fraction of reads in Peak region)
 
-
-#' ### FRiP (Fraction of reads in Peak region)
-
-#+ FRip,echo=F
+```{r FRip,echo=F}
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
 tagList(tlist)
+```
 
-#' ## Peak advanced {.tabset .tabset-fade .tabset-pills}
+## Peak advanced {.tabset .tabset-fade .tabset-pills}
+### Correlation matrix & Peak Intensity Scatter
 
-#' ### Correlation matrix & Peak Intensity Scatter
-#+ app,echo=F,message=F,warning=F
+```{r app,echo=F,message=F,warning=F}
 relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setqc_dir)
 tags$iframe(class="embed-responsive-item",
             width="90%",
             height="750px",
             src= paste0("http://epigenomics.sdsc.edu:3838/setQCs/",relative_dir))
+```
 
+### PCA
 
-#' ### PCA
-#+ pca,echo=F,message=F,warning=F
+```{r pca,echo=F,message=F,warning=F}
 if(length(libs)>2){
 require(scatterD3)
 pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
@@ -212,15 +227,17 @@ tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs),point_s
 tagList(tlist)}else{
 tags$p('Lib number in this set is <=2 ')
 }
+```
 
-#' # LibQC table
-#+ libqc_table,echo=F,message=F
+# LibQC table
+
+```{r libqc_table,echo=F,message=F}
 datatable(libQC_table)
+```
 
+# Tracks
 
-
-#' # Tracks
-#+ track,echo=F
+```{r track,echo=F}
 
 json_src=paste0("http://epigenomegateway.wustl.edu/browser/?genome=",
                 libQC_table["Genome",1],
@@ -235,7 +252,11 @@ tags$iframe(class="embed-responsive-item",
             width="1340px",
             height="750px",
             src= json_src)
+```
 
 
-
-
+---
+title: "setQC_report_any.R"
+author: "zhc268"
+date: "Tue Nov  7 11:15:32 2017"
+---
