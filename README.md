@@ -1,6 +1,6 @@
 setQC - A automatic report generating app
 ============================================================
-Time-stamp: "2017-11-07 08:53:51"
+Time-stamp: "2017-11-07 09:41:30"
 
 
 # Scripts 
@@ -17,12 +17,17 @@ Time-stamp: "2017-11-07 08:53:51"
    
 3. make track json: `genWashUtracks.R`: 
    * input `set_dir`: dir under the base 
-   
-4. generate setQC report 
-   * `calcOvelapAvgFC.sh`: 
-     * merge peak bed 
-     * `bigWigAvergaeOverBed` to generate `avgOverlapFC.tab` file 
-5. uploading files to server 
+
+4. Calculate fc over the merged peak locations `calcOverlapAvgFC.sh`
+   * make merged peak bed 
+   * clip and sort the bed 
+   * `bigWigAvergaeOverBed` to generate `avgOverlapFC.tab` file 
+
+5. generate setQC report 
+
+     
+     
+6. uploading files to server 
    * regular files 
    * apps 
 
