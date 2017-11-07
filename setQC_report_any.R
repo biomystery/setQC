@@ -1,9 +1,12 @@
 #'---
 #'params:
-#'  libs_no: "48 49 50 51 52 53 54 55 56 57"
-#'  set_no: "4_1"
-#'  didTrim: "F"
-#'title: "Report for Set`r params$set_no `: JYH_`r paste(params$libs_no,collapse=' ')`"
+#'  set_name: "tmp"
+#'  libs: "48 49 50 51 52 53 54 55 56 57"
+#'  setQC_dir: "./"
+#'  libQC_dir: "./"
+#'  update_gs: F
+#'  has_sample_table: F
+#'title: "Report for `params$set_name`:  `r paste(params$libs,collapse=',')`"
 #'output:
 #'  html_document:
 #'    theme: united
@@ -17,28 +20,24 @@
 #'date: "`r date()`"
 #'---
 #'<hr style="border: 1px dashed grey;" />
-
-#+ echo=F,warning=F,message=F
+#+ init, echo=F,warning=F,message=F
 # load the candidate files
 attach(params)
-setQC_dir <- paste0("/projects/ps-epigen/outputs/setQCs/Set_",set_no)
-#setQC_dir <- paste0("~/mnt/tscc_home/data/outputs/setQCs/Set_",set_no) #testing
-libs <- sapply(libs_no, function(x) paste0("JYH_",x) )# will replaced by inputs ; ,"_2" for second run
 no_libs <- length(libs)
-#libQC_dir <- "~/mnt/tscc_home/data/outputs/libQCs/" #testing
-libQC_dir <- "/projects/ps-epigen/outputs/libQCs/"
-source('./libs.R') 
-updateSetQC_gs()
-
+source('./libs.R')
+if(update_gs)
+    updateSetQC_gs()
 
 #' # Sample info.
-#+ echo=F,warning=F,cache=F,message=F
-sample_table<- getSampleTable(libs)
-kable(sample_table)
+#+ check_sample_info,echo=F,warning=F,cache=F,message=F
+if(has_sample_table) {
+    sample_table<- getSampleTable(libs)
+    kable(sample_table)
+}
 
 #' # Fastq files {.tabset .tabset-fade .tabset-pills}
 #' ## Sequencing Quality
-#+ echo=F,message=F,warning=F
+#+ fastq_module,echo=F,message=F,warning=F
 # need runMutliQC and move the figures to here first
 fastqcfils <- list.files(path = paste0(setQC_dir,"/multiqc_plots/png/"),pattern = "fastqc*")
 img_f<- sapply(fastqcfils,function(x){
@@ -55,7 +54,7 @@ div(class="row")
 a(href="./multiqc_report.html",class="btn btn-link","see  details (leave setQC)")
 
 #' ## Sequence sources (potential contamination)
-#+ echo=F,message=F,warning=F
+#+ fastq_screen,echo=F,message=F,warning=F
 tlist <- list()
 tlist[[1]]<- plotSource()
 tagList(tlist)

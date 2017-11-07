@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-07 09:12:59"
+#Time-stamp: "2017-11-07 10:07:54"
 
 # PART I dependency check 
 
@@ -93,10 +93,10 @@ source activate bds_atac_py3
 echo "preparing setQC: get merged peaks..."
 calcOverlapAvgFC.sh $SAMPLE_FILE
 
-echo "Rscript $(which compile_setQC_report.R)  $SET_NAME ${LIB_IDS[@]} "
-Rscript $(which compile_setQC_report_any.R)  $SET_NAME ${LIB_IDS[@]} ; ##"48 49 50 51 52 53 54 55 56 57 58" "4_1"
 
-
+cmd="Rscript $(which compile_setQC_report_any.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}"
+echo $cmd
+eval $cmd 
 
 # 5. Final: set up the sharing web site
 echo -e "(`date`): uploading to website" | tee -a $LOG_FILE

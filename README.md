@@ -1,6 +1,6 @@
 setQC - A automatic report generating app
 ============================================================
-Time-stamp: "2017-11-07 09:41:30"
+Time-stamp: "2017-11-07 10:20:20"
 
 
 # Scripts 
@@ -24,7 +24,7 @@ Time-stamp: "2017-11-07 09:41:30"
    * `bigWigAvergaeOverBed` to generate `avgOverlapFC.tab` file 
 
 5. generate setQC report 
-
+   * need to be `bds_atac_py3` environment
      
      
 6. uploading files to server 

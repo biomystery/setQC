@@ -40,12 +40,12 @@ updateSetQC_gs <- function(){
     sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(1,1),c(NA,7)))
     rid <- which(sample_table$`Set QC index`==paste0("Set_",set_no))
     ## edit: https://rawgit.com/jennybc/googlesheets/master/vignettes/basic-usage.html
-    
-    # 1. updated - time 
+
+    # 1. updated - time
     sample_table$Updated[rid] <- date()
     gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample_table$Updated,  anchor="F2")
-    
-    # 2. version 
+
+    # 2. version
     sample_table$version[rid] <- system("git rev-parse --short HEAD", intern = TRUE)
     gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample_table$version,  anchor="G2")
 }
@@ -53,15 +53,16 @@ updateSetQC_gs <- function(){
 # contamination plot  --------------------------------------
 
 parseFastqScreen<- function(fn="JYH_109_R1_screen.txt"){
-  pd <- read.delim(paste0(libQC_dir,sub("_R[1-2]_screen.txt","",fn),"/",fn),
+  df <- list.files(path=libQC_dir,pattern=fn,recursive=T,full.names=T)
+  pd <- read.delim(df,
                    skip = 1,check.names=F,stringsAsFactors = F)
   pd <- pd[,c(1,grep("\\%",colnames(pd)))]
-  pd <- pd[,-2] # drop unmapped 
+  pd <- pd[,-2] # drop unmapped
   um <- as.numeric(unlist(strsplit(pd$Genome[7],split = ":"))[2])
   pd$Genome[7] <- "No hits"; pd$`%One_hit_one_genome`[7] <- um
-  pd[is.na(pd)] <- 0 
+  pd[is.na(pd)] <- 0
   #pd$`%total_alignment` <- apply(pd[,2:ncol(pd)],1,sum)
-  pd %>% gather("type","Percentage_Aligned",-1) %>% mutate(sample=sub("_screen.txt","",fn)) 
+  pd %>% gather("type","Percentage_Aligned",-1) %>% mutate(sample=sub("_screen.txt","",fn))
   #pd %>% mutate(sample=sub("_screen.txt","",fn))
 }
 
@@ -76,30 +77,30 @@ plotSource <- function(pd=do.call(rbind,lapply(libs, parseFastqScreen_perLib))){
   pd.new$color = rep(brewer.pal(4,"Set3"),each=nrow(pd.new)/4)
   pd.new$linkedTo = rep(":previous",nrow(pd.new))
   pd.new.list <- list_parse(pd.new)
-  for(i in seq(1,nrow(pd.new),by = nrow(pd.new)/4)) pd.new.list[[i]]$linkedTo =NULL 
-  
+  for(i in seq(1,nrow(pd.new),by = nrow(pd.new)/4)) pd.new.list[[i]]$linkedTo =NULL
+
   # ref = https://stackoverflow.com/questions/38093229/multiple-series-in-highcharter-r-stacked-barchart
-  highchart() %>% 
-    hc_chart(type = "column") %>% 
+  highchart() %>%
+    hc_chart(type = "column") %>%
     hc_xAxis(categories= pd.new$categories[[1]]
     )%>%
     hc_yAxis(title = list(text = "Percentage Aligned"),
              min=0,
-             max=100) %>% 
+             max=100) %>%
     hc_plotOptions(column = list(
       dataLabels = list(enabled = FALSE),
       groupPadding = .02,
       pointPadding = 0,
       stacking = "normal")
-    ) %>% 
-    hc_add_series_list(pd.new.list) %>% 
+    ) %>%
+    hc_add_series_list(pd.new.list) %>%
     hc_tooltip(formatter=JS("function (){
                             return '<b>' + this.series.stackKey.replace('column','') + ' - ' + this.x + '</b><br/>' + \n\
                             this.series.name + ': ' + this.y + '%<br/>' + \n\
                             'Total Alignment: ' + this.point.stackTotal + '%';}"))
-  # ref: https://github.com/jbkunst/highcharter/issues/54 
+  # ref: https://github.com/jbkunst/highcharter/issues/54
   # ref: https://github.com/ewels/MultiQC/blob/master/multiqc/modules/fastq_screen/fastq_screen.py
-  
+
   }
 
 
