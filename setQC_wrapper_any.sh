@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-06 15:47:53"
+#Time-stamp: "2017-11-06 16:30:34"
 
 # PART I dependency check 
 
@@ -15,12 +15,11 @@ RAND_D=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
 
 
 # receiving arguments
-while getopts ":s:b:t:n:l:" opt;
+while getopts ":s:b:n:l:" opt;
 do
 	case "$opt" in
 	    s) SAMPLE_FILE=$OPTARG;;  #;(`xx xx`) any prefix name
             b) B_NAME=$OPTARG;; # a higher level base name on top of set name 
-	    t) HAS_TRIM=$OPTARG;;  # include trim or not 
 	    n) SET_NAME=$OPTARG;;
             l: LIBQC_DIR=$OPTARG;; # proessed lib dir 
 	    \?) usage
@@ -59,20 +58,16 @@ source deactivate bds_atac_py3
 
 
 # 2. prepare tracks
-if [ -n "$3" ]
-then
-    cmd="transferTracks.sh -d $SETQC_DIR -r $LIB_RUN ${LIB_IDS[@]}"
-else
-    cmd="transferTracks.sh -d $SETQC_DIR  ${LIB_IDS[@]}"
-fi
+cmd="transferTracks_any.sh -d $SETQC_DIR -l $LIBQC_DIR  ${LIB_ARRAY[@]}"
 
 echo -e "(`date`): copy track files" | tee -a $LOG_FILE
 echo $cmd | tee -a $LOG_FILE
 eval $cmd
 
 cd $SETQC_DIR"/data"
-find . -name 'JYH*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
-Rscript $(which genWashUtracks.R) "Set_${SET_NAME}"
+find . -name '*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
+
+Rscript $(which genWashUtracks.R) "${B_NAME}/${RAND_D}/${SET_NAME}"
 
 
 # 3. genSetQCreport
