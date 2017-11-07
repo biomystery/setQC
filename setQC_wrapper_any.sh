@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-07 14:56:20"
+#Time-stamp: "2017-11-07 15:41:11"
 
 # PART I dependency check 
 
@@ -121,7 +121,7 @@ eval $cmd
 echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
 
 ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/setQC_reports/$RELATIVE_DIR"
-ssh zhc268@epigenomics.sdsc.edu "cp -rs /project/ps-epigen/outputs/setQCs/$RELATIVE_DIR /home/zhc268/setQC_reports/$RELATIVE_DIR"
+ssh zhc268@epigenomics.sdsc.edu "cp -urs /project/ps-epigen/outputs/setQCs/$RELATIVE_DIR/* /home/zhc268/setQC_reports/$RELATIVE_DIR/"
 echo "link: http://epigenomics.sdsc.edu:8084/$RELATIVE_DIR/setQC_report_any.html"
 
 # 6. prepare shiny apps
