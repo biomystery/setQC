@@ -6,7 +6,7 @@
 #'  libQC_dir: "./"
 #'  update_gs: F
 #'  has_sample_table: F
-#'title: "Report for `params$set_name`:  `r paste(params$libs,collapse=',')`"
+#'title: "Report for `r params$set_name`"
 #'output:
 #'  html_document:
 #'    theme: united

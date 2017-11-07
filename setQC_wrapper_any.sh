@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-07 11:26:37"
+#Time-stamp: "2017-11-07 12:20:10"
 
 # PART I dependency check 
 
@@ -50,6 +50,7 @@ else
 fi
 
 SETQC_DIR="${BASE_OUTPUT_DIR}/${RAND_D}/${SET_NAME}/"
+RELATIVE_DIR="${B_NAME}/${RAND_D}/${SET_NAME}"
 LOG_FILE="${SETQC_DIR}log.txt"
 
 mkdir -p $SETQC_DIR
@@ -100,19 +101,20 @@ eval $cmd
 
 # 5. Final: set up the sharing web site
 echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
-rsync -v -r -u $SETQC_DIR zhc268@epigenomics.sdsc.edu:/home/zhc268/setQC_reports/Set_${SET_NAME}
 
+ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/setQC_reports/$RELATIVE_DIR"
+rsync -v -r -u $SETQC_DIR zhc268@epigenomics.sdsc.edu:/home/zhc268/setQC_reports/$RELATIVE_DIR
 
 # 6. prepare shiny apps
 cd $SETQC_DIR
 mkdir -p $SETQC_DIR"/app"
 cp $(which app.R) ./app/;
-cp including_libs.txt ./app;
-cp ./data/avgOverlapFC.tab ./app;
+echo ${LIB_ARRAY[@]} > ./app/including_libs.txt;
+mv ./data/avgOverlapFC.tab ./app;
 cd $SETQC_DIR"/app"
-rsync -v -r -u ./  zhc268@epigenomics.sdsc.edu:/home/zhc268/shiny-server/setQCs/Set_${SET_NAME}
+ssh  zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
+rsync -v -r -u ./  zhc268@epigenomics.sdsc.edu:/home/zhc268/shiny-server/setQCs/$RELATIVE_DIR
 rm -r ../app
-
 
 #EXAMPLES:
 
