@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-07 08:51:12"
+#Time-stamp: "2017-11-07 09:05:20"
 
 # PART I dependency check 
 
@@ -49,7 +49,6 @@ else
     RAND_D=`cat $rand_d_string`
 fi
 
-
 SETQC_DIR="${BASE_OUTPUT_DIR}/${RAND_D}/${SET_NAME}/"
 LOG_FILE="${SETQC_DIR}log.txt"
 
@@ -76,8 +75,10 @@ eval $cmd
 
 cd $SETQC_DIR"/data"
 find . -name '*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
-
 Rscript $(which genWashUtracks.R) "${B_NAME}/${RAND_D}/${SET_NAME}"
+LIBQC_DIR="/home/zhc268/scratch/others/2017-10-25-sswangson_morgridge/chu_mmus"
+# delete the individual tracks
+find . ! \( -name "*pf.json" -o -name "*.gz" -o -name "*.bigwig" -o -name "*.tbi" \) -delete
 
 
 # 3. genSetQCreport
@@ -114,5 +115,6 @@ rm -r ../app
 
 
 #EXAMPLES:
-# setQC_wrapper.sh "42 43 44 45 46 47" 6 
 
+# setQC_wrapper_any.sh -s /home/zhc268/scratch/others/2017-10-25-sswangson_morgridge/chu_mmus/uniq_samples_rev.txt \
+# 

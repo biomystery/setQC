@@ -1,6 +1,6 @@
 setQC - A automatic report generating app
 ============================================================
-Time-stamp: "2017-11-06 16:24:17"
+Time-stamp: "2017-11-07 08:53:51"
 
 
 # Scripts 
@@ -13,7 +13,7 @@ Time-stamp: "2017-11-06 16:24:17"
 1. run multiQC: `runMultiQC.sh`:
    
 2. Prepare tracks: pull tracks from scratch folder to the `setQC/data` folder 
-   * also moved individual `tracks.json` file togaher 
+   * get individual `tracks.json` files and cat togaher 
    
 3. make track json: `genWashUtracks.R`: 
    * input `set_dir`: dir under the base 
