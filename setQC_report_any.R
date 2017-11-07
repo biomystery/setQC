@@ -188,7 +188,7 @@ tagList(tlist)
 
 #' ### Correlation matrix & Peak Intensity Scatter
 #+ app,echo=F,message=F,warning=F
-relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setqc_dir)
+relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir)
 tags$iframe(class="embed-responsive-item",
             width="90%",
             height="750px",

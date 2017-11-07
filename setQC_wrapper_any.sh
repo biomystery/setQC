@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-07 10:07:54"
+#Time-stamp: "2017-11-07 11:26:37"
 
 # PART I dependency check 
 
@@ -91,7 +91,7 @@ cd $SETQC_DIR
 source activate bds_atac_py3
 
 echo "preparing setQC: get merged peaks..."
-calcOverlapAvgFC.sh $SAMPLE_FILE
+calcOverlapAvgFC_any.sh ${LIB_ARRAY[@]}
 
 
 cmd="Rscript $(which compile_setQC_report_any.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}"
