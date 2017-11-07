@@ -219,9 +219,9 @@ datatable(libQC_table)
 
 
 
-#' # Tracks
+#' # Tracks & Download {.tabset .tabset-fade .tabset-pills}
+#' ## Browser
 #+ track,echo=F
-
 json_src=paste0("http://epigenomegateway.wustl.edu/browser/?genome=",
                 libQC_table["Genome",1],
                 "&tknamewidth=275&datahub=http://epigenomics.sdsc.edu:8084/",
@@ -235,7 +235,14 @@ tags$iframe(class="embed-responsive-item",
             width="1340px",
             height="750px",
             src= json_src)
+#' ## Download Links
+#+ track_download, echo=F
+tlist <- list()
+for(i in 1:length(libs)){
+    l <- libs[i]
+    rd <- system(paste0("find ",setQC_dir,"/data/ -name ",l,"*.bigwig -printf %f"),intern=T)
+    hrf <- paste0("http://epigenomics.sdsc.edu:8084/",relative_dir,"/data/",rd)
+    tlist[[i]]<- tags$li(tags$a(href=hrf,paste0(l,"_fc_bigwig file")))
+}
 
-
-
-
+tagList(tlist)

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-07 12:20:10"
+#Time-stamp: "2017-11-07 14:56:20"
 
 # PART I dependency check 
 
@@ -18,10 +18,10 @@ BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/setQCs/"
 while getopts ":s:b:n:l:" opt;
 do
 	case "$opt" in
-	    s) SAMPLE_FILE=$OPTARG;;  #;(`xx xx`) any prefix name
+	    s) SAMPLE_FILE=$OPTARG;;  # text for sample files
             b) B_NAME=$OPTARG;; # a higher level base name on top of set name 
 	    n) SET_NAME=$OPTARG;;
-            l: LIBQC_DIR=$OPTARG;; # proessed lib dir 
+            l) LIBQC_DIR=$OPTARG;; # proessed lib dir 
 	    \?) usage
 		echo "input error"
 		exit 1
@@ -35,6 +35,23 @@ if [ ! -f "$SAMPLE_FILE" ]; then
        echo "sample file not found!"
        exit 1
 fi
+
+if [  -z "$B_NAME" ]; then
+    echo $B_NAME
+    echo "Base name not set!"
+    exit 1
+fi
+
+if [ -z "$SET_NAME" ]; then
+    echo "set name file not found!"
+    exit 1
+fi
+
+if [ ! -d "$LIBQC_DIR" ]; then
+    echo $LIBQC_DIR
+      echo "libQC dir  not found!"
+       exit 1
+fi
      
 # Prepare the files and etc for runSetQCreport.sh
 LIB_ARRAY=(`cat $SAMPLE_FILE | sort -n`) # assume all the single libs in the same dir 
@@ -42,9 +59,10 @@ LIB_LEN=${#LIB_ARRAY[@]}
 BASE_OUTPUT_DIR="${BASE_OUTPUT_DIR}/${B_NAME}/"
 
 # check if there is $BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.txt
-rand_d_string=$BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.txt 
+rand_d_string=$BASE_OUTPUT_DIR/$SET_NAME.txt 
 if [ ! -f $rand_d_string ];then
     RAND_D=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
+    cat $RAND_D > $BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.txt 
 else
     RAND_D=`cat $rand_d_string`
 fi
@@ -103,16 +121,18 @@ eval $cmd
 echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
 
 ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/setQC_reports/$RELATIVE_DIR"
-rsync -v -r -u $SETQC_DIR zhc268@epigenomics.sdsc.edu:/home/zhc268/setQC_reports/$RELATIVE_DIR
+ssh zhc268@epigenomics.sdsc.edu "cp -rs /project/ps-epigen/outputs/setQCs/$RELATIVE_DIR /home/zhc268/setQC_reports/$RELATIVE_DIR"
+echo "link: http://epigenomics.sdsc.edu:8084/$RELATIVE_DIR/setQC_report_any.html"
 
 # 6. prepare shiny apps
 cd $SETQC_DIR
 mkdir -p $SETQC_DIR"/app"
 cp $(which app.R) ./app/;
 echo ${LIB_ARRAY[@]} > ./app/including_libs.txt;
-mv ./data/avgOverlapFC.tab ./app;
+cp ./data/avgOverlapFC.tab ./app;
 cd $SETQC_DIR"/app"
 ssh  zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
+
 rsync -v -r -u ./  zhc268@epigenomics.sdsc.edu:/home/zhc268/shiny-server/setQCs/$RELATIVE_DIR
 rm -r ../app
 
