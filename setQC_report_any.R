@@ -94,7 +94,7 @@ tagList(tlist)
 
 #+ tss_enrich_plot,echo =F, warning=F
 #require(evaluate)
-tss_plots <- getherTSSplot(libs,trim = didTrim)
+tss_plots <- getherTSSplot(libs)
 tss_enrich <- libQC_table[grep('TSS',rownames(libQC_table)),]
 show_tss <- function(i) paste(i,signif(as.numeric(tss_enrich[i]),4),sep = ' : ')
 
@@ -104,7 +104,7 @@ tagList(tmp)
 div(class='row')
 
 #' ### Average TSS enrichement compare
-#+ echo=F,warning=F,message=F
+#+ avg_tss,echo=F,warning=F,message=F
 # read data
 
  rd<-lapply(list.files(paste0(setQC_dir,"/images/"),"*.txt"),
@@ -121,7 +121,7 @@ tlist[[1]]<-hchart(rd %>% gather(key = "libs",value = "avg_tss_enrichment",1:no_
 tagList(tlist)
 
 #' ### Max TSS enrichement compare
-#+ echo=F,warning=F,message=F
+#+ max_tss,echo=F,warning=F,message=F
 # bargraph for the
 
 tss_enrich.pd <- data.frame(libs=colnames(tss_enrich),
@@ -141,7 +141,7 @@ tagList(tlist)
 
 #' ### FROT (Fraction of reads overlap TSS)
 
-#+ echo=F
+#+ FRoT, echo=F
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.promoter.regions ))
 tagList(tlist)
 
@@ -149,14 +149,14 @@ tagList(tlist)
 #' ## Insert size & GC bias {.tabset .tabset-fade .tabset-pills}
 #' ### Insert size distribution
 
-#+ echo =F,warning=F
+#+ insert_size,echo =F,warning=F
 #thumbnail(img = "./multiqc_plots/png/mqc_picard_insert_size_Percentages.png",colsize = "col-sm-12")
 tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_insert_size_Percentages.txt"),
                          xlab="Insert Size (bp)",ylab="Percentage of Counts")
 tagList(tlist)
 
 #' ### GC bias in final bam
-#+ echo =F,warning=F
+#+ gc,echo =F,warning=F
 
 tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_gcbias_plot_1.txt"))
 tagList(tlist)
@@ -167,7 +167,7 @@ tagList(tlist)
 #' ## Peak basics {.tabset .tabset-fade .tabset-pills}
 
 #' ### Raw peak numbers
-#+ echo =F
+#+ raw_peak_num,echo =F
 raw_peak_number <- libQC_table[grep("Raw peaks",rownames(libQC_table)),]
 raw_peak_number<- sapply(raw_peak_number,function(x)
   as.numeric(unlist(strsplit(as.character(x),split = " [-] "))[1]))
@@ -180,14 +180,14 @@ tagList(tlist)
 
 #' ### FRiP (Fraction of reads in Peak region)
 
-#+ echo=F
+#+ FRip,echo=F
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
 tagList(tlist)
 
 #' ## Peak advanced {.tabset .tabset-fade .tabset-pills}
 
 #' ### Correlation matrix & Peak Intensity Scatter
-#+ echo=F,message=F,warning=F
+#+ app,echo=F,message=F,warning=F
 tags$iframe(class="embed-responsive-item",
             width="90%",
             height="750px",
@@ -195,7 +195,7 @@ tags$iframe(class="embed-responsive-item",
 
 
 #' ### PCA
-#+ echo=F,message=F,warning=F
+#+ pca,echo=F,message=F,warning=F
 if(length(libs)>2){
 require(scatterD3)
 pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
@@ -213,18 +213,18 @@ tags$p('Lib number in this set is <=2 ')
 }
 
 #' # LibQC table
-#+ echo=F,message=F
+#+ libqc_table,echo=F,message=F
 datatable(libQC_table)
 
 
 
 #' # Tracks
-#+ echo=F
+#+ track,echo=F
 
 json_src=paste0("http://epigenomegateway.wustl.edu/browser/?genome=",
                 libQC_table["Genome",1],
-                "&tknamewidth=275&datahub=http://epigenomics.sdsc.edu:8084/Set_",
-                set_no,
+                "&tknamewidth=275&datahub=http://epigenomics.sdsc.edu:8084/",
+                sub("/projects/ps-epigen/outputs/setQCs(/)+","",setqc_dir),
                 "/data/tracks_merged_pf.json")
 
 a(href=json_src,class="btn btn-success btn-sm","Open WashU Genome Browser in a new window")
