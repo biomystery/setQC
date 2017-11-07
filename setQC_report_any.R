@@ -65,20 +65,18 @@ tagList(tlist)
 #' ## Reads yeild table {.tabset .tabset-fade .tabset-pills}
 
 #' ### Read yield (%) after each step
-#+ echo=F
-libQC_table <- getLibQCtable(libs,trim = didTrim) # need determined by the input
+#+ reads_yeild,echo=F
+libQC_table <- getLibQCtable(libs) # need determined by the input
 reads_list <- getReadsTable(libQC_table)
 datatable(reads_list$reads_yield)%>% formatPercentage(1:length(libs),digits=0)
 
 
 #' ### Read counts after each step
-#+ echo=F
-#kable(reads_list$reads_count,caption = "")
-#https://github.com/rstudio/DT/issues/133
+#+ reads_counts_table, echo=F
 datatable(reads_list$reads_count)%>% formatCurrency(1:length(libs),currency="",digits=0)
 
 #' ##  Mitochondrial reads fraction
-#+ echo=F,warning=F
+#+ mito_frac,echo=F,warning=F
 
 pd <- libQC_table[grep('(Mitochondrial reads)|( peak regions)|(Fraction of reads in promoter regions)',rownames(libQC_table)),]
 pd.2 <- t(pd)
@@ -94,7 +92,7 @@ tagList(tlist)
 #' ##  TSS enrichment {.tabset .tabset-fade .tabset-pills}
 #' ### TSS enrichement plots
 
-#+ echo =F, warning=F
+#+ tss_enrich_plot,echo =F, warning=F
 #require(evaluate)
 tss_plots <- getherTSSplot(libs,trim = didTrim)
 tss_enrich <- libQC_table[grep('TSS',rownames(libQC_table)),]

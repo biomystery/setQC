@@ -130,17 +130,11 @@ plotMultiQC <- function(data.file="../Set_6/multiqc_data/mqc_picard_gcbias_plot_
 
 
 # parse libQC results -----------------------------------------------------
-getLibQCtable <- function(lib_ids,trim=T){
+getLibQCtable <- function(lib_ids){
   #print("getting libQC table")
   parseLibQC <- function(lib=libs[1]){
-    ### Parse one libQC result
-    libQC_report_dir <- paste0(libQC_dir,lib,"/")
-    if(trim){
-      libQC_report_file <- paste0(libQC_report_dir,list.files(libQC_report_dir,pattern = "trim.PE2SE_qc.txt"))
-    }else{
-      libQC_report_file <- paste0(libQC_report_dir,list.files(libQC_report_dir,pattern = "_qc.txt"))
-    }
-
+     ### Parse one libQC result
+    libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,"*_qc.txt")),intern=T)
     qc <- read.table(libQC_report_file,sep = "\t",header = F,fill = T,col.names = paste0("v",seq(3)),
                      stringsAsFactors = F)
     qc$v3 <- signif(qc$v3,digits = 3)
@@ -153,10 +147,13 @@ getLibQCtable <- function(lib_ids,trim=T){
   qc_table <- do.call(what = cbind,args = lapply(lib_ids,parseLibQC))
   qc_table<-qc_table[-c(1:2,16:24,26:27,35,37),]
 
-  if(all.equal(sample_table$`Sequencing ID`, colnames(qc_table))){
-    qc_table<-rbind(sample_table$`sample ID (from MSTS)`,qc_table)
-    rownames(qc_table)[1] <- "sampleId"
-  }
+  if(exists("sample_table")){
+        if(all.equal(sample_table$`Sequencing ID`, colnames(qc_table))){
+            qc_table<-rbind(sample_table$`sample ID (from MSTS)`,qc_table)
+            rownames(qc_table)[1] <- "sampleId"
+        }
+    }
+
   qc_table
 }
 
@@ -173,20 +170,17 @@ percent <- function(x, digits = 2, format = "f", ...) {
 
 # TSS plots --------------------------------------------
 #  gether all the tss plots
-getherTSSplot <- function(lib_ids,trim=T){
+getherTSSplot <- function(lib_ids){
     image_dir <- paste0(setQC_dir,"/images/")
   system(paste0("mkdir -p ",image_dir))
   if(system(paste0("ls -l ",image_dir," | wc -l")) == "0"){
     sapply(lib_ids, function(x) {
-      cmd <- paste0("find ",libQC_dir,x," -name '*large_tss*' -exec cp -n {} ",image_dir," \\;")
+      cmd <- paste0("find ",libQC_dir,"/",x," -name '*large_tss*' -exec cp -n {} ",image_dir," \\;")
       system(cmd)
-      cmd <- paste0("find ",libQC_dir,x," -name '*tss-enrich.txt' -exec cp -n {} ",image_dir," \\;")
+      cmd <- paste0("find ",libQC_dir,"/",x," -name '*tss-enrich.txt' -exec cp -n {} ",image_dir," \\;")
       system(cmd)
     })}
-
-  if(trim){
-    paste0("./images/",list.files(path = image_dir,pattern = "trim.PE2SE_large_tss-enrich.png"))}else{
-    paste0("./images/",list.files(path = image_dir,pattern = "*.png"))}
+    paste0("./images/",list.files(path = image_dir,pattern = "*_large_tss-enrich.png"))
 }
 
 
