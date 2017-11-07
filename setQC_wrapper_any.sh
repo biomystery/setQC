@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-06 16:30:34"
+#Time-stamp: "2017-11-07 08:51:12"
 
 # PART I dependency check 
 
@@ -11,7 +11,7 @@ usage(){
 # PART III  params
 # default 
 BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/setQCs/"
-RAND_D=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
+
 
 
 # receiving arguments
@@ -40,6 +40,16 @@ fi
 LIB_ARRAY=(`cat $SAMPLE_FILE | sort -n`) # assume all the single libs in the same dir 
 LIB_LEN=${#LIB_ARRAY[@]}
 BASE_OUTPUT_DIR="${BASE_OUTPUT_DIR}/${B_NAME}/"
+
+# check if there is $BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.txt
+rand_d_string=$BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.txt 
+if [ ! -f $rand_d_string ];then
+    RAND_D=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
+else
+    RAND_D=`cat $rand_d_string`
+fi
+
+
 SETQC_DIR="${BASE_OUTPUT_DIR}/${RAND_D}/${SET_NAME}/"
 LOG_FILE="${SETQC_DIR}log.txt"
 
