@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-07 15:41:11"
+#Time-stamp: "2017-11-28 15:21:38"
 
 # PART I dependency check 
 
@@ -18,7 +18,7 @@ BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/setQCs/"
 while getopts ":s:b:n:l:" opt;
 do
 	case "$opt" in
-	    s) SAMPLE_FILE=$OPTARG;;  # text for sample files
+	    s) SAMPLE_FILE=$OPTARG;;  # txt file including all  sample files
             b) B_NAME=$OPTARG;; # a higher level base name on top of set name 
 	    n) SET_NAME=$OPTARG;;
             l) LIBQC_DIR=$OPTARG;; # proessed lib dir 
@@ -95,7 +95,7 @@ eval $cmd
 cd $SETQC_DIR"/data"
 find . -name '*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
 Rscript $(which genWashUtracks.R) "${B_NAME}/${RAND_D}/${SET_NAME}"
-LIBQC_DIR="/home/zhc268/scratch/others/2017-10-25-sswangson_morgridge/chu_mmus"
+
 # delete the individual tracks
 find . ! \( -name "*pf.json" -o -name "*.gz" -o -name "*.bigwig" -o -name "*.tbi" \) -delete
 
