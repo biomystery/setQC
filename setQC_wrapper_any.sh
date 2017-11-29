@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-29 10:32:40"
+#Time-stamp: "2017-11-29 11:57:23"
 
 # PART I dependency check 
 
@@ -60,7 +60,7 @@ BASE_OUTPUT_DIR="${BASE_OUTPUT_DIR}/${B_NAME}/"
 rand_d_string=$BASE_OUTPUT_DIR/$SET_NAME.rstr.txt 
 if [ ! -f $rand_d_string ];then
     RAND_D=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
-    cat $RAND_D > $BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.rstr.txt 
+    echo $RAND_D > $BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.rstr.txt 
 else
     RAND_D=`cat $rand_d_string`
 fi
@@ -94,7 +94,7 @@ source deactivate bds_atac_py3
 
 
 # 2. prepare tracks
-cmd="transferTracks_any.sh -d $SETQC_DIR -l $LIBQC_DIR  ${LIB_ARRAY[@]}"
+cmd="transferTracks_any.sh -d $SETQC_DIR -s /projects/ps-epigen/outputs/signals  ${LIB_ARRAY[@]}"
 
 echo -e "(`date`): copy track files" | tee -a $LOG_FILE
 echo $cmd | tee -a $LOG_FILE
