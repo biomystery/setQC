@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-28 15:58:06"
+#Time-stamp: "2017-11-29 10:32:40"
 
 # PART I dependency check 
 
@@ -32,11 +32,11 @@ done
 # check if input sample name file exists
 
 
-if [  -z "$B_NAME" ]; then
-    echo $B_NAME
-    echo "Base name not set!"
-    exit 1
-fi
+#if [  -z "$B_NAME" ]; then
+#    echo $B_NAME
+#    echo "Base name not set!"
+#    exit 1
+#fi
 
 if [ -z "$SET_NAME" ]; then
     echo "set name file not found!"
@@ -44,13 +44,11 @@ if [ -z "$SET_NAME" ]; then
 fi
 
 if [ ! -f "$SAMPLE_FILE" ]; then
-    $SAMPLE_FILE=$BASE_OUTPUT_DIR${SET_NAME}.txt
+    SAMPLE_FILE=$BASE_OUTPUT_DIR${SET_NAME}.txt
 fi
 
 if [ ! -d "$LIBQC_DIR" ]; then
-    echo $LIBQC_DIR
-      echo "libQC dir  not found!"
-       exit 1
+    LIBQC_DIR="/projects/ps-epigen/outputs/libQCs/"
 fi
      
 # Prepare the files and etc for runSetQCreport.sh
@@ -59,16 +57,16 @@ LIB_LEN=${#LIB_ARRAY[@]}
 BASE_OUTPUT_DIR="${BASE_OUTPUT_DIR}/${B_NAME}/"
 
 # check if there is $BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.txt
-rand_d_string=$BASE_OUTPUT_DIR/$SET_NAME.txt 
+rand_d_string=$BASE_OUTPUT_DIR/$SET_NAME.rstr.txt 
 if [ ! -f $rand_d_string ];then
     RAND_D=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
-    cat $RAND_D > $BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.txt 
+    cat $RAND_D > $BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.rstr.txt 
 else
     RAND_D=`cat $rand_d_string`
 fi
 
-SETQC_DIR="${BASE_OUTPUT_DIR}/${RAND_D}/${SET_NAME}/"
-RELATIVE_DIR="${B_NAME}/${RAND_D}/${SET_NAME}"
+SETQC_DIR="${BASE_OUTPUT_DIR}/${SET_NAME}/${RAND_D}/"
+RELATIVE_DIR="${B_NAME}/${SET_NAME}/${RAND_D}"
 LOG_FILE="${SETQC_DIR}log.txt"
 
 mkdir -p $SETQC_DIR
@@ -78,10 +76,20 @@ mkdir -p $SETQC_DIR
 # 1. runMultiQC
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
 source activate bds_atac_py3
-cmd="multiqc -k tsv -f -p $LIBQC_DIR -o $SETQC_DIR"
+# cp s all libqc files to one folder
+mkdir -p $SETQC_DIR"/tmp/"
+for l in ${LIB_ARRAY[@]}
+do
+    echo "cp $l libqc files..."
+    find $LIBQC_DIR$l -type f -exec cp -rsu '{}' $SETQC_DIR"/tmp/" \;
+done
+
+cmd="multiqc -k tsv -f -p $SETQC_DIR/tmp  -o $SETQC_DIR"
 echo $cmd 
 eval $cmd
 wait
+rm -r $SETQC_DIR"/tmp/"
+
 source deactivate bds_atac_py3
 
 

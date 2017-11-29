@@ -5,7 +5,7 @@ usage() { echo "Usage: $0 [-d destination_dir] [-t trim] [-r run_no]>" 1>&2; exi
 while getopts "d:l:t:" o; do
     case $o in
         d) d="${OPTARG}";;
-        l) l="${OPTARG}";;
+        l) l="${OPTARG}";; 
         t) t="$OPTARG" ;;
         *) usage;;
     esac
@@ -25,14 +25,13 @@ mkdir -p $desti_dir
 
 for sample in ${libs[@]}
 do 
-
     echo "transfering $sample ${sample}${t}*.fc.signal.bigwig..." 
 
     cat ${output_dir}"/$sample/${sample}_tracks.json" | \
 	sed "s/\/.\/signal\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
 	sed "s/\/.\/peak\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" > \
 	$desti_dir"/${sample}.json"
-    find  $output_dir"/${sample}/peak/" -name "${sample}${t}*hammock*"  -exec cp -u {} $desti_dir \;
-    find  $output_dir"/${sample}/signal/" -name "${sample}${t}*.fc.signal.bigwig" -exec cp -u {} $desti_dir \;
+    find  $output_dir"/${sample}/peak/" -name "${sample}${t}*hammock*"  -exec cp -us {} $desti_dir \;
+    find  $output_dir"/${sample}/signal/" -name "${sample}${t}*.fc.signal.bigwig" -exec cp -us {} $desti_dir \;
 done 
 
