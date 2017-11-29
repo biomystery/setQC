@@ -1,7 +1,7 @@
 args <- commandArgs(trailingOnly = TRUE)
 (set_name_ <- args[1])
 (setQC_dir_ <- args[2])
-(libQC_dir_ <-  args[3])
+(libQC_dir_ <-  args[3]) # used to pull out libqc files in libs.R
 (libs_<- args[4:length(args)]) # the last
 
 

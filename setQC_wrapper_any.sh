@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-28 15:21:38"
+#Time-stamp: "2017-11-28 15:58:06"
 
 # PART I dependency check 
 
@@ -31,10 +31,6 @@ done
 
 # check if input sample name file exists
 
-if [ ! -f "$SAMPLE_FILE" ]; then
-       echo "sample file not found!"
-       exit 1
-fi
 
 if [  -z "$B_NAME" ]; then
     echo $B_NAME
@@ -45,6 +41,10 @@ fi
 if [ -z "$SET_NAME" ]; then
     echo "set name file not found!"
     exit 1
+fi
+
+if [ ! -f "$SAMPLE_FILE" ]; then
+    $SAMPLE_FILE=$BASE_OUTPUT_DIR${SET_NAME}.txt
 fi
 
 if [ ! -d "$LIBQC_DIR" ]; then
