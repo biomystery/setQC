@@ -23,11 +23,11 @@ for sample in ${libs[@]}
 do 
     echo "transfering $sample ${sample}*.fc.signal.bigwig..." 
 
-    cat ${source_dir}"/$sample/${sample}_tracks.json" | \
+    cat ${source_dir}"/signals/${sample}_tracks.json" | \
 	sed "s/\/.\/signal\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
 	sed "s/\/.\/peak\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" > \
 	$desti_dir"/${sample}.json"
-    find  $source_dir"/${sample}/peak/" -name "${sample}*hammock*"  -exec cp -us {} $desti_dir \;
-    find  $source_dir"/${sample}/signal/" -name "${sample}*.fc.signal.bigwig" -exec cp -us {} $desti_dir \;
+    find  $source_dir -name "${sample}*hammock*"  -exec cp -us {} $desti_dir \;
+    find  $source_dir -name "${sample}*.fc.signal.bigwig" -exec cp -us {} $desti_dir \;
 done 
 
