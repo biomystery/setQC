@@ -27,7 +27,8 @@ echo "paste ${including_libs[@]/%/_avg.tab} > ./data/avgOverlapFC.tab ... "
 paste "${including_libs[@]/%/_avg.tab}" > ./data/avgOverlapFC.tab
 
 
-rm *_avg.tab; rm merged.tmp.bed; rm merged.clip.bed;
+rm *_avg.tab;
+rm merged.tmp.bed; rm merged.clip.bed;
 mv merged_peak.srt.clip.named.bed ./data
 
 

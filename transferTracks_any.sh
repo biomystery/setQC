@@ -11,7 +11,7 @@ while getopts "d:s:" o; do
 done
 shift $((OPTIND-1))
 echo "destination folder: $d"
-echo "source folder:  $s"
+echo "source folder:  $source_dir"
 echo $@
 
 # cp the files to the output folder 

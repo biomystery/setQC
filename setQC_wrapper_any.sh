@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-29 14:50:06"
+#Time-stamp: "2017-11-29 21:33:40"
 
 # PART I dependency check 
 
@@ -86,8 +86,7 @@ done
 
 cmd="multiqc -k tsv -f -p $SETQC_DIR/tmp  -o $SETQC_DIR"
 echo $cmd 
-
-eval $cmd
+#eval $cmd
 wait
 rm -r $SETQC_DIR"/tmp/"
 
@@ -95,8 +94,8 @@ source deactivate bds_atac_py3
 
 
 # 2. prepare tracks
-
-cmd="transferTracks_any.sh -d $SETQC_DIR -s /projects/ps-epigen/outputs/  ${LIB_ARRAY[@]}"
+track_source_dir="/projects/ps-epigen/outputs/"
+cmd="transferTracks_any.sh -d $SETQC_DIR -s $track_source_dir  ${LIB_ARRAY[@]}"
 
 echo -e "(`date`): copy track files" | tee -a $LOG_FILE
 echo $cmd | tee -a $LOG_FILE
@@ -120,7 +119,7 @@ cd $SETQC_DIR
 source activate bds_atac_py3
 
 echo "preparing setQC: get merged peaks..."
-#calcOverlapAvgFC_any.sh ${LIB_ARRAY[@]}
+calcOverlapAvgFC_any.sh ${LIB_ARRAY[@]}
 
 
 cmd="Rscript $(which compile_setQC_report_any.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}"
@@ -131,7 +130,7 @@ eval $cmd
 echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
 
 ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/setQC_reports/$RELATIVE_DIR"
-ssh zhc268@epigenomics.sdsc.edu "cp -urs /project/ps-epigen/outputs/setQCs/$RELATIVE_DIR/* /home/zhc268/setQC_reports/$RELATIVE_DIR/"
+ssh zhc268@epigenomics.sdsc.edu "cp -urs  /project/ps-epigen/outputs/setQCs/$RELATIVE_DIR/* /home/zhc268/setQC_reports/$RELATIVE_DIR/"
 ssh  zhc268@epigenomics.sdsc.edu  "cd /home/zhc268/setQC_reports/$RELATIVE_DIR/data && tree -H '.' -hi -D -L 1 --noreport --charset utf-8  > index.html"            
 
 
