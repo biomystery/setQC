@@ -37,7 +37,16 @@ if(has_sample_table) {
     kable(sample_table)
 }
 
+
+
 #' # Fastq files {.tabset .tabset-fade .tabset-pills}
+
+#' ## Sequence sources (potential contamination)
+#+ fastq_screen,echo=F,message=F,warning=F
+tlist <- list()
+tlist[[1]]<- plotSource()
+tagList(tlist)
+
 #' ## Sequencing Quality
 #+ fastq_module,echo=F,message=F,warning=F
 # need runMutliQC and move the figures to here first
@@ -52,12 +61,6 @@ thumbnail("Sequence Duplication Levels",  grep("duplication",img_f,value=T))
 thumbnail("Sequence Length Distribution",  grep("length",img_f,value=T))
 div(class="row")
 a(href="./multiqc_report.html",class="btn btn-link","see  details (leave setQC)")
-
-#' ## Sequence sources (potential contamination)
-#+ fastq_screen,echo=F,message=F,warning=F
-tlist <- list()
-tlist[[1]]<- plotSource()
-tagList(tlist)
 
 
 #' # Mappability

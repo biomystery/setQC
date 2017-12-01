@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-30 01:04:13"
+#Time-stamp: "2017-12-01 14:08:40"
 
 # PART I dependency check 
 
@@ -134,13 +134,9 @@ echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
 mkdir -p $SETQC_DIR"/app"
 cd $SETQC_DIR"/app"
 
-cp -us $(which app.R) ./;
+cp -u $(which app.R) ./;
 echo ${LIB_ARRAY[@]} > ./including_libs.txt;
 cp -us ../data/avgOverlapFC.tab ./;
-
-ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/setQC_reports/$RELATIVE_DIR"
-ssh zhc268@epigenomics.sdsc.edu "cp -Pr /project/ps-epigen/outputs/setQCs/$RELATIVE_DIR/* /home/zhc268/setQC_reports/$RELATIVE_DIR/"
-ssh  zhc268@epigenomics.sdsc.edu  "cd /home/zhc268/setQC_reports/$RELATIVE_DIR/data && tree -H '.' -hi -D -L 1 --noreport --charset utf-8  > index.html"  
 
 ssh  zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
 ssh zhc268@epigenomics.sdsc.edu "cp -Pr  /project/ps-epigen/outputs/setQCs/$RELATIVE_DIR/app/* /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
@@ -152,4 +148,4 @@ echo "link: http://epigenomics.sdsc.edu:8084/$RELATIVE_DIR/setQC_report_any.html
 #EXAMPLES:
 
 # setQC_wrapper_any.sh -s /home/zhc268/scratch/others/2017-10-25-sswangson_morgridge/chu_mmus/uniq_samples_rev.txt \
-# 
+
