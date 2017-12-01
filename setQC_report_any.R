@@ -28,6 +28,8 @@ source('./libs.R')
 if(update_gs)
     updateSetQC_gs()
 
+libs.showname <- sub("_S[0-9]+_L[0-9]+","",libs)
+
 #' # Sample info.
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
@@ -40,16 +42,14 @@ if(has_sample_table) {
 #+ fastq_module,echo=F,message=F,warning=F
 # need runMutliQC and move the figures to here first
 fastqcfils <- list.files(path = paste0(setQC_dir,"/multiqc_plots/png/"),pattern = "fastqc*")
-img_f<- sapply(fastqcfils,function(x){
-  paste0("./multiqc_plots/png/",x)
-})
-thumbnail("Per base N Content", img_f[1])
-thumbnail("Mean Quality Scores", img_f[2])
-thumbnail("Per Sequence Quality Scores", img_f[5])
+img_f<- as.character(sapply(fastqcfils,function(x) paste0("./multiqc_plots/png/",x)))
+thumbnail("Per base N Content", grep("per_base_n_content",img_f,value=T))
+thumbnail("Mean Quality Scores", grep("base_sequence",img_f,value=T))
+thumbnail("Per Sequence Quality Scores",  grep("per_sequence_quality",img_f,value=T))
 div(class="row")
-thumbnail("Per Sequence GC content", img_f[4])
-thumbnail("Sequence Duplication Levels", img_f[6])
-thumbnail("Sequence Length Distribution", img_f[7])
+thumbnail("Per Sequence GC content",  grep("gc.*Percentage",img_f,value=T))
+thumbnail("Sequence Duplication Levels",  grep("duplication",img_f,value=T))
+thumbnail("Sequence Length Distribution",  grep("length",img_f,value=T))
 div(class="row")
 a(href="./multiqc_report.html",class="btn btn-link","see  details (leave setQC)")
 
@@ -68,12 +68,14 @@ tagList(tlist)
 #+ reads_yeild,echo=F
 libQC_table <- getLibQCtable(libs) # need determined by the input
 reads_list <- getReadsTable(libQC_table)
-datatable(reads_list$reads_yield)%>% formatPercentage(1:length(libs),digits=0)
+datatable(reads_list$reads_yield,colnames=libs.showname)%>%
+    formatPercentage(1:length(libs),digits=0)
 
 
 #' ### Read counts after each step
 #+ reads_counts_table, echo=F
-datatable(reads_list$reads_count)%>% formatCurrency(1:length(libs),currency="",digits=0)
+datatable(reads_list$reads_count,colnames=libs.showname)%>%
+    formatCurrency(1:length(libs),currency="",digits=0)
 
 #' ##  Mitochondrial reads fraction
 #+ mito_frac,echo=F,warning=F
@@ -204,7 +206,7 @@ pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
 pd.pca <- prcomp(t(pd.log2),center =T,scale. = T )
 perct <- as.numeric(round(summary(pd.pca)$importance[2,1:2]*100))
 
-tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs),point_size = 100,
+tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs.showname),point_size = 100,
                       xlab = paste0("PC1: ",perct[1],"%"),
                       ylab = paste0("PC2: ",perct[2],"%"),
                       point_opacity = 0.5,hover_size = 4, hover_opacity = 1,lasso = T,
@@ -215,7 +217,7 @@ tags$p('Lib number in this set is <=2 ')
 
 #' # LibQC table
 #+ libqc_table,echo=F,message=F
-datatable(libQC_table)
+datatable(libQC_table,colnames=libs.showname)
 
 
 
@@ -235,6 +237,7 @@ tags$iframe(class="embed-responsive-item",
             width="1340px",
             height="750px",
             src= json_src)
+
 #' ## Download Links
 #+ track_download, echo=F
 tlist <- list()

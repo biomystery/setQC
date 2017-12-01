@@ -27,7 +27,7 @@ do
 	sed "s/\/.\/signal\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
 	sed "s/\/.\/peak\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" > \
 	$desti_dir"/${sample}.json"
-    find  $source_dir -name "${sample}*hammock*"  -exec cp -us {} $desti_dir \;
-    find  $source_dir -name "${sample}*.fc.signal.bigwig" -exec cp -us {} $desti_dir \;
+    find  $source_dir"peaks"  -name "${sample}*hammock*"  -exec cp -f {} $desti_dir \;
+    find  $source_dir"signals" -name "${sample}*.fc.signal.bigwig" -exec cp -f {} $desti_dir \;
 done 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-11-29 21:33:40"
+#Time-stamp: "2017-11-30 01:04:13"
 
 # PART I dependency check 
 
@@ -73,6 +73,7 @@ mkdir -p $SETQC_DIR
 
 # PART III: Main 
 
+############################################################
 # 1. runMultiQC
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
 source activate bds_atac_py3
@@ -81,18 +82,19 @@ mkdir -p $SETQC_DIR"/tmp/"
 for l in ${LIB_ARRAY[@]}
 do
     echo "cp $l libqc files..."
-    find $LIBQC_DIR$l -type f -exec cp -rsu '{}' $SETQC_DIR"/tmp/" \;
+    find $LIBQC_DIR$l -type f -exec cp -rsu '{}' $SETQC_DIR"/tmp/" \; 2> /dev/null 
 done
 
+#####
 cmd="multiqc -k tsv -f -p $SETQC_DIR/tmp  -o $SETQC_DIR"
 echo $cmd 
-#eval $cmd
+eval $cmd
 wait
 rm -r $SETQC_DIR"/tmp/"
 
 source deactivate bds_atac_py3
 
-
+############################################################
 # 2. prepare tracks
 track_source_dir="/projects/ps-epigen/outputs/"
 cmd="transferTracks_any.sh -d $SETQC_DIR -s $track_source_dir  ${LIB_ARRAY[@]}"
@@ -101,55 +103,51 @@ echo -e "(`date`): copy track files" | tee -a $LOG_FILE
 echo $cmd | tee -a $LOG_FILE
 eval $cmd
 
+#####
 cd $SETQC_DIR"/data"
 find . -name '*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
-Rscript $(which genWashUtracks.R) "${B_NAME}/${RAND_D}/${SET_NAME}"
+Rscript $(which genWashUtracks.R) "$RELATIVE_DIR"
 
 # delete the individual tracks
-find . ! \( -name "*pf.json" -o -name "*.gz" -o -name "*.bigwig" -o -name "*.tbi" \) -delete
+#find . ! \( -name "*pf.json" -o -name "*.gz" -o -name "*.bigwig" -o -name "*.tbi" \) -delete
 
-
+############################################################
 # 3. genSetQCreport
 # use envrionment bds_atac_py3 (installed R-3.4.1)
 echo -e "(`date`):  compiling setQC html" | tee -a $LOG_FILE
 cd $SETQC_DIR
 
-
-#LIB_IDS=("${LIB_IDS[@]/%/${LIB_RUN}}")
 source activate bds_atac_py3
-
 echo "preparing setQC: get merged peaks..."
 calcOverlapAvgFC_any.sh ${LIB_ARRAY[@]}
 
-
+### 
 cmd="Rscript $(which compile_setQC_report_any.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}"
 echo $cmd
 eval $cmd 
 
-# 5. Final: set up the sharing web site
+
+############################################################
+# 5. Final: set up the sharing web site & make app 
 echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
 
-ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/setQC_reports/$RELATIVE_DIR"
-ssh zhc268@epigenomics.sdsc.edu "cp -urs  /project/ps-epigen/outputs/setQCs/$RELATIVE_DIR/* /home/zhc268/setQC_reports/$RELATIVE_DIR/"
-ssh  zhc268@epigenomics.sdsc.edu  "cd /home/zhc268/setQC_reports/$RELATIVE_DIR/data && tree -H '.' -hi -D -L 1 --noreport --charset utf-8  > index.html"            
+mkdir -p $SETQC_DIR"/app"
+cd $SETQC_DIR"/app"
 
+cp -us $(which app.R) ./;
+echo ${LIB_ARRAY[@]} > ./including_libs.txt;
+cp -us ../data/avgOverlapFC.tab ./;
+
+ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/setQC_reports/$RELATIVE_DIR"
+ssh zhc268@epigenomics.sdsc.edu "cp -Pr /project/ps-epigen/outputs/setQCs/$RELATIVE_DIR/* /home/zhc268/setQC_reports/$RELATIVE_DIR/"
+ssh  zhc268@epigenomics.sdsc.edu  "cd /home/zhc268/setQC_reports/$RELATIVE_DIR/data && tree -H '.' -hi -D -L 1 --noreport --charset utf-8  > index.html"  
+
+ssh  zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
+ssh zhc268@epigenomics.sdsc.edu "cp -Pr  /project/ps-epigen/outputs/setQCs/$RELATIVE_DIR/app/* /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
 
 echo "link: http://epigenomics.sdsc.edu:8084/$RELATIVE_DIR/setQC_report_any.html"
-# data folder index 
 
-# 6. prepare shiny apps
-cd $SETQC_DIR
-mkdir -p $SETQC_DIR"/app"
-cp $(which app.R) ./app/;
-echo ${LIB_ARRAY[@]} > ./app/including_libs.txt;
-cp ./data/avgOverlapFC.tab ./app;
-cd $SETQC_DIR"/app"
-ssh  zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
-
-rsync -v -r -u ./  zhc268@epigenomics.sdsc.edu:/home/zhc268/shiny-server/setQCs/$RELATIVE_DIR
-rm -r ../app
-
-
+# END 
 
 #EXAMPLES:
 
