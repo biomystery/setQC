@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-01 14:08:40"
+#Time-stamp: "2017-12-01 14:25:31"
 
 # PART I dependency check 
 
@@ -136,7 +136,7 @@ cd $SETQC_DIR"/app"
 
 cp -u $(which app.R) ./;
 echo ${LIB_ARRAY[@]} > ./including_libs.txt;
-cp -us ../data/avgOverlapFC.tab ./;
+cp -Pr $SETQC_DIR/data/avgOverlapFC.tab ./;
 
 ssh  zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
 ssh zhc268@epigenomics.sdsc.edu "cp -Pr  /project/ps-epigen/outputs/setQCs/$RELATIVE_DIR/app/* /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
