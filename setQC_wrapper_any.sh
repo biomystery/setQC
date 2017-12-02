@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-01 14:25:31"
+#Time-stamp: "2017-12-01 16:46:37"
 
 # PART I dependency check 
 
@@ -10,8 +10,7 @@ usage(){
 
 # PART III  params
 # default 
-BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/setQCs/"
-
+BASE_OUTPUT_DIR="/home/zhc268/data/outputs/setQCs/"
 
 
 # receiving arguments
@@ -48,7 +47,7 @@ if [ ! -f "$SAMPLE_FILE" ]; then
 fi
 
 if [ ! -d "$LIBQC_DIR" ]; then
-    LIBQC_DIR="/projects/ps-epigen/outputs/libQCs/"
+    LIBQC_DIR="/home/zhc268/data/outputs/libQCs/"
 fi
      
 # Prepare the files and etc for runSetQCreport.sh
@@ -63,6 +62,7 @@ if [ ! -f $rand_d_string ];then
     echo $RAND_D > $BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.rstr.txt 
 else
     RAND_D=`cat $rand_d_string`
+
 fi
 
 SETQC_DIR="${BASE_OUTPUT_DIR}/${SET_NAME}/${RAND_D}/"
@@ -96,7 +96,7 @@ source deactivate bds_atac_py3
 
 ############################################################
 # 2. prepare tracks
-track_source_dir="/projects/ps-epigen/outputs/"
+track_source_dir="/home/zhc268/data/outputs/"
 cmd="transferTracks_any.sh -d $SETQC_DIR -s $track_source_dir  ${LIB_ARRAY[@]}"
 
 echo -e "(`date`): copy track files" | tee -a $LOG_FILE
@@ -134,14 +134,14 @@ echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
 mkdir -p $SETQC_DIR"/app"
 cd $SETQC_DIR"/app"
 
-cp -u $(which app.R) ./;
+cp -us /home/zhc268/data/software/setQC/app.R ./;
 echo ${LIB_ARRAY[@]} > ./including_libs.txt;
-cp -Pr $SETQC_DIR/data/avgOverlapFC.tab ./;
+cp -Prs $SETQC_DIR/data/avgOverlapFC.tab ./;
 
-ssh  zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
-ssh zhc268@epigenomics.sdsc.edu "cp -Pr  /project/ps-epigen/outputs/setQCs/$RELATIVE_DIR/app/* /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
+ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
+ssh zhc268@epigenomics.sdsc.edu "cp -Prs  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/app/* /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
 
-echo "link: http://epigenomics.sdsc.edu:8084/$RELATIVE_DIR/setQC_report_any.html"
+echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report_any.html"
 
 # END 
 

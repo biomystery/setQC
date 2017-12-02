@@ -2,6 +2,8 @@
 # created merged peak files
 including_libs=($@)
 
+#bedIntersect -aHitAny $oldBed $cosmicBed stdout | wc -l
+
 echo "merging peaks"
 find . -name "*.ham*.gz" -exec zcat {} \; | awk -v OFS='\t' '{print $1,$2,$3}'| sort -k1,1 -k2,2n | uniq > merged.tmp.bed
 bedtools merge -i merged.tmp.bed > merged.bed

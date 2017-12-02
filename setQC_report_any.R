@@ -5,7 +5,7 @@
 #'  setQC_dir: "./"
 #'  libQC_dir: "./"
 #'  update_gs: F
-#'  has_sample_table: F
+#'  has_sample_table: T
 #'title: "Report for `r params$set_name`"
 #'output:
 #'  html_document:
@@ -193,7 +193,7 @@ tagList(tlist)
 
 #' ### Correlation matrix & Peak Intensity Scatter
 #+ app,echo=F,message=F,warning=F
-relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir)
+relative_dir <- sub("/home/zhc268/data/outputs/setQCs(/)+","",setQC_dir)
 tags$iframe(class="embed-responsive-item",
             width="90%",
             height="750px",
@@ -229,7 +229,7 @@ datatable(libQC_table,colnames=libs.showname)
 #+ track,echo=F
 json_src=paste0("http://epigenomegateway.wustl.edu/browser/?genome=",
                 libQC_table["Genome",1],
-                "&tknamewidth=275&datahub=http://epigenomics.sdsc.edu:8084/",
+                "&tknamewidth=275&datahub=http://epigenomics.sdsc.edu:8088/",
                 relative_dir,
                 "/data/tracks_merged_pf.json")
 
@@ -247,7 +247,7 @@ tlist <- list()
 for(i in 1:length(libs)){
     l <- libs[i]
     rd <- system(paste0("find ",setQC_dir,"/data/ -name ",l,"*.bigwig -printf %f"),intern=T)
-    hrf <- paste0("http://epigenomics.sdsc.edu:8084/",relative_dir,"/data/",rd)
+    hrf <- paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/data/",rd)
     tlist[[i]]<- tags$li(tags$a(href=hrf,paste0(l,"_fc_bigwig file")))
 }
 
