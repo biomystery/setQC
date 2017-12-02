@@ -59,10 +59,10 @@ for( l in libs){
 ## edit: https://rawgit.com/jennybc/googlesheets/master/vignettes/basic-usage.html
 
 
-gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,14],  anchor="T3")
-gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,15],  anchor="U3")
-gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,16],  anchor="V3")
-gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,17],  anchor="W3")
-gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,18],  anchor="X3")
-gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,19],  anchor="Y3")
-gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,20],  anchor="Z3")
+gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,14],  anchor="V3")
+gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,15],  anchor="W3")
+gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,16],  anchor="X3")
+gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,17],  anchor="Y3")
+gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,18],  anchor="Z3")
+gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,19],  anchor="AA3")
+gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,20],  anchor="AB3")

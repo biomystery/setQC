@@ -32,17 +32,13 @@ getSampleTable <- function(lib_ids){
       lib_ids <- sub("_S[0-9]+_L[0-9]+","",lib_ids)
       q1 <- sample_table$`Sequencing ID` %in% lib_ids
       q2 <- sample_table$`sample ID (from MSTS)` %in% lib_ids
-      if(any(q1)){
-          sample_table <- subset(sample_table, q1)[,c(1,2,3,4,9,10,12)] #member initial, date, lib ID
-      } else if (any(q2)){
-          sample_table <- subset(sample_table, q2)[,c(1,2,3,4,9,10,12)] #member initial, date, lib ID
-      }
+      sample_table <- subset(sample_table, q1|q2)[,c(1,2,3,4,9,10,12)] #member initial, date, lib ID
+  }
 
-    # query 2
     write.csv(file=sample_file,sample_table,row.names = F)
     sample_table
-  }
 }
+
 
 
 updateSetQC_gs <- function(){
