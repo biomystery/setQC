@@ -6,7 +6,7 @@
 #'  libQC_dir: "./"
 #'  update_gs: F
 #'  has_sample_table: T
-#'title: "Report for `r params$set_name`"
+#'title: "Report for Pfizer_2017-11-30"
 #'output:
 #'  html_document:
 #'    theme: united
@@ -34,6 +34,7 @@ libs.showname <- sub("_S[0-9]+_L[0-9]+","",libs)
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
     sample_table<- getSampleTable(libs)
+    libs.showname <- sample_table$`Label (for QC report)`
     kable(sample_table)
 }
 
@@ -89,7 +90,7 @@ for(i in 1:nrow(pd))
   for(j in 1:ncol(pd))
     pd.2[j,i] <-parse_func(pd[i,j])
 pd.3<- data.frame(apply(pd.2,2,function(x) as.numeric(x)),
-                  libs=rownames(pd.2))
+                  libs=libs.showname)
 tlist <- list()
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y = Mitochondrial.reads..out.of.total. ))
 tagList(tlist)
@@ -101,10 +102,10 @@ tagList(tlist)
 #require(evaluate)
 tss_plots <- getherTSSplot(libs)
 tss_enrich <- libQC_table[grep('TSS',rownames(libQC_table)),]
-show_tss <- function(i) paste(i,signif(as.numeric(tss_enrich[i]),4),sep = ' : ')
+show_tss <- function(i) paste(libs.showname[i],signif(as.numeric(tss_enrich[i]),4),sep = ' : ')
 
 tmp <- sapply( 1:length(libs), function(i)
-  thumbnail(show_tss(libs[i]),tss_plots[i],colsize ='col-sm-3' ))
+  thumbnail(show_tss(i),tss_plots[i],colsize ='col-sm-3' ))
 tagList(tmp)
 div(class='row')
 
@@ -243,12 +244,10 @@ tags$iframe(class="embed-responsive-item",
 
 #' ## Download Links
 #+ track_download, echo=F
-tlist <- list()
-for(i in 1:length(libs)){
-    l <- libs[i]
-    rd <- system(paste0("find ",setQC_dir,"/data/ -name ",l,"*.bigwig -printf %f"),intern=T)
-    hrf <- paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/data/",rd)
-    tlist[[i]]<- tags$li(tags$a(href=hrf,paste0(l,"_fc_bigwig file")))
-}
 
-tagList(tlist)
+tags$iframe(class="embed-responsive-item",
+            width="1340px",
+            height="750px",
+            src= "./download/")
+
+

@@ -75,6 +75,10 @@ cd $SETQC_DIR"/app"
 rsync -v -r -u ./  zhc268@epigenomics.sdsc.edu:/home/zhc268/shiny-server/setQCs/Set_${SET_NO}
 rm -r ../app
 
+# 7. download link
+mkdir -p $SETQC_DIR"/download"
+tree -H '.' -L 1 --noreport --charset utf-8 > index.html
+
 
 #EXAMPLES:
 # setQC_wrapper.sh "42 43 44 45 46 47" 6 

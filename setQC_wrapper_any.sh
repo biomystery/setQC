@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-02 00:04:27"
+#Time-stamp: "2017-12-04 10:55:52"
 
 # PART I dependency check 
 
@@ -88,7 +88,7 @@ done
 #####
 cmd="multiqc -k tsv -f -p $SETQC_DIR/tmp  -o $SETQC_DIR"
 echo $cmd 
-eval $cmd
+#eval $cmd
 wait
 rm -r $SETQC_DIR"/tmp/"
 
@@ -101,12 +101,12 @@ cmd="transferTracks_any.sh -d $SETQC_DIR -s $track_source_dir  ${LIB_ARRAY[@]}"
 
 echo -e "(`date`): copy track files" | tee -a $LOG_FILE
 echo $cmd | tee -a $LOG_FILE
-eval $cmd
+#eval $cmd
 
 #####
 cd $SETQC_DIR"/data"
-find . -name '*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
-Rscript $(which genWashUtracks.R) "$RELATIVE_DIR"
+#find . -name '*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
+#Rscript $(which genWashUtracks.R) "$RELATIVE_DIR"
 
 # delete the individual tracks
 #find . ! \( -name "*pf.json" -o -name "*.gz" -o -name "*.bigwig" -o -name "*.tbi" \) -delete
@@ -134,12 +134,19 @@ echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
 mkdir -p $SETQC_DIR"/app"
 cd $SETQC_DIR"/app"
 
-cp -us /home/zhc268/data/software/setQC/app.R ./;
+cp -ufs /home/zhc268/data/software/setQC/app.R ./;
+
 echo ${LIB_ARRAY[@]} > ./including_libs.txt;
 cp -Prs $SETQC_DIR/data/avgOverlapFC.tab ./;
+cp -Prs $SETQC_DIR/sample_table.txt ./
 
 ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
-ssh zhc268@epigenomics.sdsc.edu "cp -Prs  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/app/* /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
+ssh zhc268@epigenomics.sdsc.edu "cp -Prfs  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/app/* /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
+
+
+mkdir -p $SETQC_DIR"/download"
+cd $SETQC_DIR"/download"
+ssh zhc268@epigenomics.sdsc.edu "tree -I '*.html' --timefmt '%F %T' -h -H '.' -L 1 --noreport --charset utf-8 -T ''  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download > /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download/index.html"
 
 echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report_any.html"
 
