@@ -117,7 +117,7 @@ div(class='row')
            function(f)
     read.delim(paste0(setQC_dir,"/images/",f),header = F))
 
-rd <- do.call(cbind,rd); names(rd) <- libs
+rd <- do.call(cbind,rd); names(rd) <- libs.showname
 rd$TSS <- seq(-2000,2000,length.out = nrow(rd));
 
 # hchart function: https://cran.r-project.org/web/packages/highcharter/vignettes/charting-data-frames.html
@@ -130,7 +130,7 @@ tagList(tlist)
 #+ max_tss,echo=F,warning=F,message=F
 # bargraph for the
 
-tss_enrich.pd <- data.frame(libs=colnames(tss_enrich),
+tss_enrich.pd <- data.frame(libs=libs.showname,
                             TSS_enrichment = as.numeric(tss_enrich))
 #plt <- ggplot(tss_enrich.pd,aes(libs,tss_enrich)) + geom_bar(stat = 'identity')
 #ggplotly(plt)
@@ -156,7 +156,6 @@ tagList(tlist)
 #' ### Insert size distribution
 
 #+ insert_size,echo =F,warning=F
-#thumbnail(img = "./multiqc_plots/png/mqc_picard_insert_size_Percentages.png",colsize = "col-sm-12")
 tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_insert_size_Percentages.txt"),
                          xlab="Insert Size (bp)",ylab="Percentage of Counts")
 tagList(tlist)
@@ -178,7 +177,7 @@ raw_peak_number <- libQC_table[grep("Raw peaks",rownames(libQC_table)),]
 raw_peak_number<- sapply(raw_peak_number,function(x)
   as.numeric(unlist(strsplit(as.character(x),split = " [-] "))[1]))
 pd.raw_peak_number <- data.frame(raw_peak_number=raw_peak_number,
-                                 lib=names(raw_peak_number))
+                                 lib=libs.showname)
 tlist[[1]]<- hchart(pd.raw_peak_number, "column", hcaes(x = libs, y =  raw_peak_number ))
 tagList(tlist)
 

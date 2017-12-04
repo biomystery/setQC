@@ -116,9 +116,9 @@ plotMultiQC <- function(data.file="../Set_6/multiqc_data/mqc_picard_gcbias_plot_
   r2.list <- lapply(readLines(data.file),function(x) as.numeric((unlist(strsplit(x,split = "\t")))[-1]))
 
   if(length(r2.list) > 2* no_libs){
-    df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[2*i-1]],y=r2.list[[2*i]],libs_=libs[i]))
+    df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[2*i-1]],y=r2.list[[2*i]],libs_=libs.showname[i]))
   }else{
-    df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[1]],y=r2.list[[i+1]],libs_=libs[i]))
+    df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[1]],y=r2.list[[i+1]],libs_=libs.showname[i]))
   }
 
   df <- do.call(rbind,c(df,row.name=NULL))
