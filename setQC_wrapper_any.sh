@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-04 11:01:45"
+#Time-stamp: "2017-12-04 12:01:18"
 
 # PART I dependency check 
 
@@ -135,14 +135,14 @@ mkdir -p $SETQC_DIR"/app"
 cd $SETQC_DIR"/app"
 
 cp -ufs /home/zhc268/data/software/setQC/app.R ./;
-
 echo ${LIB_ARRAY[@]} > ./including_libs.txt;
-cp -Prs $SETQC_DIR/data/avgOverlapFC.tab ./;
-cp -Prs $SETQC_DIR/sample_table.txt ./
+cp -Pfs $SETQC_DIR/data/avgOverlapFC.tab ./;
+cp -Pfs $SETQC_DIR/sample_table.txt ./
 
-ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
-ssh zhc268@epigenomics.sdsc.edu "cp -Prfs  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/app/* /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
+ssh zhc268@epigenomics.sdsc.edu "ln -s  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/app/ /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
 
+############################################################
+# 6. Final: prepare downloading files 
 
 mkdir -p $SETQC_DIR"/download"
 cd $SETQC_DIR"/download"
