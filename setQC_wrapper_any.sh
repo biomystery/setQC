@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-04 12:01:18"
+#Time-stamp: "2017-12-04 15:06:49"
 
 # PART I dependency check 
 
@@ -137,16 +137,45 @@ cd $SETQC_DIR"/app"
 cp -ufs /home/zhc268/data/software/setQC/app.R ./;
 echo ${LIB_ARRAY[@]} > ./including_libs.txt;
 cp -Pfs $SETQC_DIR/data/avgOverlapFC.tab ./;
-cp -Pfs $SETQC_DIR/sample_table.txt ./
+cp -Pfs $SETQC_DIR/sample_table.csv ./
 
 ssh zhc268@epigenomics.sdsc.edu "ln -s  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/app/ /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
 
 ############################################################
 # 6. Final: prepare downloading files 
 
+awk -v FS=',' '{if (NR>1) print $3 }' $SETQC_DIR/sample_table.csv > tmp.txt
+paste $SAMPLE_FILE tmp.txt > $SETQC_DIR/including_libs.txt ; rm tmp.txt
+
 mkdir -p $SETQC_DIR"/download"
 cd $SETQC_DIR"/download"
-ssh zhc268@epigenomics.sdsc.edu "tree -I '*.html' --timefmt '%F %T' -h -H '.' -L 1 --noreport --charset utf-8 -T ''  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download > /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download/index.html"
+
+# script 
+data_dir=/home/zhc268/data/
+while read l 
+do 
+    ll=(`echo $l`)
+    a=${ll[0]};b=${ll[1]}
+    echo "tranfering $a to $b"
+
+
+    find $data_dir"/seqdata" \( -name $a"*.bz2" -o -name $a"*.gz" \)  -type f -exec ln -s {} ./  \;
+    find $data_dir"/outputs/bams" -name $a"*.bam"  -type f -exec ln -s {} ./  \;
+    find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \;
+    find $data_dir"/outputs/signals/" -name $a"*fc*.bigwig"  -type f -exec ln -s {} ./  \;
+    find $data_dir"/outputs/signals/" -name $a"*pval*.bigwig"  -type f -exec ln -s {} ./  \;
+
+    # rename 
+
+    find . \( -name $a"*.fastq.gz" -o -name $a"*.fastq.bz2" \) | xargs -n1 -I '{}' echo mv {} {} | sed "s/$a/$b/2" | bash 
+    find . -name $a"*.PE2SE.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE/$b\.raw/2;s/${a}_R1_001\.trim\.PE2SE/${b}\.raw/2" | bash 
+    find . -name $a"*.nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup/$b\.final/2;s/${a}_R1_001\.trim\.PE2SE\.nodup/${b}\.final/2"  | bash 
+    find . -name $a"*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2;s/${a}_R1_001\.trim\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2" | bash 
+    find . -name $a"*bigwig" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf/$b/2;s/${a}_R1_001\.trim\.PE2SE\.nodup\.tn5\.pf/$b/2" | bash
+done < $SETQC_DIR../including_libs.txt
+
+
+ssh zhc268@epigenomics.sdsc.edu "tree -I '*.html' --timefmt '%F %T'  -H '.' -L 1 --noreport --charset utf-8 -T ''  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download > /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download/index.html"
 
 echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report_any.html"
 
