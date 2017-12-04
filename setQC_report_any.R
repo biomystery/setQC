@@ -177,7 +177,7 @@ raw_peak_number <- libQC_table[grep("Raw peaks",rownames(libQC_table)),]
 raw_peak_number<- sapply(raw_peak_number,function(x)
   as.numeric(unlist(strsplit(as.character(x),split = " [-] "))[1]))
 pd.raw_peak_number <- data.frame(raw_peak_number=raw_peak_number,
-                                 lib=libs.showname)
+                                 libs=libs.showname)
 tlist[[1]]<- hchart(pd.raw_peak_number, "column", hcaes(x = libs, y =  raw_peak_number ))
 tagList(tlist)
 
