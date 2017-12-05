@@ -48,7 +48,7 @@ updateSetQC_gs <- function(){
     ## edit: https://rawgit.com/jennybc/googlesheets/master/vignettes/basic-usage.html
 
     # 1. updated - time
-    sample_table$Updated[rid] <- date()
+    sample_table$Updated[rid] <- Sys.Date()
     gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample_table$Updated,  anchor="F2")
 
     # 2. version
