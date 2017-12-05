@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-04 15:06:49"
+#Time-stamp: "2017-12-05 09:20:50"
 
 # PART I dependency check 
 
@@ -88,7 +88,7 @@ done
 #####
 cmd="multiqc -k tsv -f -p $SETQC_DIR/tmp  -o $SETQC_DIR"
 echo $cmd 
-#eval $cmd
+eval $cmd
 wait
 rm -r $SETQC_DIR"/tmp/"
 
@@ -97,11 +97,11 @@ source deactivate bds_atac_py3
 ############################################################
 # 2. prepare tracks
 track_source_dir="/home/zhc268/data/outputs/"
-cmd="transferTracks_any.sh -d $SETQC_DIR -s $track_source_dir  ${LIB_ARRAY[@]}"
+cmd="transferTracks.sh -d $SETQC_DIR -s $track_source_dir  ${LIB_ARRAY[@]}"
 
 echo -e "(`date`): copy track files" | tee -a $LOG_FILE
 echo $cmd | tee -a $LOG_FILE
-#eval $cmd
+eval $cmd
 
 #####
 cd $SETQC_DIR"/data"
@@ -119,10 +119,10 @@ cd $SETQC_DIR
 
 source activate bds_atac_py3
 echo "preparing setQC: get merged peaks..."
-#calcOverlapAvgFC_any.sh ${LIB_ARRAY[@]}
+#calcOverlapAvgFC.sh ${LIB_ARRAY[@]}
 
 ### 
-cmd="Rscript $(which compile_setQC_report_any.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}"
+cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}"
 echo $cmd
 eval $cmd 
 
@@ -177,11 +177,11 @@ done < $SETQC_DIR../including_libs.txt
 
 ssh zhc268@epigenomics.sdsc.edu "tree -I '*.html' --timefmt '%F %T'  -H '.' -L 1 --noreport --charset utf-8 -T ''  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download > /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download/index.html"
 
-echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report_any.html"
+echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report.html"
 
 # END 
 
 #EXAMPLES:
 
-# setQC_wrapper_any.sh -s /home/zhc268/scratch/others/2017-10-25-sswangson_morgridge/chu_mmus/uniq_samples_rev.txt \
+# setQC_wrapper.sh -s /home/zhc268/scratch/others/2017-10-25-sswangson_morgridge/chu_mmus/uniq_samples_rev.txt \
 

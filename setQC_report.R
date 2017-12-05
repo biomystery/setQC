@@ -1,12 +1,12 @@
 #'---
 #'params:
-#'  set_name: "tmp"
+#'  set_name: "Pfizer_2017-11-30"
 #'  libs: "48 49 50 51 52 53 54 55 56 57"
 #'  setQC_dir: "./"
 #'  libQC_dir: "./"
 #'  update_gs: F
 #'  has_sample_table: T
-#'title: "Report for Pfizer_2017-11-30"
+#'title: "Report for `r set_name`"
 #'output:
 #'  html_document:
 #'    theme: united
