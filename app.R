@@ -26,9 +26,13 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-    #libs<- unlist(strsplit(readLines("./including_libs.txt"),split = " "))
-    # libs <- sub("_S[0-9]+_L[0-9]+","",libs)
-    libs <- read.csv("./sample_table.csv",stringsAsFactors=F)$Label..for.QC.report.
+    if(file.exists("./sample_table.csv")){
+        libs <- read.csv("./sample_table.csv",stringsAsFactors=F)$Label..for.QC.report.
+    }else{
+	libs<- unlist(strsplit(readLines("./including_libs.txt"),split = " "))
+	libs <- sub("_S[0-9]+_L[0-9]+","",libs)
+    }
+    
 
     pd <- read.table("./avgOverlapFC.tab")
     pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
