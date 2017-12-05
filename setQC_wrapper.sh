@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-05 09:20:50"
+#Time-stamp: "2017-12-05 12:21:35"
 
 # PART I dependency check 
 
@@ -73,8 +73,8 @@ mkdir -p $SETQC_DIR
 
 # PART III: Main 
 
-############################################################
-# 1. runMultiQC
+echo -e "############################################################"
+echo -e "# 1. runMultiQC" 
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
 source activate bds_atac_py3
 # cp s all libqc files to one folder
@@ -94,32 +94,27 @@ rm -r $SETQC_DIR"/tmp/"
 
 source deactivate bds_atac_py3
 
-############################################################
-# 2. prepare tracks
+echo -e "############################################################"
+echo -e "# 2. prepare tracks"
+
 track_source_dir="/home/zhc268/data/outputs/"
-cmd="transferTracks.sh -d $SETQC_DIR -s $track_source_dir  ${LIB_ARRAY[@]}"
+cmd="transferTracks.sh -d $SETQC_DIR -s $track_source_dir  ${LIB_ARRAY[@]}" 
 
 echo -e "(`date`): copy track files" | tee -a $LOG_FILE
 echo $cmd | tee -a $LOG_FILE
-eval $cmd
+eval $cmd 2> /dev/null
 
-#####
 cd $SETQC_DIR"/data"
-#find . -name '*.json' | sort -n  | xargs -I '{}' cat '{}'|awk '{print}' >tracks_merged.json
-#Rscript $(which genWashUtracks.R) "$RELATIVE_DIR"
+Rscript $(which genWashUtracks.R) "$RELATIVE_DIR"
 
-# delete the individual tracks
-#find . ! \( -name "*pf.json" -o -name "*.gz" -o -name "*.bigwig" -o -name "*.tbi" \) -delete
+echo -e "############################################################"
+echo -e " 3. genSetQCreport" 
 
-############################################################
-# 3. genSetQCreport
-# use envrionment bds_atac_py3 (installed R-3.4.1)
 echo -e "(`date`):  compiling setQC html" | tee -a $LOG_FILE
 cd $SETQC_DIR
-
 source activate bds_atac_py3
 echo "preparing setQC: get merged peaks..."
-#calcOverlapAvgFC.sh ${LIB_ARRAY[@]}
+calcOverlapAvgFC.sh ${LIB_ARRAY[@]}
 
 ### 
 cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}"
@@ -127,22 +122,19 @@ echo $cmd
 eval $cmd 
 
 
-############################################################
-# 5. Final: set up the sharing web site & make app 
-echo -e "(`date`): uploading to website" | tee -a $LOG_FILE
+echo -e "############################################################"
+echo -e "# (`date`) 5. Final: set up the sharing web site & make app " | tee -a $LOG_FILE
 
 mkdir -p $SETQC_DIR"/app"
 cd $SETQC_DIR"/app"
-
 cp -ufs /home/zhc268/data/software/setQC/app.R ./;
-echo ${LIB_ARRAY[@]} > ./including_libs.txt;
 cp -Pfs $SETQC_DIR/data/avgOverlapFC.tab ./;
 cp -Pfs $SETQC_DIR/sample_table.csv ./
 
-ssh zhc268@epigenomics.sdsc.edu "ln -s  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/app/ /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
+ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR;ln -s /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/app/ /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR"
 
-############################################################
-# 6. Final: prepare downloading files 
+echo -e "############################################################"
+echo -e "# 6. Final: prepare downloading files "
 
 awk -v FS=',' '{if (NR>1) print $3 }' $SETQC_DIR/sample_table.csv > tmp.txt
 paste $SAMPLE_FILE tmp.txt > $SETQC_DIR/including_libs.txt ; rm tmp.txt
@@ -172,7 +164,7 @@ do
     find . -name $a"*.nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup/$b\.final/2;s/${a}_R1_001\.trim\.PE2SE\.nodup/${b}\.final/2"  | bash 
     find . -name $a"*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2;s/${a}_R1_001\.trim\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2" | bash 
     find . -name $a"*bigwig" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf/$b/2;s/${a}_R1_001\.trim\.PE2SE\.nodup\.tn5\.pf/$b/2" | bash
-done < $SETQC_DIR../including_libs.txt
+done < $SETQC_DIR/including_libs.txt
 
 
 ssh zhc268@epigenomics.sdsc.edu "tree -I '*.html' --timefmt '%F %T'  -H '.' -L 1 --noreport --charset utf-8 -T ''  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download > /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download/index.html"

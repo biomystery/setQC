@@ -6,7 +6,7 @@
 #'  libQC_dir: "./"
 #'  update_gs: F
 #'  has_sample_table: T
-#'title: "Report for `r set_name`"
+#'title: "Report for `r params$set_name`"
 #'output:
 #'  html_document:
 #'    theme: united

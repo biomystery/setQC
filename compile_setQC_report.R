@@ -9,7 +9,8 @@ args <- commandArgs(trailingOnly = TRUE)
 
 
 ## loading tracking sheet 5 here to update the name
-# better construct a data base here
+# 1. better construct a data base here
+# 2. try reduce the gspreadsheet reading times
 
 getSetName <- function(setID=set_name_id){
   gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
@@ -19,10 +20,11 @@ getSetName <- function(setID=set_name_id){
    paste(sample_table$`Set name (for title of report)`[rid],sample_table$`Date requested`[rid],sep="_")
 }
 
+(set_name_= getSetName())
 
-rmarkdown::render("/projects/ps-epigen/software/setQC/setQC_report_any.R",
+rmarkdown::render("/projects/ps-epigen/software/setQC/setQC_report.R",
                   params = list(
-                    set_name = _name_ <- getSetName(),
+                    set_name = set_name_,
                     libs = libs_,
                     setQC_dir = setQC_dir_,
                     libQC_dir = libQC_dir_
