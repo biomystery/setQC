@@ -34,8 +34,7 @@ do
 	sed "s/\/.\/signal\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
 	sed "s/\/.\/peak\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
         sed "s/$sample\ pval\ (rep1)/$sample_name\ pval/g" >>  $desti_dir/tracks_merged.json 
-    find  $source_dir"peaks"  -name "${sample}*hammock*"  -exec cp -Prfs {} $desti_dir \;
-    find  $source_dir"signals" -name "${sample}*.fc.signal.bigwig" -exec cp -Prfs {} $desti_dir \;
+
 done 
 
 echo >>  $desti_dir/tracks_merged.json 

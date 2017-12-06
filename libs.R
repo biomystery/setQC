@@ -34,6 +34,8 @@ getSampleTable <- function(lib_ids){
       sample_table <- subset(sample_table, q1|q2)[,c(1,2,3,4,9,10,12)] #member initial, date, lib ID
   }
 
+    na.id <- is.na(sample_table[,3]); sample_table[na.id,3] <- sample_table[na.id,2]
+
     write.csv(file=sample_file,sample_table,row.names = F,quote=F)
     sample_table
 }

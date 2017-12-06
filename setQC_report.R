@@ -33,7 +33,7 @@ libs.showname <- sub("_S[0-9]+_L[0-9]+","",libs)
 #' # Sample info.
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
-    sample_table<- getSampleTable(libs)
+    sample_table<- getSampleTable(libs.showname)
     libs.showname <- sample_table$`Label (for QC report)`
     kable(sample_table)
 }
@@ -203,19 +203,22 @@ tags$iframe(class="embed-responsive-item",
 #' ### PCA
 #+ pca,echo=F,message=F,warning=F
 if(length(libs)>2){
-require(scatterD3)
-pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
-pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
-pd.pca <- prcomp(t(pd.log2),center =T,scale. = T )
-perct <- as.numeric(round(summary(pd.pca)$importance[2,1:2]*100))
+    require(scatterD3)
+    if(!file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
+        system(paste("calcOverlapAvgFC.sh -g",tolower(sample_table$species[1]),"-d",setQC_dir, paste(libs,collapse=" ")))
+    }
+    pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
+    pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
+    pd.pca <- prcomp(t(pd.log2),center =T,scale. = T )
+    perct <- as.numeric(round(summary(pd.pca)$importance[2,1:2]*100))
 
-tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs.showname),point_size = 100,
-                      xlab = paste0("PC1: ",perct[1],"%"),
-                      ylab = paste0("PC2: ",perct[2],"%"),
-                      point_opacity = 0.5,hover_size = 4, hover_opacity = 1,lasso = T,
-                      width = "500px",height = "500px")
-tagList(tlist)}else{
-tags$p('Lib number in this set is <=2 ')
+    tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs.showname),point_size = 100,
+                          xlab = paste0("PC1: ",perct[1],"%"),
+                          ylab = paste0("PC2: ",perct[2],"%"),
+                          point_opacity = 0.5,hover_size = 4, hover_opacity = 1,lasso = T,
+                          width = "500px",height = "500px")
+    tagList(tlist)}else{
+                      tags$p('Lib number in this set is <=2 ')
 }
 
 #' # LibQC table

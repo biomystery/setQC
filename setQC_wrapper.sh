@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-05 22:46:29"
+#Time-stamp: "2017-12-06 01:56:40"
 source activate bds_atac_py3
 
 
@@ -13,7 +13,7 @@ usage(){
 # PART III  params
 # default 
 BASE_OUTPUT_DIR="/home/zhc268/data/outputs/setQCs/"
-
+track_source_dir="/home/zhc268/data/outputs/"
 
 # receiving arguments
 while getopts ":s:b:n:l:" opt;
@@ -80,47 +80,37 @@ echo -e "# Step 1. runMultiQC"
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
 
 # cp s all libqc files to one folder
-mkdir -p $SETQC_DIR"/tmp/"
+mkdir -p $SETQC_DIR"/libQCs/";mkdir -p $SETQC_DIR"/data/";
 for l in ${LIB_ARRAY[@]}
 do
     echo "cp $l libqc files..."
-    find $LIBQC_DIR$l -type f -exec cp -rsu '{}' $SETQC_DIR"/tmp/" \; 2> /dev/null 
+    find $LIBQC_DIR$l -type f -exec cp -Psu '{}' $SETQC_DIR"/libQCs/" \; 2> /dev/null
+    echo "cp $l peaks files"
+    find  $track_source_dir"peaks"  -name "${l}*hammock*"  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
+    find  $track_source_dir"signals"  -name "${l}*fc.signal.bigwig*"  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
 done
 
-#####
-cmd="multiqc -k tsv -f -p $SETQC_DIR/tmp  -o $SETQC_DIR"
+cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
 echo $cmd 
-#eval $cmd
-
-wait
-rm -r $SETQC_DIR"/tmp/"
+eval $cmd
 
 
 echo -e "############################################################"
-echo -e "Step 2. calculate peak overlap" 
-
-echo -e "(`date`):  compiling setQC html" | tee -a $LOG_FILE
-cd $SETQC_DIR
-
-echo "preparing setQC: get merged peaks..."
-#calcOverlapAvgFC.sh ${LIB_ARRAY[@]}
-
-echo -e "############################################################"
-echo -e "Step 3. genSetQCreport" 
+echo -e "Step 2. genSetQCreport" 
+# need fc_matrix 
 
 cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}"
 echo $cmd
-#eval $cmd
+eval $cmd
 
 echo -e "############################################################"
-echo -e "# Step 4. prepare tracks"
+echo -e "# Step 3. prepare tracks"
 # get the libnames 
 LIB_ARRAY_NAME=(`awk -v FS=',' '{if (NR>1) print $3 }' $SETQC_DIR/sample_table.csv | sed "s/\ /\_/g"`)
 printf "%s\n" ${LIB_ARRAY[@]} > a.txt; printf "%s\n" ${LIB_ARRAY_NAME[@]} > b.txt;
 paste a.txt b.txt> $SETQC_DIR/including_libs.txt ; rm a.txt ; rm b.txt 
 
 
-track_source_dir="/home/zhc268/data/outputs/"
 cmd="transferTracks.sh -d $SETQC_DIR -s $track_source_dir  -l $SETQC_DIR/including_libs.txt" 
 
 echo -e "(`date`): copy track files" | tee -a $LOG_FILE
@@ -130,9 +120,8 @@ eval $cmd
 cd $SETQC_DIR"/data"
 Rscript $(which genWashUtracks.R) "$RELATIVE_DIR"
 
-
 echo -e "############################################################"
-echo -e "# (`date`) Step 5. Final: set up the sharing web site & make app " | tee -a $LOG_FILE
+echo -e "# (`date`) Step 4. Final: set up the sharing web site & make app " | tee -a $LOG_FILE
 
 mkdir -p $SETQC_DIR"/app"
 cd $SETQC_DIR"/app"
@@ -143,7 +132,7 @@ cp -Pfs $SETQC_DIR/sample_table.csv ./
 ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR;cp -rPfs /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/app/* /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR/"
 
 echo -e "############################################################"
-echo -e "# 6. Final: prepare downloading files "
+echo -e "# Step 5. Final: prepare downloading files "
 
 mkdir -p $SETQC_DIR"/download"
 cd $SETQC_DIR"/download"
