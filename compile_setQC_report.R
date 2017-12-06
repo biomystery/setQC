@@ -16,7 +16,7 @@ getSetName <- function(setID=set_name_id){
   gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
     gs_mseqts <- gs_key("1ZD223K4A7SJ0_uw4OvhUOm9BecqDAposRflE9i1Ocms")
     sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,7)))
-    rid <- which(sample_table$SetID==setID)
+   rid <- which(sample_table$SetID==setID)
    paste(sample_table$`Set name (for title of report)`[rid],sample_table$`Date requested`[rid],sep="_")
 }
 

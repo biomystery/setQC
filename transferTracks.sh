@@ -1,33 +1,39 @@
 #!/bin/bash 
 
-usage() { echo "Usage: $0 [-d destination_dir]  [-s source_dir]>" 1>&2; exit 1; }
+usage() { echo "Usage: $0 [-d destination_dir]  [-s source_dir] [-l lib_files]>" 1>&2; exit 1; }
 
-while getopts "d:s:" o; do
+while getopts "d:s:l:" o; do
     case $o in
         d) d="${OPTARG}";;
-        s) source_dir="${OPTARG}";; 
+        s) source_dir="${OPTARG}";;
+        l) libs_txt="${OPTARG}";;         
         *) usage;;
     esac
 done
 shift $((OPTIND-1))
 echo "destination folder: $d"
 echo "source folder:  $source_dir"
-echo $@
+echo "lib files:  $source_dir"
+
 
 # cp the files to the output folder 
-libs=$@; #`seq 48 57` - the remaining argvs 
+libs=(`cat $libs_txt`);
+libs_len=`cat $libs_txt| wc -l`
+
 desti_dir=$d"/data/" #"${HOME}/set4_2_Reports/data/" 
 mkdir -p $desti_dir
 > $desti_dir/tracks_merged.json # new file
 
-for sample in ${libs[@]}
-do 
+for i in `seq 1 $libs_len`
+do
+    sample=${libs[2*$i-2]};sample_name=${libs[2*$i-1]};
     echo "transfering $sample ${sample}*.fc.signal.bigwig..." 
 
+    # default is pval, mannually changed to fc
     cat ${source_dir}"/signals/${sample}_tracks.json" | \
 	sed "s/\/.\/signal\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
-	sed "s/\/.\/peak\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" >> \
-            $desti_dir/tracks_merged.json 
+	sed "s/\/.\/peak\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
+        sed "s/$sample\ pval\ (rep1)/$sample_name\ pval/g" >>  $desti_dir/tracks_merged.json 
     find  $source_dir"peaks"  -name "${sample}*hammock*"  -exec cp -Prfs {} $desti_dir \;
     find  $source_dir"signals" -name "${sample}*.fc.signal.bigwig" -exec cp -Prfs {} $desti_dir \;
 done 

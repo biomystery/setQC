@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-05 12:33:56"
+#Time-stamp: "2017-12-05 22:46:29"
+source activate bds_atac_py3
+
 
 # PART I dependency check 
 
@@ -74,9 +76,9 @@ mkdir -p $SETQC_DIR
 # PART III: Main 
 
 echo -e "############################################################"
-echo -e "# 1. runMultiQC" 
+echo -e "# Step 1. runMultiQC" 
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
-source activate bds_atac_py3
+
 # cp s all libqc files to one folder
 mkdir -p $SETQC_DIR"/tmp/"
 for l in ${LIB_ARRAY[@]}
@@ -88,42 +90,49 @@ done
 #####
 cmd="multiqc -k tsv -f -p $SETQC_DIR/tmp  -o $SETQC_DIR"
 echo $cmd 
-eval $cmd
+#eval $cmd
+
 wait
 rm -r $SETQC_DIR"/tmp/"
 
-source deactivate bds_atac_py3
 
 echo -e "############################################################"
-echo -e "# 2. prepare tracks"
+echo -e "Step 2. calculate peak overlap" 
+
+echo -e "(`date`):  compiling setQC html" | tee -a $LOG_FILE
+cd $SETQC_DIR
+
+echo "preparing setQC: get merged peaks..."
+#calcOverlapAvgFC.sh ${LIB_ARRAY[@]}
+
+echo -e "############################################################"
+echo -e "Step 3. genSetQCreport" 
+
+cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}"
+echo $cmd
+#eval $cmd
+
+echo -e "############################################################"
+echo -e "# Step 4. prepare tracks"
+# get the libnames 
+LIB_ARRAY_NAME=(`awk -v FS=',' '{if (NR>1) print $3 }' $SETQC_DIR/sample_table.csv | sed "s/\ /\_/g"`)
+printf "%s\n" ${LIB_ARRAY[@]} > a.txt; printf "%s\n" ${LIB_ARRAY_NAME[@]} > b.txt;
+paste a.txt b.txt> $SETQC_DIR/including_libs.txt ; rm a.txt ; rm b.txt 
+
 
 track_source_dir="/home/zhc268/data/outputs/"
-cmd="transferTracks.sh -d $SETQC_DIR -s $track_source_dir  ${LIB_ARRAY[@]}" 
+cmd="transferTracks.sh -d $SETQC_DIR -s $track_source_dir  -l $SETQC_DIR/including_libs.txt" 
 
 echo -e "(`date`): copy track files" | tee -a $LOG_FILE
 echo $cmd | tee -a $LOG_FILE
-eval $cmd 2> /dev/null
+eval $cmd 
 
 cd $SETQC_DIR"/data"
 Rscript $(which genWashUtracks.R) "$RELATIVE_DIR"
 
-echo -e "############################################################"
-echo -e " 3. genSetQCreport" 
-
-echo -e "(`date`):  compiling setQC html" | tee -a $LOG_FILE
-cd $SETQC_DIR
-source activate bds_atac_py3
-echo "preparing setQC: get merged peaks..."
-calcOverlapAvgFC.sh ${LIB_ARRAY[@]}
-
-### 
-cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}"
-echo $cmd
-eval $cmd 
-
 
 echo -e "############################################################"
-echo -e "# (`date`) 5. Final: set up the sharing web site & make app " | tee -a $LOG_FILE
+echo -e "# (`date`) Step 5. Final: set up the sharing web site & make app " | tee -a $LOG_FILE
 
 mkdir -p $SETQC_DIR"/app"
 cd $SETQC_DIR"/app"
@@ -136,18 +145,19 @@ ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELA
 echo -e "############################################################"
 echo -e "# 6. Final: prepare downloading files "
 
-awk -v FS=',' '{if (NR>1) print $3 }' $SETQC_DIR/sample_table.csv > tmp.txt
-paste $SAMPLE_FILE tmp.txt > $SETQC_DIR/including_libs.txt ; rm tmp.txt
-
 mkdir -p $SETQC_DIR"/download"
 cd $SETQC_DIR"/download"
 
 # script 
 data_dir=/home/zhc268/data/
-while read l 
+
+
+
+for i in `seq 1 $LIB_LEN`
 do 
-    ll=(`echo $l`)
-    a=${ll[0]};b=${ll[1]}
+
+    a=${LIB_ARRAY[$i-1]};b=${LIB_ARRAY_NAME[$i-1]};
+    
     echo "tranfering $a to $b"
 
 
@@ -164,7 +174,7 @@ do
     find . -name $a"*.nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup/$b\.final/2;s/${a}_R1_001\.trim\.PE2SE\.nodup/${b}\.final/2"  | bash 
     find . -name $a"*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2;s/${a}_R1_001\.trim\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2" | bash 
     find . -name $a"*bigwig" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf/$b/2;s/${a}_R1_001\.trim\.PE2SE\.nodup\.tn5\.pf/$b/2" | bash
-done < $SETQC_DIR/including_libs.txt
+done
 
 
 ssh zhc268@epigenomics.sdsc.edu "tree -I '*.html' --timefmt '%F %T'  -H '.' -L 1 --noreport --charset utf-8 -T ''  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download > /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download/index.html"
