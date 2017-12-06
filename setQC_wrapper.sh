@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-06 01:56:40"
+#Time-stamp: "2017-12-06 10:04:17"
 source activate bds_atac_py3
 
 
@@ -92,7 +92,7 @@ done
 
 cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
 echo $cmd 
-eval $cmd
+#eval $cmd
 
 
 echo -e "############################################################"
@@ -101,18 +101,20 @@ echo -e "Step 2. genSetQCreport"
 
 cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}"
 echo $cmd
-eval $cmd
+#eval $cmd
 
 echo -e "############################################################"
 echo -e "# Step 3. prepare tracks"
-# get the libnames 
-LIB_ARRAY_NAME=(`awk -v FS=',' '{if (NR>1) print $3 }' $SETQC_DIR/sample_table.csv | sed "s/\ /\_/g"`)
-printf "%s\n" ${LIB_ARRAY[@]} > a.txt; printf "%s\n" ${LIB_ARRAY_NAME[@]} > b.txt;
-paste a.txt b.txt> $SETQC_DIR/including_libs.txt ; rm a.txt ; rm b.txt 
 
-
+# get the libnames
+> $SETQC_DIR/including_libs.txt
+for s in ${LIB_ARRAY[@]}
+do
+    ss=`echo $s | sed -E "s/_S[0-9]+_L[0-9]+//g"`;
+    ln=`grep -n $ss $SETQC_DIR/sample_table.csv | cut -f1 -d:`;
+    sn=`sed "${ln}q;d" $SETQC_DIR/sample_table.csv| awk -F"," '{print $3}'| sed "s/\ /\_/g"`;
+    echo -e "$s\t$sn">> $SETQC_DIR/including_libs.txt ;done
 cmd="transferTracks.sh -d $SETQC_DIR -s $track_source_dir  -l $SETQC_DIR/including_libs.txt" 
-
 echo -e "(`date`): copy track files" | tee -a $LOG_FILE
 echo $cmd | tee -a $LOG_FILE
 eval $cmd 
@@ -138,7 +140,7 @@ mkdir -p $SETQC_DIR"/download"
 cd $SETQC_DIR"/download"
 
 # script 
-data_dir=/home/zhc268/data/
+data_dir="/home/zhc268/data/"
 
 
 
