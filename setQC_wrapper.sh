@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-07 13:01:09"
+#Time-stamp: "2017-12-07 13:09:27"
 source activate bds_atac_py3
 
 
@@ -92,7 +92,7 @@ done
 
 cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
 echo $cmd 
-#eval $cmd
+eval $cmd
 
 
 echo -e "############################################################"
