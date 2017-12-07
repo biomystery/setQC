@@ -14,29 +14,30 @@ require(ggplot2)
 
 getSampleTable <- function(lib_ids){
     sample_file <- paste0(setQC_dir,"/sample_table.csv")
-  if(file.exists(sample_file)){
-    if (system(paste0("wc -l ",sample_file,"|awk  '{print $1}'"),intern = T)!="1")
-      return(read.csv(file = sample_file,
+    if(file.exists(sample_file)){
+        if (system(paste0("wc -l ",sample_file,"|awk  '{print $1}'"),intern = T)!="1")
+            return(read.csv(file = sample_file,
                       stringsAsFactors = F,check.names = F))
-  }else{
-    #print("get Sample info from gs")
-    require(googlesheets)
-      suppressPackageStartupMessages(require(dplyr))
-      gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
-    gs_ls() # for the auth
-    gs_mseqts <- gs_key("1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y")
-      sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,19)))
+    }else{
 
-    # query 1: through id
-      lib_ids <- sub("_S[0-9]+_L[0-9]+","",lib_ids)
-      q1 <- sample_table$`Sequencing ID` %in% lib_ids
-      q2 <- sample_table$`sample ID (from MSTS)` %in% lib_ids
-      sample_table <- subset(sample_table, q1|q2)[,c(1,2,3,4,9,10,12)] #member initial, date, lib ID
-  }
+        require(googlesheets)
+        suppressPackageStartupMessages(require(dplyr))
+        gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
+        gs_ls() # for the auth
+        gs_mseqts <- gs_key("1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y")
+        sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,19)))
+
+                                        # query 1: through id
+        lib_ids <- sub("_S[0-9]+_L[0-9]+","",lib_ids)
+        q1 <- sample_table$`Sequencing ID` %in% lib_ids
+        q2 <- sample_table$`sample ID (from MSTS)` %in% lib_ids
+        sample_table <- subset(sample_table, q1|q2)[,c(1,2,3,4,9,10,12)] #member initial, date, lib ID
+    }
 
     na.id <- is.na(sample_table[,3]); sample_table[na.id,3] <- sample_table[na.id,2]
-    sample_table[,3] <- make.names(sample_table,unique =T)
+    sample_table[,3] <- make.names(sample_table[,3],unique =T)
     write.csv(file=sample_file,sample_table,row.names = F,quote=F)
+
     sample_table
 }
 
