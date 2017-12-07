@@ -206,7 +206,7 @@ tags$iframe(class="embed-responsive-item",
 
 
 #' ### PCA
-                                        #+ pca,echo=F,message=F,warning=F
+#+ pca,echo=F,message=F,warning=F
 if(!file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
     system(paste("calcOverlapAvgFC.sh -g",tolower(sample_table$species[1]),"-d",setQC_dir,paste(libs,collapse=" ")))
 }
