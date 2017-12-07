@@ -35,7 +35,7 @@ getSampleTable <- function(lib_ids){
   }
 
     na.id <- is.na(sample_table[,3]); sample_table[na.id,3] <- sample_table[na.id,2]
-
+    sample_table[,3] <- make.names(sample_table,unique =T)
     write.csv(file=sample_file,sample_table,row.names = F,quote=F)
     sample_table
 }
