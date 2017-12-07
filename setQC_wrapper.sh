@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-07 14:43:14"
+#Time-stamp: "2017-12-07 15:08:54"
 source activate bds_atac_py3
 
 
@@ -99,7 +99,7 @@ echo -e "############################################################"
 echo -e "Step 2. genSetQCreport" 
 # need fc_matrix 
 
-cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs ${LIB_ARRAY[@]}" #LIR_arry sorted by name already
+cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ ${LIB_ARRAY[@]}" #LIR_arry sorted by name already
 echo $cmd
 eval $cmd
 
