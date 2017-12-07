@@ -25,8 +25,7 @@
 attach(params)
 no_libs <- length(libs)
 source('./libs.R')
-if(update_gs)
-    updateSetQC_gs()
+
 
 libs.showname <- sub("_S[0-9]+_L[0-9]+","",libs)
 
