@@ -112,18 +112,23 @@ div(class='row')
 #+ avg_tss,echo=F,warning=F,message=F
 # read data
 
- rd<-lapply(list.files(paste0(setQC_dir,"/images/"),"*.txt"),
-           function(f)
-    read.delim(paste0(setQC_dir,"/images/",f),header = F))
 
-rd <- do.call(cbind,rd); names(rd) <- libs.showname
-rd$TSS <- seq(-2000,2000,length.out = nrow(rd));
+if(length(list.files(libQC_dir,paste0(libs[1],".*enrich.txt")))>0){
+    rd<-lapply(libs,function(l){
+        f=list.files(libQC_dir/,"l.*enrich.txt"),
+        read.delim(paste0(libQC_dir,f),header = F)
+    })
 
-# hchart function: https://cran.r-project.org/web/packages/highcharter/vignettes/charting-data-frames.html
-tlist <- list()
-tlist[[1]]<-hchart(rd %>% gather(key = "libs",value = "avg_tss_enrichment",1:no_libs),
-       "line",hcaes(x=TSS,y=avg_tss_enrichment,group=libs))
-tagList(tlist)
+    rd <- do.call(cbind,rd); names(rd) <- libs.showname
+    rd$TSS <- seq(-2000,2000,length.out = nrow(rd));
+
+    # hchart function: https://cran.r-project.org/web/packages/highcharter/vignettes/charting-data-frames.html
+    tlist <- list()
+    tlist[[1]]<-hchart(rd %>% gather(key = "libs",value = "avg_tss_enrichment",1:no_libs),
+                       "line",hcaes(x=TSS,y=avg_tss_enrichment,group=libs))
+    tagList(tlist)
+}
+
 
 #' ### Max TSS enrichement compare
 #+ max_tss,echo=F,warning=F,message=F
