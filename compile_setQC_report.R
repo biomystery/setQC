@@ -31,7 +31,7 @@ getSetName <- function(setID=set_name_id){
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=paste0(surl,system(paste("cd",sdir,";git rev-parse --short HEAD"), intern = TRUE)),
                                           anchor=paste0("J",3+rid))
   url <- paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report.html")
-  gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=url,  anchor=paste0("H",3+rid))
+  gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=url,  anchor=paste0("F",3+rid))
 
 }
 
