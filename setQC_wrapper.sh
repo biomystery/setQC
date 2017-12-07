@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-07 15:08:54"
+#Time-stamp: "2017-12-07 15:40:46"
 source activate bds_atac_py3
 
 
@@ -136,7 +136,8 @@ ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELA
 echo -e "############################################################"
 echo -e "# Step 5. Final: prepare downloading files "
 
-mkdir -p $SETQC_DIR"/download"
+rm -r $SETQC_DIR"/download";mkdir $SETQC_DIR"/download"
+
 cd $SETQC_DIR"/download"
 
 # script 
