@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-06 10:04:17"
+#Time-stamp: "2017-12-06 23:58:36"
 source activate bds_atac_py3
 
 
@@ -92,7 +92,7 @@ done
 
 cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
 echo $cmd 
-#eval $cmd
+eval $cmd
 
 
 echo -e "############################################################"
@@ -101,7 +101,7 @@ echo -e "Step 2. genSetQCreport"
 
 cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}"
 echo $cmd
-#eval $cmd
+eval $cmd
 
 echo -e "############################################################"
 echo -e "# Step 3. prepare tracks"
