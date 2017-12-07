@@ -5,7 +5,7 @@ args <- commandArgs(trailingOnly = TRUE)
 (set_name_id <- args[1])
 (setQC_dir_ <- args[2])
 (libQC_dir_ <-  args[3]) # used to pull out libqc files in libs.R
-(libs_<- args[4:length(args)]) # the last
+(libs_<- args[4:length(args)]) # the last, sorted by name
 
 
 relative_dir <- sub("/home/zhc268/data/outputs/setQCs(/)+","",setQC_dir_)
