@@ -205,7 +205,7 @@ tags$iframe(class="embed-responsive-item",
 if(length(libs)>2){
     require(scatterD3)
     if(!file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
-        system(paste("calcOverlapAvgFC.sh -g",tolower(sample_table$species[1]),"-d",setQC_dir,"-l including_libs.txt")
+        system(paste("calcOverlapAvgFC.sh -g",tolower(sample_table$species[1]),"-d",setQC_dir,"-l including_libs.txt"))
     }
     pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
     pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
