@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-06 23:58:36"
+#Time-stamp: "2017-12-07 10:39:54"
 source activate bds_atac_py3
 
 
@@ -144,10 +144,11 @@ data_dir="/home/zhc268/data/"
 
 
 
+libs_name_dic=(`cat $SETQC_DIR/including_libs.txt`)
 for i in `seq 1 $LIB_LEN`
 do 
 
-    a=${LIB_ARRAY[$i-1]};b=${LIB_ARRAY_NAME[$i-1]};
+    a=${libs_name_dic[2*$i-2]};b=${libs_name_dic[2*$i-1]};
     
     echo "tranfering $a to $b"
 

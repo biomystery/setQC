@@ -74,8 +74,8 @@ parseFastqScreen<- function(fn="JYH_109_R1_screen.txt"){
 }
 
 parseFastqScreen_perLib <- function(lib)
-  rbind(parseFastqScreen(fn=paste0(lib,"_R1.*_screen.txt")),
-        parseFastqScreen(fn=paste0(lib,"_R2.*_screen.txt")))
+  rbind(parseFastqScreen(fn=paste0(lib,"_R1*_screen.txt")),
+        parseFastqScreen(fn=paste0(lib,"_R2*_screen.txt")))
 
 plotSource <- function(pd=do.call(rbind,lapply(libs, parseFastqScreen_perLib))){
   pd.new <-pd %>% group_by(name=type,
