@@ -177,17 +177,8 @@ percent <- function(x, digits = 2, format = "f", ...) {
 
 # TSS plots --------------------------------------------
 #  gether all the tss plots
-getherTSSplot <- function(lib_ids){
-    image_dir <- paste0(setQC_dir,"/images/")
-  system(paste0("mkdir -p ",image_dir))
-  if(system(paste0("ls -l ",image_dir," | wc -l")) == "0"){
-    sapply(lib_ids, function(x) {
-      cmd <- paste0("find ",libQC_dir,"/",x," -name '*large_tss*' -exec cp -n {} ",image_dir," \\;")
-      system(cmd)
-      cmd <- paste0("find ",libQC_dir,"/",x," -name '*tss-enrich.txt' -exec cp -n {} ",image_dir," \\;")
-      system(cmd)
-    })}
-    paste0("./images/",list.files(path = image_dir,pattern = "*_large_tss-enrich.png"))
+getherTSSplot <- function(){
+    paste0("./libQCs/",list.files(path = libQC_dir,pattern = "*_large_tss-enrich.png"))
 }
 
 

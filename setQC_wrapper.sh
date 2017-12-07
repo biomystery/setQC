@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-07 13:09:27"
+#Time-stamp: "2017-12-07 13:52:51"
 source activate bds_atac_py3
 
 
@@ -91,15 +91,15 @@ do
 done
 
 cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
-echo $cmd 
-eval $cmd
+echo $cmd
+#eval $cmd
 
 
 echo -e "############################################################"
 echo -e "Step 2. genSetQCreport" 
 # need fc_matrix 
 
-cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR $LIBQC_DIR ${LIB_ARRAY[@]}" #LIR_arry sorted by name already
+cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs ${LIB_ARRAY[@]}" #LIR_arry sorted by name already
 echo $cmd
 eval $cmd
 
@@ -153,11 +153,11 @@ do
     echo "tranfering $a to $b"
 
 
-    find $data_dir"/seqdata" \( -name $a"*.bz2" -o -name $a"*.gz" \)  -type f -exec ln -s {} ./  \; 
-    find $data_dir"/outputs/bams" -name $a"*.bam"  -type f -exec ln -s {} ./  \; 
+    find $data_dir"/seqdata" \( -name $a"_R*.bz2" -o -name $a"*.gz" \)  -type f -exec ln -s {} ./  \; 
+    find $data_dir"/outputs/bams" -name $a"_R*.bam"  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \; 
-    find $data_dir"/outputs/signals/" -name $a"*fc*.bigwig"  -type f -exec ln -s {} ./  \; 
-    find $data_dir"/outputs/signals/" -name $a"*pval*.bigwig"  -type f -exec ln -s {} ./  \;
+    find $data_dir"/outputs/signals/" -name $a"_R*fc*.bigwig"  -type f -exec ln -s {} ./  \; 
+    find $data_dir"/outputs/signals/" -name $a"_R*pval*.bigwig"  -type f -exec ln -s {} ./  \;
 
     # rename 
 

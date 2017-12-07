@@ -99,12 +99,12 @@ tagList(tlist)
 
 #+ tss_enrich_plot,echo =F, warning=F
 #require(evaluate)
-tss_plots <- getherTSSplot(libs)
+tss_plots <- getherTSSplot()
 tss_enrich <- libQC_table[grep('TSS',rownames(libQC_table)),]
 show_tss <- function(i) paste(libs.showname[i],signif(as.numeric(tss_enrich[i]),4),sep = ' : ')
 
 tmp <- sapply( 1:length(libs), function(i)
-  thumbnail(show_tss(i),tss_plots[i],colsize ='col-sm-3' ))
+  thumbnail(show_tss(i),grep(libs[i],tss_plots,value=T),colsize ='col-sm-3' ))
 tagList(tmp)
 div(class='row')
 
