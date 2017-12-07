@@ -114,6 +114,7 @@ div(class='row')
 
 
 if(length(list.files(libQC_dir,paste0(libs[1],".*enrich.txt")))>0){
+
     rd<-lapply(libs,function(l){
         f=list.files(libQC_dir,paste0(l,".*enrich.txt"))
         read.delim(paste0(libQC_dir,f),header = F)
