@@ -103,8 +103,9 @@ tss_plots <- getherTSSplot()
 tss_enrich <- libQC_table[grep('TSS',rownames(libQC_table)),]
 show_tss <- function(i) paste(libs.showname[i],signif(as.numeric(tss_enrich[i]),4),sep = ' : ')
 
-tmp <- sapply( 1:length(libs), function(i)
-  thumbnail(show_tss(i),grep(libs[i],tss_plots,value=T),colsize ='col-sm-3' ))
+tmp <- sapply( 1:length(libs), function(i){
+    ii <- grep(libs[i],tss_plots)
+    thumbnail(show_tss(i),tss_plots[ii],colsize ='col-sm-3' )})
 tagList(tmp)
 div(class='row')
 
@@ -207,6 +208,7 @@ tags$iframe(class="embed-responsive-item",
 
 #' ### PCA
 #+ pca,echo=F,message=F,warning=F
+
 if(!file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
     system(paste("calcOverlapAvgFC.sh -g",tolower(sample_table$species[1]),"-d",setQC_dir,paste(libs,collapse=" ")))
 }

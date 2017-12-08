@@ -36,7 +36,7 @@ getSampleTable <- function(lib_ids){
 
     na.id <- is.na(sample_table[,3]); sample_table[na.id,3] <- sample_table[na.id,2]
     sample_table[,3] <- make.names(sample_table$`Label (for QC report)`,unique =T)
-    write.csv(file=sample_file,sample_table,row.names = F,quote=T)
+    write.csv(file=sample_file,sample_table,row.names = F,quote=F)
 
     sample_table
 }
@@ -141,11 +141,13 @@ plotMultiQC <- function(data.file="../Set_6/multiqc_data/mqc_picard_gcbias_plot_
 getLibQCtable <- function(lib_ids){
   #print("getting libQC table")
   parseLibQC <- function(lib=libs[1]){
-     ### Parse one libQC result
-    libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,"*_qc.txt")),intern=T)
-    qc <- read.table(libQC_report_file,sep = "\t",header = F,fill = T,col.names = paste0("v",seq(3)),
-                     stringsAsFactors = F)
-    qc$v3 <- signif(qc$v3,digits = 3)
+### Parse one libQC result
+      libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,"*_qc.txt")),intern=T)
+      if(length(libQC_report_file)>1) libQC_report_file<- grep("trim",libQC_report_file,value=T)
+
+      qc <- read.table(libQC_report_file,sep = "\t",header = F,fill = T,col.names = paste0("v",seq(3)),
+                       stringsAsFactors = F)
+      qc$v3 <- signif(qc$v3,digits = 3)
     qc.2 <- data.frame(sapply(1:nrow(qc),function(x) sub(" \\| NA","",paste(qc$v2[x],qc$v3[x],sep = " | "))),
                        stringsAsFactors = F)
     rownames(qc.2)<- qc$v1

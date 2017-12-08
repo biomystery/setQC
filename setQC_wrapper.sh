@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-07 15:40:46"
+#Time-stamp: "2017-12-07 16:22:29"
 source activate bds_atac_py3
 
 
@@ -80,6 +80,8 @@ echo -e "# Step 1. runMultiQC"
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
 
 # cp s all libqc files to one folder
+# prefered trim
+
 mkdir -p $SETQC_DIR"/libQCs/";mkdir -p $SETQC_DIR"/data/";
 for l in ${LIB_ARRAY[@]}
 do
