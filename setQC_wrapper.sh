@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-07 16:22:29"
+#Time-stamp: "2017-12-12 13:12:16"
 source activate bds_atac_py3
 
 
@@ -150,25 +150,27 @@ data_dir="/home/zhc268/data/"
 libs_name_dic=(`cat $SETQC_DIR/including_libs.txt`)
 for i in `seq 1 $LIB_LEN`
 do 
-
-    a=${libs_name_dic[2*$i-2]};b=${libs_name_dic[2*$i-1]};
     
-    echo "tranfering $a to $b"
+    a=${libs_name_dic[2*$i-2]};b=${libs_name_dic[2*$i-1]};
 
+    # tranfer only not control 
+    if [ $(echo $b | grep -i -c control) -eq 0 ]
+    then
+           echo "tranfering $a to $b"
+           find $data_dir"/seqdata" \( -name $a"_R*.bz2" -o -name $a"*.gz" \)  -type f -exec ln -s {} ./  \; 
+           find $data_dir"/outputs/bams" -name $a"_R*.bam"  -type f -exec ln -s {} ./  \; 
+           find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \; 
+           find $data_dir"/outputs/signals/" -name $a"_R*fc*.bigwig"  -type f -exec ln -s {} ./  \; 
+           find $data_dir"/outputs/signals/" -name $a"_R*pval*.bigwig"  -type f -exec ln -s {} ./  \;
 
-    find $data_dir"/seqdata" \( -name $a"_R*.bz2" -o -name $a"*.gz" \)  -type f -exec ln -s {} ./  \; 
-    find $data_dir"/outputs/bams" -name $a"_R*.bam"  -type f -exec ln -s {} ./  \; 
-    find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \; 
-    find $data_dir"/outputs/signals/" -name $a"_R*fc*.bigwig"  -type f -exec ln -s {} ./  \; 
-    find $data_dir"/outputs/signals/" -name $a"_R*pval*.bigwig"  -type f -exec ln -s {} ./  \;
-
-    # rename 
-
-    find . \( -name $a"*.fastq.gz" -o -name $a"*.fastq.bz2" \) | xargs -n1 -I '{}' echo mv {} {} | sed "s/$a/$b/2" | bash  2> /dev/null
-    find . -name $a"*.PE2SE.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE/$b\.raw/2;s/${a}_R1_001\.trim\.PE2SE/${b}\.raw/2" | bash 2> /dev/null
-    find . -name $a"*.nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup/$b\.final/2;s/${a}_R1_001\.trim\.PE2SE\.nodup/${b}\.final/2"  | bash 2> /dev/null
-    find . -name $a"*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2;s/${a}_R1_001\.trim\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2" | bash 2> /dev/null
-    find . -name $a"*bigwig" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf/$b/2;s/${a}_R1_001\.trim\.PE2SE\.nodup\.tn5\.pf/$b/2" | bash 2> /dev/null
+           # rename 
+           
+           find . \( -name $a"*.fastq.gz" -o -name $a"*.fastq.bz2" \) | xargs -n1 -I '{}' echo mv {} {} | sed "s/$a/$b/2" | bash  2> /dev/null
+           find . -name $a"*.PE2SE.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE/$b\.raw/2;s/${a}_R1_001\.trim\.PE2SE/${b}\.raw/2" | bash 2> /dev/null
+           find . -name $a"*.nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup/$b\.final/2;s/${a}_R1_001\.trim\.PE2SE\.nodup/${b}\.final/2"  | bash 2> /dev/null
+           find . -name $a"*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2;s/${a}_R1_001\.trim\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2" | bash 2> /dev/null
+           find . -name $a"*bigwig" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf/$b/2;s/${a}_R1_001\.trim\.PE2SE\.nodup\.tn5\.pf/$b/2" | bash 2> /dev/null
+    fi
 done
 
 

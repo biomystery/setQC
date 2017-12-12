@@ -179,12 +179,14 @@ tagList(tlist)
 
 #' ### Raw peak numbers
 #+ raw_peak_num,echo =F
+
 raw_peak_number <- libQC_table[grep("Raw peaks",rownames(libQC_table)),]
 raw_peak_number<- sapply(raw_peak_number,function(x)
-  as.numeric(unlist(strsplit(as.character(x),split = " [-] "))[1]))
+    as.numeric(unlist(strsplit(as.character(x),split = " [-] "))[1]))
 pd.raw_peak_number <- data.frame(raw_peak_number=raw_peak_number,
                                  libs=libs.showname)
-tlist[[1]]<- hchart(pd.raw_peak_number, "column", hcaes(x = libs, y =  raw_peak_number ))
+idx.control <- grep("control",libs.showname,ignore.case=T)
+tlist[[1]]<- hchart(pd.raw_peak_number[-idx.control,], "column", hcaes(x = libs, y =  raw_peak_number ))
 tagList(tlist)
 
 
