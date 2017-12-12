@@ -194,7 +194,7 @@ tagList(tlist)
 #' ### FRiP (Fraction of reads in Peak region)
 
 #+ FRip,echo=F
-tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
+tlist[[1]]<- hchart(pd.3[-idx.control,], "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
 tagList(tlist)
 
 #' ## Peak advanced {.tabset .tabset-fade .tabset-pills}
