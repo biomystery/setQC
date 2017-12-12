@@ -1,0 +1,3 @@
+[submodule "peakApp"]
+	path = peakApp
+	url = git@github.com:biomystery/peakApp.git

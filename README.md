@@ -1,6 +1,6 @@
 setQC - A automatic report generating app
 ============================================================
-Time-stamp: "2017-11-28 14:38:53"
+Time-stamp: "2017-12-12 13:02:33"
 
 # Scripts 
 1. `setQC_wrapper_any.sh`: 
