@@ -30,8 +30,7 @@ getSampleTable <- function(lib_ids){
                                         # query 1: through id
         lib_ids <- sub("_S[0-9]+_L[0-9]+","",lib_ids)
         q1 <- sample_table$`Sequencing ID` %in% lib_ids
-        q2 <- sample_table$`sample ID (from MSTS)` %in% lib_ids
-        sample_table <- subset(sample_table, q1|q2)[,c(1,2,3,4,9,10,12)] #member initial, date, lib ID
+        sample_table <- subset(sample_table, q1)[,c(1,2,3,4,9,10,12)] #member initial, date, lib ID
     }
 
     na.id <- is.na(sample_table[,3]); sample_table[na.id,3] <- sample_table[na.id,2]
