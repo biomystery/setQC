@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-12 13:30:26"
+#Time-stamp: "2017-12-12 14:18:41"
 source activate bds_atac_py3
 
 
@@ -129,7 +129,7 @@ echo -e "# (`date`) Step 4. Final: set up the sharing web site & make app " | te
 
 mkdir -p $SETQC_DIR"/app"
 cd $SETQC_DIR"/app"
-cp -ufs /home/zhc268/data/software/setQC/app.R ./;
+cp -ufs /home/zhc268/data/software/setQC/peakApp/app.R ./;
 cp -Pfs $SETQC_DIR/data/avgOverlapFC.tab ./;
 cp -Pfs $SETQC_DIR/sample_table.csv ./
 

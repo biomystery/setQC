@@ -211,14 +211,14 @@ tags$iframe(class="embed-responsive-item",
 #' ### PCA
 #+ pca,echo=F,message=F,warning=F
 
-if(!file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
-    system(paste("calcOverlapAvgFC.sh -g",tolower(sample_table$species[1]),"-d",setQC_dir,paste(libs,collapse=" ")))
-}
+#if(!file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
+    system(paste("calcOverlapAvgFC.sh -g",unique(tolower(sample_table$species[-idx.control])),"-d",setQC_dir,paste(libs[-idx.control],collapse=" ")))
+#}
 
 if(length(libs.showname[-idx.control])>2){
     require(scatterD3)
     pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
-    pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)[,-idx.control]
+    pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
     pd.pca <- prcomp(t(pd.log2),center =T,scale. = T )
     perct <- as.numeric(round(summary(pd.pca)$importance[2,1:2]*100))
 

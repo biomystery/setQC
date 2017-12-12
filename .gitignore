@@ -3,5 +3,6 @@
 .Rhistory
 *.RMD
 \#*
+*.bed*
 
 
