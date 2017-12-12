@@ -215,7 +215,7 @@ if(!file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
     system(paste("calcOverlapAvgFC.sh -g",tolower(sample_table$species[1]),"-d",setQC_dir,paste(libs,collapse=" ")))
 }
 
-if(length(libs.showname[-idx.control,])>2){
+if(length(libs.showname[-idx.control])>2){
     require(scatterD3)
     pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
     pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)[,-idx.control]
