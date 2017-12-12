@@ -27,14 +27,17 @@ mkdir -p $desti_dir
 for i in `seq 1 $libs_len`
 do
     sample=${libs[2*$i-2]};sample_name=${libs[2*$i-1]};
-    echo "transfering $sample ${sample}*.fc.signal.bigwig..." 
 
-    # default is pval, mannually changed to fc
-    cat ${source_dir}"/signals/${sample}_tracks.json" | \
-	sed "s/\/.\/signal\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
-	sed "s/\/.\/peak\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
-        sed "s/$sample\ pval\ (rep1)/$sample_name\ pval/g" >>  $desti_dir/tracks_merged.json 
+    if [ $(echo $sample_name | grep -i -c control) -eq 0 ]
+    then
+        echo "transfering $sample ${sample}*.fc.signal.bigwig..." 
 
+        # default is pval, mannually changed to fc
+        cat ${source_dir}"/signals/${sample}_tracks.json" | \
+	    sed "s/\/.\/signal\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
+	    sed "s/\/.\/peak\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
+            sed "s/$sample\ pval\ (rep1)/$sample_name\ pval/g" >>  $desti_dir/tracks_merged.json 
+    fi
 done 
 
 echo >>  $desti_dir/tracks_merged.json 
