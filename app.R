@@ -32,11 +32,15 @@ server <- function(input, output, session) {
 	libs<- unlist(strsplit(readLines("./including_libs.txt"),split = " "))
 	libs <- sub("_S[0-9]+_L[0-9]+","",libs)
     }
-    
+
 
     pd <- read.table("./avgOverlapFC.tab")
     pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
     names(pd.log2)<- libs
+
+    idx.control <-  grepl("control",libs,ignore.case=T)
+    pd.log2 <- pd.log2[,!idx.control]
+
     correlation <- round(cor(pd.log2,method="spearman"), 3)
 
     getXYlabel <- function(p=heatmaply(correlation,colors = Reds(n = 9),margins = c(60,100,NA,20))){
