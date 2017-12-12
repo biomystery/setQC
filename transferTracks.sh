@@ -36,7 +36,7 @@ do
         cat ${source_dir}"/signals/${sample}_tracks.json" | \
 	    sed "s/\/.\/signal\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
 	    sed "s/\/.\/peak\/macs2\/rep1/http:\/\/epigenomics.sdsc.edu\/share/g" | \
-            sed "s/${sample}/${sample_name}/g" ;"s/\ (rep1)//g" ;"s/ff0000/0000ff/g" >>  $desti_dir/tracks_merged.json 
+            sed "s/${sample}/${sample_name}/g" | sed "s/\ (rep1)//g" | sed "s/ff0000/0000ff/g" >>  $desti_dir/tracks_merged.json 
     fi
 done 
 
