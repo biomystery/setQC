@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-12 14:18:41"
+#Time-stamp: "2017-12-12 14:27:01"
 source activate bds_atac_py3
 
 
@@ -81,8 +81,9 @@ echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
 
 # cp s all libqc files to one folder
 # prefered trim
-
+rm -rf $SETQC_DIR"/libQCs/" || true ; rm -rf $SETQC_DIR"/data/" || true ;
 mkdir -p $SETQC_DIR"/libQCs/";mkdir -p $SETQC_DIR"/data/";
+
 for l in ${LIB_ARRAY[@]}
 do
     echo "cp $l libqc files..."
@@ -138,8 +139,7 @@ ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELA
 echo -e "############################################################"
 echo -e "# Step 5. Final: prepare downloading files "
 
-rm -r $SETQC_DIR"/download";mkdir $SETQC_DIR"/download"
-
+rm -rf $SETQC_DIR"/download" || true ;mkdir $SETQC_DIR"/download"
 cd $SETQC_DIR"/download"
 
 # script 
