@@ -27,12 +27,10 @@ no_libs <- length(libs)
 source('./libs.R')
 
 
-libs.showname <- sub("_S[0-9]+_L[0-9]+","",libs)
-
 #' # Sample info.
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
-    sample_table<- getSampleTable(libs.showname)
+    sample_table<- getSampleTable(libs)
     libs.showname <- sample_table$`Label (for QC report)`
     kable(sample_table)
 }
