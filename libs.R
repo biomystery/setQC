@@ -14,31 +14,33 @@ require(ggplot2)
 
 getSampleTable <- function(lib_ids){
     sample_file <- paste0(setQC_dir,"/sample_table.csv")
-    if(F){
-        if(file.exists(sample_file)){
-            if (system(paste0("wc -l ",sample_file,"|awk  '{print $1}'"),intern = T)!="1")
-                return(read.csv(file = sample_file,
+
+    if(length(system(paste0("find ",setQC_dir,"-mtime -1 -name 'sample_table.csv'"),intern=T))>0){
+        if (system(paste0("wc -l ",sample_file,"|awk  '{print $1}'"),intern = T)!="1")
+            return(read.csv(file = sample_file,
                                 stringsAsFactors = F,check.names = F))
-        }
+    }else{
+
+        require(googlesheets)
+        suppressPackageStartupMessages(require(dplyr))
+        gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
+        gs_ls() # for the auth
+        gs_mseqts <- gs_key("1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y")
+        sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,19)))
+
+        q1 <- sample_table$`Sequencing ID` %in% lib_ids
+        sample_table <- subset(sample_table, q1)[,c(1,2,3,4,9,10,12)] #member initial, date, lib ID
+
+        na.id <- is.na(sample_table[,3]); sample_table[na.id,3] <- sample_table[na.id,2]
+        sample_table[,3] <- make.names(sample_table$`Label (for QC report)`,unique =T)
+        sample_table <- as.data.frame(sample_table)
+        rownames(sample_table)<- as.character(sample_table$`Sequencing ID`)
+        sample_table <- sample_table[lib_ids,] # keep same order as libs
+        write.csv(file=sample_file,sample_table,row.names = F,quote=F)
+        sample_table
+
     }
 
-    require(googlesheets)
-    suppressPackageStartupMessages(require(dplyr))
-    gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
-    gs_ls() # for the auth
-    gs_mseqts <- gs_key("1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y")
-    sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,19)))
-
-    q1 <- sample_table$`Sequencing ID` %in% lib_ids
-    sample_table <- subset(sample_table, q1)[,c(1,2,3,4,9,10,12)] #member initial, date, lib ID
-
-    na.id <- is.na(sample_table[,3]); sample_table[na.id,3] <- sample_table[na.id,2]
-    sample_table[,3] <- make.names(sample_table$`Label (for QC report)`,unique =T)
-    sample_table <- as.data.frame(sample_table)
-    rownames(sample_table)<- as.character(sample_table$`Sequencing ID`)
-    sample_table <- sample_table[lib_ids,] # keep same order as libs
-    write.csv(file=sample_file,sample_table,row.names = F,quote=F)
-    sample_table
 }
 
 
