@@ -34,6 +34,7 @@ getSampleTable <- function(lib_ids){
 
     na.id <- is.na(sample_table[,3]); sample_table[na.id,3] <- sample_table[na.id,2]
     sample_table[,3] <- make.names(sample_table$`Label (for QC report)`,unique =T)
+    sample_table <- as.data.frame(sample_table)
     rownames(sample_table)<- as.character(sample_table$`Sequencing ID`)
     sample_table <- sample_table[lib_ids,] # keep same order as libs
     write.csv(file=sample_file,sample_table,row.names = F,quote=F)
