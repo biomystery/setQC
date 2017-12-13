@@ -183,8 +183,8 @@ raw_peak_number<- sapply(raw_peak_number,function(x)
     as.numeric(unlist(strsplit(as.character(x),split = " [-] "))[1]))
 pd.raw_peak_number <- data.frame(raw_peak_number=raw_peak_number,
                                  libs=libs.showname)
-idx.control <- grep("control",libs.showname,ignore.case=T)
-tlist[[1]]<- hchart(pd.raw_peak_number[-idx.control,], "column", hcaes(x = libs, y =  raw_peak_number ))
+idx.control <- grepl("control",libs.showname,ignore.case=T)
+tlist[[1]]<- hchart(pd.raw_peak_number[!idx.control,], "column", hcaes(x = libs, y =  raw_peak_number ))
 tagList(tlist)
 
 
@@ -192,7 +192,7 @@ tagList(tlist)
 #' ### FRiP (Fraction of reads in Peak region)
 
 #+ FRip,echo=F
-tlist[[1]]<- hchart(pd.3[-idx.control,], "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
+tlist[[1]]<- hchart(pd.3[!idx.control,], "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
 tagList(tlist)
 
 #' ## Peak advanced {.tabset .tabset-fade .tabset-pills}
@@ -210,17 +210,17 @@ tags$iframe(class="embed-responsive-item",
 #+ pca,echo=F,message=F,warning=F
 
 if(length(system(paste0("find ",setQC_dir,"/data -mtime +1 -name 'avgOverlapFC.tab'"),intern=T))>0 | !file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
-    system(paste("calcOverlapAvgFC.sh -g",unique(tolower(sample_table$species[-idx.control])),"-d",setQC_dir,paste(libs[-idx.control],collapse=" ")))
+    system(paste("calcOverlapAvgFC.sh -g",unique(tolower(sample_table$species[!idx.control])),"-d",setQC_dir,paste(libs[!idx.control],collapse=" ")))
 }
 
-if(length(libs.showname[-idx.control])>2){
+if(length(libs.showname[!idx.control])>2){
     require(scatterD3)
     pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
     pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
     pd.pca <- prcomp(t(pd.log2),center =T,scale. = T )
     perct <- as.numeric(round(summary(pd.pca)$importance[2,1:2]*100))
 
-    tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs.showname[-idx.control]),point_size = 100,
+    tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs.showname[!idx.control]),point_size = 100,
                           xlab = paste0("PC1: ",perct[1],"%"),
                           ylab = paste0("PC2: ",perct[2],"%"),
                           point_opacity = 0.5,hover_size = 4, hover_opacity = 1,lasso = T,
