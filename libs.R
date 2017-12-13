@@ -68,8 +68,9 @@ parseFastqScreen<- function(fn="JYH_109_R1_screen.txt"){
   pd <- read.delim(df,skip = 1,check.names=F,stringsAsFactors = F)
   pd <- pd[,c(1,grep("\\%",colnames(pd)))]
   pd <- pd[,-2] # drop unmapped
-  um <- as.numeric(unlist(strsplit(pd$Genome[7],split = ":"))[2])
-  pd$Genome[7] <- "No hits"; pd$`%One_hit_one_genome`[7] <- um
+  
+  um <- as.numeric(unlist(strsplit(pd$Genome[nrow(pd)],split = ":"))[2])
+  pd$Genome[nrow(pd)] <- "No hits"; pd$`%One_hit_one_genome`[nrow(pd)] <- um
   pd[is.na(pd)] <- 0
   #pd$`%total_alignment` <- apply(pd[,2:ncol(pd)],1,sum)
   pd %>% gather("type","Percentage_Aligned",-1) %>% mutate(sample=sub("_screen.txt","",fn))
