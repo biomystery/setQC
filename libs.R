@@ -15,7 +15,7 @@ require(ggplot2)
 getSampleTable <- function(lib_ids){
     sample_file <- paste0(setQC_dir,"/sample_table.csv")
 
-    if(length(system(paste0("find ",setQC_dir,"-mtime -1 -name 'sample_table.csv'"),intern=T))>0){
+    if(length(system(paste0("find ",setQC_dir," -mtime -1 -name 'sample_table.csv'"),intern=T))>0){
         if (system(paste0("wc -l ",sample_file,"|awk  '{print $1}'"),intern = T)!="1")
             return(read.csv(file = sample_file,
                                 stringsAsFactors = F,check.names = F))

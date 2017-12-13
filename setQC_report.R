@@ -209,7 +209,7 @@ tags$iframe(class="embed-responsive-item",
 #' ### PCA
 #+ pca,echo=F,message=F,warning=F
 
-if(length(system(paste0("find ",setQC_dir,"/data -mtime +1 -name 'avgOverlapFC.tab'"),intern=T))>0){
+if(length(system(paste0("find ",setQC_dir,"/data -mtime +1 -name 'avgOverlapFC.tab'"),intern=T))>0 | !file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
     system(paste("calcOverlapAvgFC.sh -g",unique(tolower(sample_table$species[-idx.control])),"-d",setQC_dir,paste(libs[-idx.control],collapse=" ")))
 }
 
