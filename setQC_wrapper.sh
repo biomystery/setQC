@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-12 15:42:08"
+#Time-stamp: "2017-12-15 12:26:42"
 source activate bds_atac_py3
 
 

@@ -184,7 +184,14 @@ raw_peak_number<- sapply(raw_peak_number,function(x)
 pd.raw_peak_number <- data.frame(raw_peak_number=raw_peak_number,
                                  libs=libs.showname)
 idx.control <- grepl("control",libs.showname,ignore.case=T)
-tlist[[1]]<- hchart(pd.raw_peak_number[!idx.control,], "column", hcaes(x = libs, y =  raw_peak_number ))
+is.all.control <- sum(idx.control)== no_libs
+
+if(is.all.control){ # all controls
+    tlist[[1]]<- hchart(pd.raw_peak_number, "column", hcaes(x = libs, y =  raw_peak_number ))
+} else{
+    tlist[[1]]<- hchart(pd.raw_peak_number[!idx.control,], "column", hcaes(x = libs, y =  raw_peak_number ))
+}
+
 tagList(tlist)
 
 
@@ -192,7 +199,12 @@ tagList(tlist)
 #' ### FRiP (Fraction of reads in Peak region)
 
 #+ FRip,echo=F
-tlist[[1]]<- hchart(pd.3[!idx.control,], "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
+
+if(is.all.control){
+    tlist[[1]]<-    hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
+}else{
+    tlist[[1]]<-    hchart(pd.3[!idx.control,], "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
+}
 tagList(tlist)
 
 #' ## Peak advanced {.tabset .tabset-fade .tabset-pills}
@@ -208,9 +220,12 @@ tags$iframe(class="embed-responsive-item",
 
 #' ### PCA
 #+ pca,echo=F,message=F,warning=F
-
 if(length(system(paste0("find ",setQC_dir,"/data -mtime +1 -name 'avgOverlapFC.tab'"),intern=T))>0 | !file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
-    system(paste("calcOverlapAvgFC.sh -g",unique(tolower(sample_table$species[!idx.control])),"-d",setQC_dir,paste(libs[!idx.control],collapse=" ")))
+    if (is.all.control){
+        system(paste("calcOverlapAvgFC.sh -g",unique(tolower(sample_table$species[!idx.control])),"-d",setQC_dir,paste(libs,collapse=" ")))
+    }else{
+        system(paste("calcOverlapAvgFC.sh -g",unique(tolower(sample_table$species[!idx.control])),"-d",setQC_dir,paste(libs[!idx.control],collapse=" ")))
+    }
 }
 
 if(length(libs.showname[!idx.control])>2){
