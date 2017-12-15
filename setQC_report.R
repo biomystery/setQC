@@ -115,9 +115,10 @@ if(length(list.files(libQC_dir,paste0(libs[1],".*enrich.txt")))>0){
     rd<-lapply(libs,function(l){
         f=list.files(libQC_dir,paste0(l,".*enrich.txt"))
         if(length(f)>0) {
-            read.delim(paste0(libQC_dir,f),header = F)
             l.tmp <- c(l.tmp,which(libs==l))
-        }
+            return(read.delim(paste0(libQC_dir,f),header = F))
+        }else{
+        return(NULL)}
     })
 
     rd <- do.call(cbind,rd); names(rd) <- libs.showname[l.tmp]
