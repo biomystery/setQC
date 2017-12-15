@@ -24,11 +24,13 @@ desti_dir=$d"/data/" #"${HOME}/set4_2_Reports/data/"
 mkdir -p $desti_dir
 > $desti_dir/tracks_merged.json # new file
 
+all_control=false
+[[ $(echo ${libs[@]} | tr -s " " "\n" | grep -i -c "control") -eq $libs_len ]] && all_control=true 
+
 for i in `seq 1 $libs_len`
 do
     sample=${libs[2*$i-2]};sample_name=${libs[2*$i-1]};
-
-    if [ $(echo $sample_name | grep -i -c "control") -eq 0 ]
+    if [ $(echo $sample_name | grep -i -c "control") -eq 0 ] || [ "$all_control" = true ]
     then
         echo "transfering $sample ${sample}*.fc.signal.bigwig..." 
 
