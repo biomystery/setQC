@@ -110,23 +110,20 @@ div(class='row')
 #' ### Average TSS enrichement compare
 #+ avg_tss,echo=F,warning=F,message=F
 # read data
-l.tmp <- NULL
+l.tmp <- NULL;rd <- list()
 if(length(list.files(libQC_dir,paste0(libs[1],".*enrich.txt")))>0){
-    rd<-lapply(libs,function(l){
+    for(l in libs){
         f=list.files(libQC_dir,paste0(l,".*enrich.txt"))
         if(length(f)>0) {
-            l.tmp <- c(l.tmp,which(libs==l))
-            return(read.delim(paste0(libQC_dir,f),header = F))
-        }else{
-        return(NULL)}
-    })
+            rd[[l]] <- (read.delim(paste0(libQC_dir,f),header = F))
+    }}
 
-    rd <- do.call(cbind,rd); names(rd) <- libs.showname[l.tmp]
+    rd <- do.call(cbind,rd);
     rd$TSS <- seq(-2000,2000,length.out = nrow(rd));
 
     # hchart function: https://cran.r-project.org/web/packages/highcharter/vignettes/charting-data-frames.html
     tlist <- list()
-    tlist[[1]]<-hchart(rd %>% gather(key = "libs",value = "avg_tss_enrichment",1:length(l.tmp)),
+    tlist[[1]]<-hchart(rd %>% gather(key = "libs",value = "avg_tss_enrichment",1:ncol(rd)),
                        "line",hcaes(x=TSS,y=avg_tss_enrichment,group=libs))
     tagList(tlist)
 }
