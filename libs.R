@@ -64,22 +64,30 @@ updateSetQC_gs <- function(){
 # contamination plot  --------------------------------------
 
 parseFastqScreen<- function(fn="JYH_109_R1_screen.txt"){
-  df <- list.files(path=libQC_dir,pattern=fn,recursive=T,full.names=T)
-  pd <- read.delim(df,skip = 1,check.names=F,stringsAsFactors = F)
-  pd <- pd[,c(1,grep("\\%",colnames(pd)))]
-  pd <- pd[,-2] # drop unmapped
-  
-  um <- as.numeric(unlist(strsplit(pd$Genome[nrow(pd)],split = ":"))[2])
-  pd$Genome[nrow(pd)] <- "No hits"; pd$`%One_hit_one_genome`[nrow(pd)] <- um
-  pd[is.na(pd)] <- 0
+    df <- list.files(path=libQC_dir,pattern=fn,recursive=T,full.names=T)
+    if(df=="") return df
+
+    pd <- read.delim(df,skip = 1,check.names=F,stringsAsFactors = F)
+    pd <- pd[,c(1,grep("\\%",colnames(pd)))]
+    pd <- pd[,-2] # drop unmapped
+
+    um <- as.numeric(unlist(strsplit(pd$Genome[nrow(pd)],split = ":"))[2])
+    pd$Genome[nrow(pd)] <- "No hits"; pd$`%One_hit_one_genome`[nrow(pd)] <- um
+    pd[is.na(pd)] <- 0
   #pd$`%total_alignment` <- apply(pd[,2:ncol(pd)],1,sum)
-  pd %>% gather("type","Percentage_Aligned",-1) %>% mutate(sample=sub("_screen.txt","",fn))
+    pd %>% gather("type","Percentage_Aligned",-1) %>% mutate(sample=sub("_screen.txt","",fn))
   #pd %>% mutate(sample=sub("_screen.txt","",fn))
 }
 
-parseFastqScreen_perLib <- function(lib)
-  rbind(parseFastqScreen(fn=paste0(lib,"_R1.*_screen.txt")), # . is required here to search for multiple chr
-        parseFastqScreen(fn=paste0(lib,"_R2.*_screen.txt")))
+parseFastqScreen_perLib <- function(lib){
+    out= rbind(parseFastqScreen(fn=paste0(lib,"_R1.*_screen.txt")), # . is required here to search for multiple chr
+               parseFastqScreen(fn=paste0(lib,"_R2.*_screen.txt")))
+    if(unique(out) == ""){
+        return(parseFastqScreen(fn=paste0(lib,".*_screen.txt"))) # for SE
+    } else{
+        return(out)
+    }
+}
 
 plotSource <- function(pd=do.call(rbind,lapply(libs, parseFastqScreen_perLib))){
   pd.new <-pd %>% group_by(name=type,
