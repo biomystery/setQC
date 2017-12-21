@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2017-12-15 13:56:38"
+#Time-stamp: "2017-12-20 22:19:32"
 source activate bds_atac_py3
 
 
@@ -89,8 +89,8 @@ do
     echo "cp $l libqc files..."
     find $LIBQC_DIR$l -type f -exec cp -Psu '{}' $SETQC_DIR"/libQCs/" \; 2> /dev/null
     echo "cp $l peaks files"
-    find  $track_source_dir"peaks"  -name "${l}_R*hammock*"  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
-    find  $track_source_dir"signals"  -name "${l}_R*fc.signal.bigwig*"  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
+    find  $track_source_dir"peaks" \( -name "${l}_R*hammock*" -o -name "${l}.fastq*hammock*" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
+    find  $track_source_dir"signals" \( -name "${l}_R*fc.signal.bigwig*" -o -name "${l}.fastq*fc.signal.bigwig*" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
 done
 
 cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
