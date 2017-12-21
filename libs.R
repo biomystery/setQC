@@ -166,7 +166,7 @@ getLibQCtable <- function(lib_ids){
     qc.2
   }
   qc_table <- do.call(what = cbind,args = lapply(lib_ids,parseLibQC))
-  qc_table<-qc_table[-c(1:2,16:24,26:27,35,37),]
+  #qc_table<-qc_table[-c(1:2,16:24,26:27,35,37),]
 
 
     if(exists("sample_table")){
@@ -177,7 +177,6 @@ getLibQCtable <- function(lib_ids){
     }
   qc_table
 }
-
 
 getReadsTable <- function(qc_table=libQC_table){
   rtable <- data.matrix(subset(qc_table,grepl("Read count",rownames(qc_table))))
