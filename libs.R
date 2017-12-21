@@ -65,7 +65,7 @@ updateSetQC_gs <- function(){
 
 parseFastqScreen<- function(fn="JYH_109_R1_screen.txt"){
     df <- list.files(path=libQC_dir,pattern=fn,recursive=T,full.names=T)
-    if(df=="") return(df)
+    if(length(df)==0) return("")
 
     pd <- read.delim(df,skip = 1,check.names=F,stringsAsFactors = F)
     pd <- pd[,c(1,grep("\\%",colnames(pd)))]
