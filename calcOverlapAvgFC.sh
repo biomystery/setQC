@@ -32,7 +32,7 @@ cat merged.clip.bed | sort -k1,1 -k2,2n | uniq | awk -v OFS='\t' '{print $0,NR-1
 for w in ${including_libs[@]};
 do
     echo "for lib:$w  - calculating avarage fc overlap in merged peaks";
-    a=`find ./data -name "${w}_*.bigwig"`
+    a=`find ./data \( -name "${w}_*.bigwig" -o -name "${w}*.bigwig"\) `
     bigWigAverageOverBed $a merged_peak.srt.clip.named.bed ${w}.tab 
     awk '{print $6}' ${w}.tab > ${w}_avg.tab &&  rm ${w}.tab
 done
