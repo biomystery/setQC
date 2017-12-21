@@ -127,13 +127,14 @@ plotSource <- function(pd=do.call(rbind,lapply(libs, parseFastqScreen_perLib))){
 # re plot MultiQC file  -----------------------------------------------
 plotMultiQC <- function(data.file="../Set_6/multiqc_data/mqc_picard_gcbias_plot_1.txt",ylab="Normalized Coverage",xlab="GC%"){
 
-  r2.list <- lapply(readLines(data.file),function(x) as.numeric((unlist(strsplit(x,split = "\t")))[-1]))
+    if(!file.exists(data.file))    return("")
+    r2.list <- lapply(readLines(data.file),function(x) as.numeric((unlist(strsplit(x,split = "\t")))[-1]))
 
-  if(length(r2.list) > 2* no_libs){
-    df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[2*i-1]],y=r2.list[[2*i]],libs_=libs.showname[i]))
-  }else{
-    df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[1]],y=r2.list[[i+1]],libs_=libs.showname[i]))
-  }
+    if(length(r2.list) > 2* no_libs){
+        df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[2*i-1]],y=r2.list[[2*i]],libs_=libs.showname[i]))
+    }else{
+        df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[1]],y=r2.list[[i+1]],libs_=libs.showname[i]))
+    }
 
   df <- do.call(rbind,c(df,row.name=NULL))
 
