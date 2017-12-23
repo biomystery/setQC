@@ -82,7 +82,7 @@ parseFastqScreen<- function(fn="JYH_109_R1_screen.txt"){
 parseFastqScreen_perLib <- function(lib){
     out= rbind(parseFastqScreen(fn=paste0(lib,"_R1.*_screen.txt")), # . is required here to search for multiple chr
                parseFastqScreen(fn=paste0(lib,"_R2.*_screen.txt")))
-    if(ncol(out)== r){
+    if(ncol(out)== 4){
         return(out)
     } else{
         return(parseFastqScreen(fn=paste0(lib,".*_screen.txt"))) # for SE
