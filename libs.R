@@ -82,10 +82,10 @@ parseFastqScreen<- function(fn="JYH_109_R1_screen.txt"){
 parseFastqScreen_perLib <- function(lib){
     out= rbind(parseFastqScreen(fn=paste0(lib,"_R1.*_screen.txt")), # . is required here to search for multiple chr
                parseFastqScreen(fn=paste0(lib,"_R2.*_screen.txt")))
-    if(unique(out) == ""){
-        return(parseFastqScreen(fn=paste0(lib,".*_screen.txt"))) # for SE
-    } else{
+    if(ncol(out)== r){
         return(out)
+    } else{
+        return(parseFastqScreen(fn=paste0(lib,".*_screen.txt"))) # for SE
     }
 }
 
@@ -155,7 +155,7 @@ getLibQCtable <- function(lib_ids){
   parseLibQC <- function(lib=libs[1]){
 ### Parse one libQC result
       libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,"*_qc.txt")),intern=T)
-      if(length(libQC_report_file)>1) libQC_report_file<- grep("trim",libQC_report_file,value=T)
+      if(length(libQC_report_file)>1) libQC_report_file <- grep("trim",libQC_report_file,value=T)
 
       qc <- read.table(libQC_report_file,sep = "\t",header = F,fill = T,col.names = paste0("v",seq(3)),
                        stringsAsFactors = F)
