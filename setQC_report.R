@@ -124,7 +124,7 @@ if(length(list.files(libQC_dir,paste0(libs[1],".*enrich.txt")))>0){
 
     # hchart function: https://cran.r-project.org/web/packages/highcharter/vignettes/charting-data-frames.html
     tlist <- list()
-    tlist[[1]]<-hchart(rd %>% gather(key = "libs",value = "avg_tss_enrichment",1:l.tmp),
+    tlist[[1]]<-hchart(rd %>% gather(key = "libs",value = "avg_tss_enrichment",l.tmp),
                        "line",hcaes(x=TSS,y=avg_tss_enrichment,group=libs))
     tagList(tlist)
 }
