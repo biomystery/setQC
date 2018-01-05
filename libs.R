@@ -154,7 +154,9 @@ getLibQCtable <- function(lib_ids){
   #print("getting libQC table")
   parseLibQC <- function(lib=libs[1]){
 ### Parse one libQC result
-      libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,"*_qc.txt")),intern=T)
+      libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,"_R*_qc.txt")),intern=T)
+      if(length(libQC_report_file)==0)  libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,".*_qc.txt")),intern=T)
+      if(length(libQC_report_file)==0)  libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,"_qc.txt")),intern=T)
       if(length(libQC_report_file)>1) libQC_report_file <- grep("trim",libQC_report_file,value=T)
 
       qc <- read.table(libQC_report_file,sep = "\t",header = F,fill = T,col.names = paste0("v",seq(3)),
