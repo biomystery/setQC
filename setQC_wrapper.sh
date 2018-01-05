@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-01-05 10:30:29"
+#Time-stamp: "2018-01-05 14:45:59"
 source activate bds_atac_py3
 
 
@@ -114,7 +114,7 @@ echo -e "# Step 3. prepare tracks"
 for s in ${LIB_ARRAY[@]}
 do
     ss=`echo $s | sed -E "s/_S[0-9]+_L[0-9]+//g"`;
-    ln=`grep -n $ss $SETQC_DIR/sample_table.csv | cut -f1 -d:`;
+    ln=`grep -n "${ss}," $SETQC_DIR/sample_table.csv | cut -f1 -d:`;
     sn=`sed "${ln}q;d" $SETQC_DIR/sample_table.csv| awk -F"," '{print $3}'| sed "s/\ /\_/g"`;
     echo -e "$s\t$sn">> $SETQC_DIR/including_libs.txt ;done
 cmd="transferTracks.sh -d $SETQC_DIR -s $track_source_dir  -l $SETQC_DIR/including_libs.txt" 
