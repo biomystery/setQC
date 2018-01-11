@@ -8,7 +8,9 @@ import gzip
 import argparse
 
 
-name_dics={'Human':'100000','Mouse':'010000', 'Cattle':'001000','Ecoli':'000100', 'PhiX':'000010','Vectors':'000001','NoHit':'000000'}
+name_dics={'Human':'10000000','Mouse':'01000000', 'Rat':'00100000'
+           'Cattle':'00010000','Ecoli':'00001000',
+           'Mycoplasma':'00000100', 'PhiX':'00000010','Vectors':'00000001','NoHit':'00000000'}
 name_dics_rev={v: k for k, v in name_dics.iteritems()}
 
 def parseArgs():
@@ -58,7 +60,7 @@ def writeFiles(content_dic,name_dics_rev,prefix,outDir):
     Write the split fastq from dic to files 
     '''
     for k,v in name_dics_rev.iteritems():
-        fn=gzip.open('{0}.trim_screen.{1}.fastq.gz'.format(os.path.join(outDir,prefix),v),'wb')
+        fn=gzip.open('{0}.screen.{1}.fastq.gz'.format(os.path.join(outDir,prefix),v),'wb')
         for item in content_dic[k]:
             fn.write("%s" % item)
         fn.close()
