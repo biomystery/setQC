@@ -19,7 +19,7 @@ cd $setQC_dir
 echo "merging peaks"
 > ./merged.tmp.bed
 for l in ${including_libs[@]}; do find ./data -name "${l}*.ham*.gz" -exec zcat {} \; | awk -v OFS='\t' '{print $1,$2,$3}'| sort -k1,1 -k2,2n | uniq >> ./merged.tmp.bed; done
-bedtools merge -i merged.tmp.bed > merged.bed
+bedtools merge -i <(sort -k1,1 -k2,2n merged.tmp.bed | uniq) > merged.bed
 
 bedClip merged.bed $(find /home/zhc268/data/GENOME/ -name $genome".chrom.sizes") merged.clip.bed
 cat merged.clip.bed | sort -k1,1 -k2,2n | uniq | awk -v OFS='\t' '{print $0,NR-1}' > merged_peak.srt.clip.named.bed
