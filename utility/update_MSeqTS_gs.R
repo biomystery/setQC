@@ -43,11 +43,15 @@ qc.all <- do.call(rbind, lapply(1:length(libs),parseLibQC))
 gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
 gs_mseqts <- gs_key("1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y")
 
-sample.table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,7),c(NA,26)))
+sample.table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,9),c(NA,28)))
+colnames(sample.table)
 
 all(libs %in% sample.table$`Sequencing ID`)
+libs <- libs[(libs %in% sample.table$`Sequencing ID`)]
 #sample.table <- sample_table[,c(2,14:20)]
 
+colnames(sample.table)[14:20]
+colnames(qc.all)
 for( l in libs){
     qc <- qc.all[l,]
     ridx <- which(sample.table$`Sequencing ID`==l)
@@ -59,7 +63,7 @@ for( l in libs){
 ## edit: https://rawgit.com/jennybc/googlesheets/master/vignettes/basic-usage.html
 
 
-gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,14],  anchor="V3")
+gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,14],  anchor="V3") # Genome
 gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,15],  anchor="W3")
 gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,16],  anchor="X3")
 gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=sample.table[,17],  anchor="Y3")
