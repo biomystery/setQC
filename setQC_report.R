@@ -183,7 +183,7 @@ raw_peak_number<- sapply(raw_peak_number,function(x)
     as.numeric(unlist(strsplit(as.character(x),split = " [-] "))[1]))
 pd.raw_peak_number <- data.frame(raw_peak_number=raw_peak_number,
                                  libs=libs.showname)
-idx.control <- grepl("control",libs.showname,ignore.case=T)
+idx.control <- (grepl("control",libs.showname,ignore.case=T))&(grepl("atac",libs.showname,ignore.case=T))
 is.all.control <- sum(idx.control)== no_libs
 
 if(is.all.control){ # all controls

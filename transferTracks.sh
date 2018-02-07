@@ -25,7 +25,7 @@ mkdir -p $desti_dir
 > $desti_dir/tracks_merged.json # new file
 
 all_control=false
-[[ $(echo ${libs[@]} | tr -s " " "\n" | grep -i -c "control") -eq $libs_len ]] && all_control=true 
+[[ $(echo ${libs[@]} | tr -s " " "\n" | grep -i -c -E 'atac.*control') -eq $libs_len ]] && all_control=true  #atac & control 
 
 for i in `seq 1 $libs_len`
 do
