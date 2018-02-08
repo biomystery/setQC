@@ -30,7 +30,7 @@ all_control=false
 for i in `seq 1 $libs_len`
 do
     sample=${libs[2*$i-2]};sample_name=${libs[2*$i-1]};
-    if [ $(echo $sample_name | grep -i -c "control") -eq 0 ] || [ "$all_control" = true ]
+    if [ $(echo $sample_name | grep -i -c 'atac.*control') -eq 0 ] || [ "$all_control" = true ]
     then
         echo "transfering $sample ${sample}*.pileup.signal.bigwig..." 
 
