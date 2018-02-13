@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-02-07 16:05:21"
+#Time-stamp: "2018-02-13 14:26:51"
 source activate bds_atac_py3
 
 
@@ -158,6 +158,7 @@ do
     find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/signals/" -name $a"_R*fc*.bigwig"  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/signals/" -name $a"_R*pval*.bigwig"  -type f -exec ln -s {} ./  \;
+    find $data_dir"/outputs/signals/" -name $a"_R*pileup*.bigwig"  -type f -exec ln -s {} ./  \;    
 
     # rename 
     
