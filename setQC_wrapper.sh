@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-02-26 15:00:46"
+#Time-stamp: "2018-02-26 15:02:08"
 source activate bds_atac_py3
 
 
@@ -36,7 +36,6 @@ done
 
 if [  -z "$PADV" ]; then
     PADV="true"
-    exit 1
 fi
 
 if [ -z "$SET_NAME" ]; then
