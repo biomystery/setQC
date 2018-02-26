@@ -5,7 +5,8 @@ args <- commandArgs(trailingOnly = TRUE)
 (set_name_id <- args[1])
 (setQC_dir_ <- args[2])
 (libQC_dir_ <-  args[3]) # used to pull out libqc files in libs.R
-(libs_<- args[4:length(args)]) # the last, sorted by name
+(padv_<- args[4]) # peak advanced toggle
+(libs_<- args[5:length(args)]) # the last, sorted by name
 
 
 relative_dir <- sub("/home/zhc268/data/outputs/setQCs(/)+","",setQC_dir_)
@@ -44,7 +45,8 @@ rmarkdown::render("/projects/ps-epigen/software/setQC/setQC_report.R",
                     set_name = set_name_,
                     libs = libs_,
                     setQC_dir = setQC_dir_,
-                    libQC_dir = libQC_dir_
+                    libQC_dir = libQC_dir_,
+                    padv =padv_
                   ),
                   output_dir=setQC_dir_)
 

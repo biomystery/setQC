@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-02-24 14:28:49"
+#Time-stamp: "2018-02-26 15:00:46"
 source activate bds_atac_py3
 
 
@@ -16,12 +16,13 @@ BASE_OUTPUT_DIR="/home/zhc268/data/outputs/setQCs/"
 track_source_dir="/home/zhc268/data/outputs/"
 
 # receiving arguments
-while getopts ":s:b:n:l:" opt;
+while getopts ":s:b:n:l:p:" opt;
 do
 	case "$opt" in
 	    s) SAMPLE_FILE=$OPTARG;;  # txt file including all  sample files
             b) B_NAME=$OPTARG;; # a higher level base name on top of set name 
 	    n) SET_NAME=$OPTARG;;
+	    p) PADV=$OPTARG;;            
             l) LIBQC_DIR=$OPTARG;; # proessed lib dir 
 	    \?) usage
 		echo "input error"
@@ -33,11 +34,10 @@ done
 # check if input sample name file exists
 
 
-#if [  -z "$B_NAME" ]; then
-#    echo $B_NAME
-#    echo "Base name not set!"
-#    exit 1
-#fi
+if [  -z "$PADV" ]; then
+    PADV="true"
+    exit 1
+fi
 
 if [ -z "$SET_NAME" ]; then
     echo "set name file not found!"
@@ -101,7 +101,7 @@ eval $cmd
 echo -e "############################################################"
 echo -e "Step 2. genSetQCreport" 
 
-cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ ${LIB_ARRAY[@]}" #LIR_arry sorted by name already
+cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV  ${LIB_ARRAY[@]}" #LIR_arry sorted by name already
 echo $cmd
 eval $cmd
 
