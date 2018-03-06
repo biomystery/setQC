@@ -116,6 +116,7 @@ if(length(list.files(libQC_dir,paste0(libs[1],".*enrich.txt")))>0){
     for(l in libs){
         f=list.files(libQC_dir,paste0(l,".*enrich.txt"))
         if(length(f)>0) {
+            if(length(f)>1) f=grep(paste0(l,"_R"),f,value=T)
             rd[[l]] <- (read.delim(paste0(libQC_dir,f),header = F))
             l.tmp <- c(l.tmp,which(libs==l))
     }}

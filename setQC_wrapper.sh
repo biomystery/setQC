@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-02-26 15:02:08"
+#Time-stamp: "2018-03-02 11:24:44"
 source activate bds_atac_py3
 
 
@@ -39,7 +39,7 @@ if [  -z "$PADV" ]; then
 fi
 
 if [ -z "$SET_NAME" ]; then
-    echo "set name file not found!"
+Fri Mar 02 11:20:01 PST 2018    echo "set name file not found!"
     exit 1
 fi
 
