@@ -277,17 +277,17 @@ tags$iframe(class="embed-responsive-item",
             height="750px",
             src= json_src)
 
-#' ## Batch Download
+#' ## Download Links
 #+ batch_download, echo=F
-
-tags$iframe(class="embed-responsive-item",
-            width="1340px",
-            height="750px",
-            src= "./download/")
-
+p("click 'Download' button bellow to download a 'files.txt' that contains the list of urls to files in this report. Then run the script bellow on the terminal")
+file_list <- paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/download/files.txt")
+a(href=file_list,class="btn btn-outline-info","Download file list")
+pre("xargs -n 1 curl -0 -L < files.txt" )
 
 #' ## Download Links
 #+ track_download, echo=F
+a(href=json_src,class="btn btn-success btn-sm","Open WashU Genome Browser in a new window")
+div(class="row")
 
 tags$iframe(class="embed-responsive-item",
             width="1340px",
