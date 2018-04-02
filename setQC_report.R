@@ -277,6 +277,15 @@ tags$iframe(class="embed-responsive-item",
             height="750px",
             src= json_src)
 
+#' ## Batch Download
+#+ batch_download, echo=F
+
+tags$iframe(class="embed-responsive-item",
+            width="1340px",
+            height="750px",
+            src= "./download/")
+
+
 #' ## Download Links
 #+ track_download, echo=F
 
