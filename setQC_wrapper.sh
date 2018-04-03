@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-04-02 16:25:54"
+#Time-stamp: "2018-04-03 13:09:25"
 source activate bds_atac_py3
 
 
@@ -172,7 +172,7 @@ done
 
 ## generate files.txt
 urlbase="http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/download/"
-ssh zhc268@epigenomics.sdsc.edu "cd  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download && ls -1 | while read l; do echo $urlbase$l;done >files.txt"
+ssh zhc268@epigenomics.sdsc.edu "cd  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download && ls -1 | while read f; do echo $urlbase$f;done >files.txt"
 
 ## generate index for files 
 ssh zhc268@epigenomics.sdsc.edu "tree -I '*.html' --timefmt '%F %T'  -H '.' -L 1 --noreport --charset utf-8 -T ''  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download > /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download/index.html"
