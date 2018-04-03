@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-04-02 15:13:36"
+#Time-stamp: "2018-04-02 16:25:54"
 source activate bds_atac_py3
 
 
@@ -170,11 +170,13 @@ do
 done
 
 
-ssh zhc268@epigenomics.sdsc.edu "tree -I '*.html' --timefmt '%F %T'  -H '.' -L 1 --noreport --charset utf-8 -T ''  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download > /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download/index.html"
-
 ## generate files.txt
 urlbase="http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/download/"
-ssh zhc268@epigenomics.sdsc.edu "cd  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download && ls -1 | grep -v html| while read l; do echo $urlbase$l;done >files.txt"
+ssh zhc268@epigenomics.sdsc.edu "cd  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download && ls -1 | while read l; do echo $urlbase$l;done >files.txt"
+
+## generate index for files 
+ssh zhc268@epigenomics.sdsc.edu "tree -I '*.html' --timefmt '%F %T'  -H '.' -L 1 --noreport --charset utf-8 -T ''  /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download > /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/download/index.html"
+
 
 ## final output msg
 echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report.html"
