@@ -183,8 +183,8 @@ snap.cnt.wd <- snap.cnt %>%
   spread(sample,b_cnt,fill=as.integer(0))
 
 
-df.cnt <- as.data.frame(snap.cnt.wd); rownames(df) <- df$b_target;df$b_target <-NULL 
-df.prt <- as.data.frame(apply(df,2,function(x) signif(x/sum(x)*100,2)))
+df.cnt <- as.data.frame(snap.cnt.wd); rownames(df.cnt) <- df.cnt$b_target;df.cnt$b_target <-NULL 
+df.prt <- as.data.frame(apply(df.cnt,2,function(x) signif(x/sum(x)*100,2)))
 showDF(df.prt)
 #' ## SNAP-CHIP QC (overall cnt)
 #+ snap_chip_cnt,echo =F
