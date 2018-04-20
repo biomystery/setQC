@@ -1,28 +1,38 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-04-03 13:46:50"
+#Time-stamp: "2018-04-20 15:38:28"
 source activate bds_atac_py3
 
+############################################################
+# PART I dependency check
+############################################################
 
-# PART I dependency check 
 
+############################################################
 # PART II usage info
+############################################################
+
+
 usage(){
     exit 1
-} 
+}
 
+
+############################################################
 # PART III  params
+############################################################
 # default 
 BASE_OUTPUT_DIR="/home/zhc268/data/outputs/setQCs/"
 track_source_dir="/home/zhc268/data/outputs/"
 
 # receiving arguments
-while getopts ":s:b:n:l:p:" opt;
+while getopts ":s:b:n:l:p:c" opt;
 do
 	case "$opt" in
 	    s) SAMPLE_FILE=$OPTARG;;  # txt file including all  sample files
             b) B_NAME=$OPTARG;; # a higher level base name on top of set name 
 	    n) SET_NAME=$OPTARG;;
-	    p) PADV=$OPTARG;;            
+	    p) PADV=$OPTARG;;
+            c) CHIP_SNAP=$OPTARG;; # if SNAP
             l) LIBQC_DIR=$OPTARG;; # proessed lib dir 
 	    \?) usage
 		echo "input error"
@@ -38,8 +48,12 @@ if [  -z "$PADV" ]; then
     PADV="true"
 fi
 
+if [  -z "$CHIP_SNAP" ]; then
+    CHIP_SNAP="false"
+fi
+
 if [ -z "$SET_NAME" ]; then
-Fri Mar 02 11:20:01 PST 2018    echo "set name file not found!"
+    echo "set name file not found!"
     exit 1
 fi
 
@@ -50,8 +64,10 @@ fi
 if [ ! -d "$LIBQC_DIR" ]; then
     LIBQC_DIR="/home/zhc268/data/outputs/libQCs/"
 fi
-     
-# Prepare the files and etc for runSetQCreport.sh
+
+
+## Prepare the files and etc for runSetQCreport.sh
+
 LIB_ARRAY=(`cat $SAMPLE_FILE | sort -n`) # assume all the single libs in the same dir 
 LIB_LEN=${#LIB_ARRAY[@]}
 BASE_OUTPUT_DIR="${BASE_OUTPUT_DIR}/${B_NAME}/"
@@ -72,7 +88,10 @@ LOG_FILE="${SETQC_DIR}log.txt"
 
 mkdir -p $SETQC_DIR
 
+############################################################
 # PART III: Main 
+############################################################
+
 
 echo -e "############################################################"
 echo -e "# Step 1. runMultiQC" 
@@ -96,6 +115,15 @@ cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
 echo $cmd
 eval $cmd
 
+## deal with snap chip option 
+if [ $CHIP_SNAP == 'true' ]; then
+    echo -e "############################################################"
+    echo -e "# Step 1b. parse snap-chip spikin" 
+    echo -e "(`date`): running parsing snap-chip" | tee -a $LOG_FILE
+
+    snapcnt=${SETQC_DIR}/snap.cnt
+    for l in ${LIB_ARRAY[@]}; do     find  $LIBQC_DIR$l -name "*cnt" |xargs -n1 sed  "s/$/\t$l/g" ;done >$snapcnt
+fi
 
 echo -e "############################################################"
 echo -e "Step 2. genSetQCreport" 
