@@ -41,8 +41,8 @@ getSetName <- function(setID=set_name_id){
 
 (set_name_= getSetName())
 
-if(chipsnap_) {
-    rmarkdown::render("/projects/ps-epigen/software/setQC/setQC_report.R",
+if(chipsnap_=="true") {
+    rmarkdown::render("/projects/ps-epigen/software/setQC/setQC_report_chip.R",
                       params = list(
                           set_name = set_name_,
                           libs = libs_,

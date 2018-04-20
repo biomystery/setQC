@@ -190,7 +190,7 @@ showDF(df.prt)
 #+ snap_chip_cnt,echo =F
 showDF(df.cnt)
 
-#' # Peaks
+#' # Peaksa
 #' ## Peak basics {.tabset .tabset-fade .tabset-pills}
 
 #' ### Raw peak numbers
