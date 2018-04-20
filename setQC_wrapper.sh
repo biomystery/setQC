@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-04-20 15:38:28"
+#Time-stamp: "2018-04-20 15:52:17"
 source activate bds_atac_py3
 
 ############################################################
@@ -128,7 +128,7 @@ fi
 echo -e "############################################################"
 echo -e "Step 2. genSetQCreport" 
 
-cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV  ${LIB_ARRAY[@]}" #LIR_arry sorted by name already
+cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV $CHIP_SNAP ${LIB_ARRAY[@]}" #LIR_arry sorted by name already
 echo $cmd
 eval $cmd
 
