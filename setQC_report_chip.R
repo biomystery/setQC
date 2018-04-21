@@ -36,7 +36,7 @@ if(has_sample_table) {
     libs.showname <- sample_table$`Label (for QC report)`
     kable(sample_table)
 }
-
+libs.showname.dic <- libs.showname;names(libs.showname.dic)<-libs
 
 
 #' # Fastq files {.tabset .tabset-fade .tabset-pills}
@@ -176,16 +176,17 @@ tagList(tlist)
 snap.cnt <-read.table(paste0(setQC_dir,"snap.cnt"),
                       col.names = c("barcodes","cnt","sample"))
 snap.cnt.wd <- snap.cnt %>%
-  separate(barcodes,c("b_id","b_target","b_rep")) %>% 
-  select(b_target,cnt,sample) %>% 
-  group_by(b_target,sample) %>% 
-  summarise(b_cnt = sum(cnt)) %>% 
+  separate(barcodes,c("b_id","b_target","b_rep")) %>%
+  select(b_target,cnt,sample) %>%
+  group_by(b_target,sample) %>%
+  summarise(b_cnt = sum(cnt)) %>%
   spread(sample,b_cnt,fill=as.integer(0))
 
 
-df.cnt <- as.data.frame(snap.cnt.wd); rownames(df.cnt) <- df.cnt$b_target;df.cnt$b_target <-NULL 
+df.cnt <- as.data.frame(snap.cnt.wd); rownames(df.cnt) <- df.cnt$b_target;df.cnt$b_target <-NULL
 df.prt <- as.data.frame(apply(df.cnt,2,function(x) signif(x/sum(x)*100,2)))
 showDF(df.prt)
+
 #' ## SNAP-CHIP QC (overall cnt)
 #+ snap_chip_cnt,echo =F
 showDF(df.cnt)

@@ -212,11 +212,12 @@ thumbnail <- function(title="", img, caption = TRUE,colsize="col-sm-4") {
 parse_func <- function (x="10844795 | 0.21")
   unlist(strsplit(x,split = " [|] "))[2]
 # Chip seq plots --------------------------------------------
-showDF<- function(df){
+showDF<- function(df,dic=libs.showname.dic){
+  dic
   brks <- seq(min(df),max(df),length.out = 50)
   clrs <- round(seq(255, 40, length.out = length(brks) + 1), 0) %>%
   {paste0("rgb(255,", ., ",", ., ")")}
-  datatable(df,colnames=libs.showname,options = list(pageLength=nrow(df))) %>% 
+  datatable(df,colnames=as.character(dic[colnames(df)]),options = list(pageLength=nrow(df))) %>% 
     formatStyle(names(df), backgroundColor = styleInterval(brks, clrs))
 }
 
