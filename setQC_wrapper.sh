@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-04-20 15:52:17"
+#Time-stamp: "2018-04-20 16:55:23"
 source activate bds_atac_py3
 
 ############################################################
@@ -25,7 +25,7 @@ BASE_OUTPUT_DIR="/home/zhc268/data/outputs/setQCs/"
 track_source_dir="/home/zhc268/data/outputs/"
 
 # receiving arguments
-while getopts ":s:b:n:l:p:c" opt;
+while getopts ":s:b:n:l:p:c:" opt;
 do
 	case "$opt" in
 	    s) SAMPLE_FILE=$OPTARG;;  # txt file including all  sample files
@@ -65,9 +65,9 @@ if [ ! -d "$LIBQC_DIR" ]; then
     LIBQC_DIR="/home/zhc268/data/outputs/libQCs/"
 fi
 
+echo $CHIP_SNAP
 
 ## Prepare the files and etc for runSetQCreport.sh
-
 LIB_ARRAY=(`cat $SAMPLE_FILE | sort -n`) # assume all the single libs in the same dir 
 LIB_LEN=${#LIB_ARRAY[@]}
 BASE_OUTPUT_DIR="${BASE_OUTPUT_DIR}/${B_NAME}/"
@@ -113,7 +113,7 @@ done
 
 cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
 echo $cmd
-eval $cmd
+#eval $cmd
 
 ## deal with snap chip option 
 if [ $CHIP_SNAP == 'true' ]; then

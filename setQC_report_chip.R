@@ -68,7 +68,7 @@ a(href="./multiqc_report.html",class="btn btn-link","see  details (leave setQC)"
 #+ reads_yeild,echo=F
 libQC_table <- getLibQCtable(libs) # need determined by the input
 reads_list <- getReadsTable(libQC_table)
-datatable(reads_list$reads_yield,colnames=libs.showname)%>%
+datatable(reads_list$reads_yield,colnames=c("snap_ptm",libs.showname))%>%
     formatPercentage(1:length(libs),digits=0)
 
 #' ### Read counts after each step
