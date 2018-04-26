@@ -172,7 +172,7 @@ tagList(tlist)
 
 #' # CHIP-seq specific
 #' ## SNAP-CHIP spikein {.tabset .tabset-fade .tabset-pills}
-#' ### SNAP-CHIP QC (overall %)
+#' ### Specificty ( %,#hits/#total_hits)
 #+ snap_chip_prt,echo =F
 snap.cnt <-read.table(paste0(setQC_dir,"snap.cnt"),
                       col.names = c("barcodes","cnt","sample"))
@@ -183,16 +183,24 @@ snap.cnt.wd <- snap.cnt %>%
   summarise(b_cnt = sum(cnt)) %>%
   spread(sample,b_cnt,fill=as.integer(0))
 
-
 df.cnt <- as.data.frame(snap.cnt.wd); rownames(df.cnt) <- df.cnt$b_target;df.cnt$b_target <-NULL
-colnames(df.cnt) <- as.character(libs.showname.dic[colnames(df.cnt)])
-df.cnt <- df.cnt[,grep("me",colnames(df.cnt))]
+id.nm <- colnames(df.cnt)
+colnames(df.cnt) <- as.character(libs.showname.dic[id.nm])
+id.nm.me <- grep("me",colnames(df.cnt))
+df.cnt <- df.cnt[,id.nm.me];
 df.prt <- as.data.frame(apply(df.cnt,2,function(x) signif(x/sum(x)*100,2)))
+df.cpm <-as.data.frame(signif(t(t(df.cnt)/as.numeric(reads_list$reads_count[1,id.nm[id.nm.me]])*1000000),2))
+
 showDF(df.prt)
 
-#' ### SNAP-CHIP QC (overall cnt)
+#' ### Spikein count (raw)
 #+ snap_chip_cnt,echo =F
 showDF(df.cnt)
+
+#' ### Spikein count (cpm)
+#+ snap_chip_prt_lib,echo =F
+showDF(df.cpm)
+
 
 #' # Peaks
 #' ## Peak basics {.tabset .tabset-fade .tabset-pills}
