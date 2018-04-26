@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-04-26 12:47:43"
+#Time-stamp: "2018-04-26 12:57:41"
 source activate bds_atac_py3
 
 ############################################################
@@ -225,3 +225,4 @@ echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report.html"
 #EXAMPLES:
 
 # setQC_wrapper.sh -n Set_96 -c true
+# setQC_wrapper.sh -n Set_96 -c true -p false

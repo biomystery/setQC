@@ -170,8 +170,9 @@ tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_gc
 tagList(tlist)
 
 
-#' # CHIP-seq specific {.tabset .tabset-fade .tabset-pills}
-#' ## SNAP-CHIP QC (overall %)
+#' # CHIP-seq specific
+#' ## SNAP-CHIP spikein {.tabset .tabset-fade .tabset-pills}
+#' ### SNAP-CHIP QC (overall %)
 #+ snap_chip_prt,echo =F
 snap.cnt <-read.table(paste0(setQC_dir,"snap.cnt"),
                       col.names = c("barcodes","cnt","sample"))
@@ -184,10 +185,11 @@ snap.cnt.wd <- snap.cnt %>%
 
 
 df.cnt <- as.data.frame(snap.cnt.wd); rownames(df.cnt) <- df.cnt$b_target;df.cnt$b_target <-NULL
+df.cnt <- df.cnt[,grep("me",colnames(df.cnt))]
 df.prt <- as.data.frame(apply(df.cnt,2,function(x) signif(x/sum(x)*100,2)))
 showDF(df.prt)
 
-#' ## SNAP-CHIP QC (overall cnt)
+#' ### SNAP-CHIP QC (overall cnt)
 #+ snap_chip_cnt,echo =F
 showDF(df.cnt)
 
@@ -227,7 +229,6 @@ if(is.all.control){
 tagList(tlist)
 
 #' ## Peak advanced {.tabset .tabset-fade .tabset-pills}
-
 #' ### Correlation matrix & Peak Intensity Scatter
 #+ app,echo=F,message=F,warning=F
 relative_dir <- sub("/home/zhc268/data/outputs/setQCs(/)+","",setQC_dir)
