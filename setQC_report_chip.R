@@ -68,7 +68,7 @@ a(href="./multiqc_report.html",class="btn btn-link","see  details (leave setQC)"
 #+ reads_yeild,echo=F
 libQC_table <- getLibQCtable(libs) # need determined by the input
 reads_list <- getReadsTable(libQC_table)
-datatable(reads_list$reads_yield,colnames=c("snap_ptm",libs.showname))%>%
+datatable(reads_list$reads_yield,colnames=libs.showname)%>%
     formatPercentage(1:length(libs),digits=0)
 
 #' ### Read counts after each step
@@ -185,7 +185,7 @@ snap.cnt.wd <- snap.cnt %>%
 
 
 df.cnt <- as.data.frame(snap.cnt.wd); rownames(df.cnt) <- df.cnt$b_target;df.cnt$b_target <-NULL
-colnames(df.cnt) <- as.character(libs.showname.dic[colnames(df)])
+colnames(df.cnt) <- as.character(libs.showname.dic[colnames(df.cnt)])
 df.cnt <- df.cnt[,grep("me",colnames(df.cnt))]
 df.prt <- as.data.frame(apply(df.cnt,2,function(x) signif(x/sum(x)*100,2)))
 showDF(df.prt)
