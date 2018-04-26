@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-04-20 16:55:23"
+#Time-stamp: "2018-04-26 10:30:14"
 source activate bds_atac_py3
 
 ############################################################
@@ -13,8 +13,12 @@ source activate bds_atac_py3
 
 
 usage(){
-    exit 1
+    echo "usage:"
 }
+
+
+[[ $# -eq 0 ]] && { echo "ERROR: need input" ;exit $ERRCODE; } 
+
 
 
 ############################################################
@@ -96,6 +100,7 @@ mkdir -p $SETQC_DIR
 echo -e "############################################################"
 echo -e "# Step 1. runMultiQC" 
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
+echo -e "############################################################"
 
 # cp s all libqc files to one folder
 # prefered trim
@@ -113,20 +118,22 @@ done
 
 cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
 echo $cmd
-#eval $cmd
+eval $cmd
 
 ## deal with snap chip option 
 if [ $CHIP_SNAP == 'true' ]; then
     echo -e "############################################################"
     echo -e "# Step 1b. parse snap-chip spikin" 
     echo -e "(`date`): running parsing snap-chip" | tee -a $LOG_FILE
-
+    echo -e "############################################################"
+    
     snapcnt=${SETQC_DIR}/snap.cnt
     for l in ${LIB_ARRAY[@]}; do     find  $LIBQC_DIR$l -name "*cnt" |xargs -n1 sed  "s/$/\t$l/g" ;done >$snapcnt
 fi
 
 echo -e "############################################################"
 echo -e "Step 2. genSetQCreport" 
+echo -e "############################################################"
 
 cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV $CHIP_SNAP ${LIB_ARRAY[@]}" #LIR_arry sorted by name already
 echo $cmd
@@ -134,6 +141,7 @@ eval $cmd
 
 echo -e "############################################################"
 echo -e "# Step 3. prepare tracks"
+echo -e "############################################################"
 
 # get the libnames
 > $SETQC_DIR/including_libs.txt
@@ -153,6 +161,7 @@ Rscript $(which genWashUtracks.R) "$RELATIVE_DIR"
 
 echo -e "############################################################"
 echo -e "# (`date`) Step 4. Final: set up the sharing web site & make app " | tee -a $LOG_FILE
+echo -e "############################################################"
 
 mkdir -p $SETQC_DIR"/app"
 cd $SETQC_DIR"/app"
@@ -164,6 +173,8 @@ ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELA
 
 echo -e "############################################################"
 echo -e "# Step 5. Final: prepare downloading files "
+echo -e "############################################################"
+
 
 rm -rf $SETQC_DIR"/download" || true ;mkdir $SETQC_DIR"/download"
 cd $SETQC_DIR"/download"

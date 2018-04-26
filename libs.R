@@ -1,4 +1,4 @@
-# load library ------------------------------------------------------------
+ # load library ------------------------------------------------------------
 require(knitr)
 #require(kableExtra)
 require(RColorBrewer)
@@ -217,7 +217,7 @@ showDF<- function(df,dic=libs.showname.dic){
   brks <- seq(min(df),max(df),length.out = 50)
   clrs <- round(seq(255, 40, length.out = length(brks) + 1), 0) %>%
   {paste0("rgb(255,", ., ",", ., ")")}
-  datatable(df,colnames=as.character(dic[colnames(df)]),options = list(pageLength=nrow(df))) %>% 
+  datatable(df,colnames=as.character(dic[colnames(df)]),options = list(pageLength=nrow(df))) %>%
     formatStyle(names(df), backgroundColor = styleInterval(brks, clrs))
 }
 
