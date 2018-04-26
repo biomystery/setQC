@@ -185,7 +185,7 @@ snap.cnt.wd <- snap.cnt %>%
 
 
 df.cnt <- as.data.frame(snap.cnt.wd); rownames(df.cnt) <- df.cnt$b_target;df.cnt$b_target <-NULL
-colnames(df.cnt) <- as.character(dic[colnames(df)])
+colnames(df.cnt) <- as.character(libs.showname.dic[colnames(df)])
 df.cnt <- df.cnt[,grep("me",colnames(df.cnt))]
 df.prt <- as.data.frame(apply(df.cnt,2,function(x) signif(x/sum(x)*100,2)))
 showDF(df.prt)
