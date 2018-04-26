@@ -170,8 +170,8 @@ tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_gc
 tagList(tlist)
 
 
-#' # CHIP-seq specific
-#' ## SNAP-CHIP spikein {.tabset .tabset-fade .tabset-pills}
+#' # ChIP-seq specific
+#' ## SNAP-ChIP spikein {.tabset .tabset-fade .tabset-pills}
 #' ### Specificty ( %,#hits/#total_hits)
 #+ snap_chip_prt,echo =F
 snap.cnt <-read.table(paste0(setQC_dir,"snap.cnt"),
