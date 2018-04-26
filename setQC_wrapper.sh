@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-04-26 10:30:14"
+#Time-stamp: "2018-04-26 12:42:59"
 source activate bds_atac_py3
 
 ############################################################
@@ -118,7 +118,7 @@ done
 
 cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
 echo $cmd
-eval $cmd
+#eval $cmd
 
 ## deal with snap chip option 
 if [ $CHIP_SNAP == 'true' ]; then
@@ -224,5 +224,4 @@ echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report.html"
 
 #EXAMPLES:
 
-# setQC_wrapper.sh -s /home/zhc268/scratch/others/2017-10-25-sswangson_morgridge/chu_mmus/uniq_samples_rev.txt \
-
+# setQC_wrapper.sh -n Set_96 -c true

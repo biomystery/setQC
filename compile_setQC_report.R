@@ -19,13 +19,13 @@ relative_dir <- sub("/home/zhc268/data/outputs/setQCs(/)+","",setQC_dir_)
 getSetName <- function(setID=set_name_id){
   gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
     gs_mseqts <- gs_key("1ZD223K4A7SJ0_uw4OvhUOm9BecqDAposRflE9i1Ocms")
-    sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,10)))
+    sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,11)))
    rid <- which(sample_table$SetID==setID)
 
 
   # update time,version
   surl<- "";#https://github.com/biomystery/setQC/tree/"
-  sdir<- "/home/zhc268/data/software/setQC/"
+  sdir<- "/home/zhc268/software/setQC/"
 
 
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input="ZC",  anchor=paste0("H",3+rid))
