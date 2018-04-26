@@ -7,7 +7,8 @@ args <- commandArgs(trailingOnly = TRUE)
 (libQC_dir_ <-  args[3]) # used to pull out libqc files in libs.R
 (padv_<- args[4]) # peak advanced toggle
 (chipsnap_<- args[5]) # peak advanced toggle
-(libs_<- args[6:length(args)]) # the last, sorted by name
+(exptype <-  args[6])
+(libs_<- args[7:length(args)]) # the last, sorted by name
 
 
 relative_dir <- sub("/home/zhc268/data/outputs/setQCs(/)+","",setQC_dir_)
@@ -33,7 +34,9 @@ getSetName <- function(setID=set_name_id){
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=paste0(surl,system(paste("cd",sdir,";git rev-parse --short HEAD"), intern = TRUE)),
                                           anchor=paste0("K",3+rid))
   url <- ifelse(chipsnap_,paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report_chip.html"),
-                paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report.html"))
+         ifelse(exptype=="chip",
+                paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report_chip_test.html"),
+                paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report.html")))
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=url,  anchor=paste0("G",3+rid))
 
   # return set_name
@@ -44,7 +47,7 @@ getSetName <- function(setID=set_name_id){
 
 print(" before run chip")
 if(chipsnap_=="true") {
-    print("run chip")
+    print("run chipsnap")
     rmarkdown::render("/home/zhc268/software/setQC/setQC_report_chip.R",
                       params = list(
                           set_name = set_name_,
@@ -55,7 +58,20 @@ if(chipsnap_=="true") {
                           chipsnap =chipsnap_
                       ),
                       output_dir=setQC_dir_)
-} else{
+} elseif{
+        print("run chips seq test")
+        rmarkdown::render("/home/zhc268/software/setQC/setQC_report_chip_test.R",
+                      params = list(
+                          set_name = set_name_,
+                          libs = libs_,
+                          setQC_dir = setQC_dir_,
+                          libQC_dir = libQC_dir_,
+                          padv =padv_,
+                          chipsnap =chipsnap_
+                      ),
+                      output_dir=setQC_dir_)
+}else{
+    print("run atac")
     rmarkdown::render("/home/zhc268/software/setQC/setQC_report.R",
                       params = list(
                           set_name = set_name_,

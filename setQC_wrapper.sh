@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-04-26 12:57:41"
+#Time-stamp: "2018-04-26 14:53:42"
 source activate bds_atac_py3
 
 ############################################################
@@ -13,7 +13,7 @@ source activate bds_atac_py3
 
 
 usage(){
-    echo "usage:"
+    echo "usage: setQC_wrapper.sh -n <Set_xx> -c <true|false> -p <true|false> -t <atac|chip>"
 }
 
 
@@ -29,7 +29,7 @@ BASE_OUTPUT_DIR="/home/zhc268/data/outputs/setQCs/"
 track_source_dir="/home/zhc268/data/outputs/"
 
 # receiving arguments
-while getopts ":s:b:n:l:p:c:" opt;
+while getopts ":s:b:n:p:c:l:t" opt;
 do
 	case "$opt" in
 	    s) SAMPLE_FILE=$OPTARG;;  # txt file including all  sample files
@@ -37,7 +37,8 @@ do
 	    n) SET_NAME=$OPTARG;;
 	    p) PADV=$OPTARG;;
             c) CHIP_SNAP=$OPTARG;; # if SNAP
-            l) LIBQC_DIR=$OPTARG;; # proessed lib dir 
+            l) LIBQC_DIR=$OPTARG;; # proessed lib dir
+            t) EXP_TYPE=$OPTARG;; # experimental type
 	    \?) usage
 		echo "input error"
 		exit 1
@@ -67,6 +68,10 @@ fi
 
 if [ ! -d "$LIBQC_DIR" ]; then
     LIBQC_DIR="/home/zhc268/data/outputs/libQCs/"
+fi
+
+if [ ! -d "$EXP_TYPE" ]; then
+    EXP_TYPE="atac/" # atac by default 
 fi
 
 echo $CHIP_SNAP
@@ -135,7 +140,7 @@ echo -e "############################################################"
 echo -e "Step 2. genSetQCreport" 
 echo -e "############################################################"
 
-cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV $CHIP_SNAP ${LIB_ARRAY[@]}" #LIR_arry sorted by name already
+cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV $CHIP_SNAP $EXP_TYPE ${LIB_ARRAY[@]}" #LIR_arry sorted by name already
 echo $cmd
 eval $cmd
 
