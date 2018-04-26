@@ -58,7 +58,7 @@ if(chipsnap_=="true") {
                           chipsnap =chipsnap_
                       ),
                       output_dir=setQC_dir_)
-} elseif{
+} else if (exptype=="chip"){
         print("run chips seq test")
         rmarkdown::render("/home/zhc268/software/setQC/setQC_report_chip_test.R",
                       params = list(
