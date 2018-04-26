@@ -20,7 +20,7 @@ getSetName <- function(setID=set_name_id){
   gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
     gs_mseqts <- gs_key("1ZD223K4A7SJ0_uw4OvhUOm9BecqDAposRflE9i1Ocms")
     sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,11)))
-   rid <- which(sample_table$SetID==setID)
+  rid <- which(sample_table$SetID==setID)
 
 
   # update time,version
@@ -45,7 +45,7 @@ getSetName <- function(setID=set_name_id){
 print(" before run chip")
 if(chipsnap_=="true") {
     print("run chip")
-    rmarkdown::render("/projects/ps-epigen/software/setQC/setQC_report_chip.R",
+    rmarkdown::render("/home/zhc268/software/setQC/setQC_report_chip.R",
                       params = list(
                           set_name = set_name_,
                           libs = libs_,
@@ -56,7 +56,7 @@ if(chipsnap_=="true") {
                       ),
                       output_dir=setQC_dir_)
 } else{
-    rmarkdown::render("/projects/ps-epigen/software/setQC/setQC_report.R",
+    rmarkdown::render("/home/zhc268/software/setQC/setQC_report.R",
                       params = list(
                           set_name = set_name_,
                           libs = libs_,
