@@ -28,13 +28,13 @@ getSetName <- function(setID=set_name_id){
   sdir<- "/home/zhc268/software/setQC/"
 
 
-  gs_mseqts<- gs_mseqts %>% gs_edit_cells(input="ZC",  anchor=paste0("H",3+rid))
-  gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=Sys.time(),  anchor=paste0("I",3+rid))
+  gs_mseqts<- gs_mseqts %>% gs_edit_cells(input="ZC",  anchor=paste0("I",3+rid))
+  gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=Sys.time(),  anchor=paste0("J",3+rid))
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=paste0(surl,system(paste("cd",sdir,";git rev-parse --short HEAD"), intern = TRUE)),
-                                          anchor=paste0("J",3+rid))
+                                          anchor=paste0("K",3+rid))
   url <- ifelse(chipsnap_,paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report_chip.html"),
                 paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report.html"))
-  gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=url,  anchor=paste0("F",3+rid))
+  gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=url,  anchor=paste0("G",3+rid))
 
   # return set_name
   paste(sample_table$`Set name (for title of report)`[rid],sample_table$`Date requested`[rid],sep="_")
