@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-04-26 14:53:42"
+#Time-stamp: "2018-04-27 16:05:35"
 source activate bds_atac_py3
 
 ############################################################
@@ -29,13 +29,14 @@ BASE_OUTPUT_DIR="/home/zhc268/data/outputs/setQCs/"
 track_source_dir="/home/zhc268/data/outputs/"
 
 # receiving arguments
-while getopts ":s:b:n:p:c:l:t" opt;
+while getopts ":s:b:n:p:m:c:l:t:" opt;
 do
 	case "$opt" in
 	    s) SAMPLE_FILE=$OPTARG;;  # txt file including all  sample files
             b) B_NAME=$OPTARG;; # a higher level base name on top of set name 
 	    n) SET_NAME=$OPTARG;;
 	    p) PADV=$OPTARG;;
+            m) MULTIQC=$OPTARG;; # do multiqc
             c) CHIP_SNAP=$OPTARG;; # if SNAP
             l) LIBQC_DIR=$OPTARG;; # proessed lib dir
             t) EXP_TYPE=$OPTARG;; # experimental type
@@ -51,6 +52,10 @@ done
 
 if [  -z "$PADV" ]; then
     PADV="true"
+fi
+
+if [  -z "$MULTIQC" ]; then
+    MULTIQC="true"
 fi
 
 if [  -z "$CHIP_SNAP" ]; then
@@ -70,11 +75,10 @@ if [ ! -d "$LIBQC_DIR" ]; then
     LIBQC_DIR="/home/zhc268/data/outputs/libQCs/"
 fi
 
-if [ ! -d "$EXP_TYPE" ]; then
-    EXP_TYPE="atac/" # atac by default 
+if [ -z "$EXP_TYPE" ]; then
+    EXP_TYPE="atac" # atac by default 
 fi
 
-echo $CHIP_SNAP
 
 ## Prepare the files and etc for runSetQCreport.sh
 LIB_ARRAY=(`cat $SAMPLE_FILE | sort -n`) # assume all the single libs in the same dir 
@@ -123,7 +127,8 @@ done
 
 cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
 echo $cmd
-#eval $cmd
+
+[[ $MULTIQC == "true" ]] && eval $cmd
 
 ## deal with snap chip option 
 if [ $CHIP_SNAP == 'true' ]; then
@@ -231,3 +236,5 @@ echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report.html"
 
 # setQC_wrapper.sh -n Set_96 -c true
 # setQC_wrapper.sh -n Set_96 -c true -p false
+# setQC_wrapper.sh -n Set_70 -c true -p false -t chip
+# setQC_wrapper.sh -n Set_70_test -p false -t chip -m false
