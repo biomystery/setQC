@@ -153,7 +153,7 @@ plotMultiQC <- function(data.file="../Set_6/multiqc_data/mqc_picard_gcbias_plot_
 getLibQCtable <- function(lib_ids){
   #print("getting libQC table")
   parseLibQC <- function(lib=libs[1]){
-### Parse one libQC result
+  ### Parse one libQC result
       libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,"_R*_qc.txt")),intern=T)
       if(length(libQC_report_file)==0)  libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,".*_qc.txt")),intern=T)
       if(length(libQC_report_file)==0)  libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,"_qc.txt")),intern=T)
