@@ -9,6 +9,7 @@ require(htmltools)
 require(highcharter)
 require(tidyverse)
 require(ggplot2)
+require(data.table)
 
 # load sample info from msTracking --------------------------------------
 
@@ -23,7 +24,7 @@ getSampleTable <- function(lib_ids){
 
         require(googlesheets)
         suppressPackageStartupMessages(require(dplyr))
-        gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")
+        gs_auth(token="~/software/google/googlesheets_token.rds")#/home/zhc268
         gs_ls() # for the auth
         gs_mseqts <- gs_key("1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y")
         sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,19)))
@@ -220,3 +221,29 @@ showDF<- function(df){
     formatStyle(names(df), backgroundColor = styleInterval(brks, clrs))
 }
 
+plotJSD <- function(){
+  fs <- list.files(path = libQC_dir,pattern = "*jsd.dat",full.names = F)
+  pd.jsd <- sapply(fs, plotJSD_getDat)
+  pd.jsd.2 <- do.call(rbind,pd.jsd[1,])
+  pd.jsd.2 <- pd.jsd.2 %>% rownames_to_column(var = "lib")
+  pd.jsd.2$lib <- sub("_chip_jsd.dat.*","",pd.jsd.2$lib) 
+  pd.jsd.2 <- rbind(pd.jsd.2,
+                    cbind(pd.jsd[[2,1]],lib=libs[input.idx]))
+  pd.jsd.2$lib <- libs.showname.dic[pd.jsd.2$lib]
+  hchart(pd.jsd.2,
+         "line",hcaes(x=rank,y=frac_reads,group=lib))
+}
+
+plotJSD_genDF <- function(dv){
+  dv.c <- cumsum(dv[order(dv)])
+  dv.c.r <- rank(dv.c,ties.method = "min")-1
+  df <- round(data.frame(rank=dv.c.r/(max(dv.c.r)),frac_reads=dv.c/max(dv.c)),3)
+  idx <- sample(1:nrow(df),size = 1000)
+  df <- rbind(df[idx[order(idx)],],c(rank=1,frac_reads=1))
+}
+
+plotJSD_getDat <- function(f){
+  dt <-fread(paste0(libQC_dir,f));setDF(dt);
+  names(dt) <- c("treat","input")
+  pd.jdf <- lapply(dt,plotJSD_genDF)
+}

@@ -37,7 +37,7 @@ if(has_sample_table) {
     kable(sample_table)
 }
 libs.showname.dic <- libs.showname;names(libs.showname.dic)<-libs
-
+input.idx <- grep(pattern = "input",libs.showname,ignore.case = T)
 
 #' # Fastq files {.tabset .tabset-fade .tabset-pills}
 #' ## Sequence sources (potential contamination)
@@ -164,6 +164,15 @@ tagList(tlist)
 
 
 #' # ChIP-seq specific
+#' ## Basic metrics {.tabset .tabset-fade .tabset-pills}
+#' ### JSD
+#+ jsd_plot,echo =F 
+tlist[[1]]<- plotJSD()
+tagList(tlist)
+
+#' ### CC 
+#+ cc_plots,echo =F 
+
 #' ## SNAP-ChIP spikein {.tabset .tabset-fade .tabset-pills}
 #' ### Specificty ( %,#hits/#total_hits)
 #+ snap_chip_prt,echo =F
