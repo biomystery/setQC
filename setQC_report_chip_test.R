@@ -90,7 +90,7 @@ tlist <- list()
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y = Mitochondrial.reads..out.of.total. ))
 tagList(tlist)
 
-#' ##  TSS enrichment {.tabset .tabset-fade .tabset-pills}
+#' ##  TSS Enrichment{.tabset .tabset-fade .tabset-pills}
 #' ### TSS enrichement plots
 
 #+ tss_enrich_plot,echo =F, warning=F
@@ -172,6 +172,13 @@ tagList(tlist)
 
 #' ### CC 
 #+ cc_plots,echo =F 
+cc_plots <- paste0("./libQCs/",list.files(path=libQC_dir,pattern = "trim_50bp.no_chrM.15M.cc.plot.png"))
+tmp <- sapply( 1:length(libs), function(i){
+  ii <- grep(libs[i],cc_plots)
+  thumbnail(libs.showname[i],cc_plots[ii],colsize ='col-sm-3' )})
+tagList(tmp)
+div(class='row')
+
 
 #' ## SNAP-ChIP spikein {.tabset .tabset-fade .tabset-pills}
 #' ### Specificty ( %,#hits/#total_hits)
