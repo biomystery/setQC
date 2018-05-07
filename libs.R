@@ -227,7 +227,7 @@ plotJSD <- function(){
   pd.jsd <- sapply(fs, plotJSD_getDat)
   pd.jsd.2 <- do.call(rbind,pd.jsd[1,])
   pd.jsd.2 <- pd.jsd.2 %>% rownames_to_column(var = "lib")
-  pd.jsd.2$lib <- sub("_chip_jsd.dat.*","",pd.jsd.2$lib) 
+  pd.jsd.2$lib <- sub("_jsd.dat.*","",pd.jsd.2$lib) 
   pd.jsd.2 <- rbind(pd.jsd.2,
                     cbind(pd.jsd[[2,1]],lib=libs[input.idx]))
   pd.jsd.2$lib <- libs.showname.dic[pd.jsd.2$lib]
