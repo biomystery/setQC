@@ -186,6 +186,7 @@ div(class='row')
 if(chipsnap){
     snap.cnt <-read.table(paste0(setQC_dir,"snap.cnt"),
                           col.names = c("barcodes","cnt","sample"))
+    snap.cnt <- snap.cnt[!grepl("qseqid",snap.cnt$barcodes),]
     snap.cnt.wd <- snap.cnt %>%
         separate(barcodes,c("b_id","b_target","b_rep")) %>%
         select(b_target,cnt,sample) %>%
@@ -194,21 +195,24 @@ if(chipsnap){
         spread(sample,b_cnt,fill=as.integer(0))
 
     df.cnt <- as.data.frame(snap.cnt.wd); rownames(df.cnt) <- df.cnt$b_target;df.cnt$b_target <-NULL
-    id.nm <- colnames(df.cnt)
-    colnames(df.cnt) <- as.character(libs.showname.dic[id.nm])
+    id.nm <- sapply(strsplit(colnames(df.cnt),split = "_R"),function(x) x[1])
+    id.suffix<-sapply(strsplit(colnames(df.cnt),split = "_R"),function(x) x[2])
+    id.nm.show <- as.character(libs.showname.dic[id.nm])
+    id.nm.show<- sapply(1:length(id.suffix),function(i) ifelse(is.na(id.suffix[i]),id.nm.show[i],paste0(id.nm.show[i],"_R",id.suffix[i])))
+    colnames(df.cnt) <- id.nm.show
     id.nm.me <- grep("me",colnames(df.cnt))
     df.cnt <- df.cnt[,id.nm.me];
     df.prt <- as.data.frame(apply(df.cnt,2,function(x) signif(x/sum(x)*100,2)))
     df.cpm <-as.data.frame(signif(t(t(df.cnt)/as.numeric(reads_list$reads_count[1,id.nm[id.nm.me]])*1000000),2))
 
-    showDF(df.prt)
+    showDF(as.data.frame(t(df.prt)))
 
 }else{p('This module is disabled')}
 
 #' ### Spikein count (raw)
 #+ snap_chip_cnt,echo =F
 if(chipsnap){
-    showDF(df.cnt)
+    showDF(as.data.frame(t(df.cnt)))
 }else{
     p('This module is disabled')
 }
@@ -217,7 +221,7 @@ if(chipsnap){
 #' ### Spikein count (cpm)
 #+ snap_chip_prt_lib,echo =F
 if(chipsnap){
-    showDF(df.cpm)
+    showDF(as.data.frame(t(df.cpm)))
 }else{
     p('This module is disabled')
 }

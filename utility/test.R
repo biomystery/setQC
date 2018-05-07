@@ -10,3 +10,4 @@ libs.showname <- sample_table$`Label (for QC report)`
 libs.showname.dic <- libs.showname;names(libs.showname.dic)<-libs
 input.idx <- grep(pattern = "input",libs.showname,ignore.case = T)
 libQC_table <- getLibQCtable(libs) # need determined by the input
+reads_list <- getReadsTable(libQC_table)
