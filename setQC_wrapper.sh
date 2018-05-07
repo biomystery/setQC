@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-04-30 12:46:19"
+#Time-stamp: "2018-05-07 11:03:23"
 source activate bds_atac_py3
 
 ############################################################
@@ -139,7 +139,7 @@ if [ $CHIP_SNAP == 'true' ]; then
     echo -e "############################################################"
     
     snapcnt=${SETQC_DIR}/snap.cnt
-    for l in ${LIB_ARRAY[@]}; do     find  $LIBQC_DIR$l -name "*cnt" |xargs -n1 sed  "s/$/\t$l/g" ;done >$snapcnt
+    find  $SETQC_DIR"libQCs" -name "*snap*tab" -exec awk '{a=FILENAME; sub(".*/","",a);split(a,b,".");print  $0,b[1]}' {} + > $snapcnt
 fi
 
 echo -e "############################################################"

@@ -46,21 +46,9 @@ getSetName <- function(setID=set_name_id){
 (set_name_= getSetName())
 
 print(" before run chip")
-if(chipsnap_=="true") {
-    print("run chipsnap")
-    rmarkdown::render("/home/zhc268/software/setQC/setQC_report_chip.R",
-                      params = list(
-                          set_name = set_name_,
-                          libs = libs_,
-                          setQC_dir = setQC_dir_,
-                          libQC_dir = libQC_dir_,
-                          padv =padv_,
-                          chipsnap =chipsnap_
-                      ),
-                      output_dir=setQC_dir_)
-} else if (exptype=="chip"){
+if (exptype=="chip"){
         print("run chips seq test")
-        rmarkdown::render("/home/zhc268/software/setQC/setQC_report_chip_test.R",
+        rmarkdown::render("/home/zhc268/software/setQC/setQC_report_chip.R",
                       params = list(
                           set_name = set_name_,
                           libs = libs_,
