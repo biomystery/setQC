@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-05-07 11:03:23"
+#Time-stamp: "2018-05-08 12:20:39"
 source activate bds_atac_py3
 
 ############################################################
@@ -176,7 +176,7 @@ echo -e "############################################################"
 
 mkdir -p $SETQC_DIR"/app"
 cd $SETQC_DIR"/app"
-cp -ufs /home/zhc268/software/setQC/peakApp/app.R ./;
+cp -ufs /home/zhc268/data/software/setQC/peakApp/app.R ./;
 cp -Pfs $SETQC_DIR/data/avgOverlapFC.tab ./
 cp -Pfs $SETQC_DIR/sample_table.csv ./
 
