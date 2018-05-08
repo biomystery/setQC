@@ -4,5 +4,7 @@
 *.RMD
 \#*
 *.bed*
+*DS_Store
+
 
 
