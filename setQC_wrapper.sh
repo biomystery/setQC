@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-05-08 12:20:39"
+#Time-stamp: "2018-05-08 13:50:34"
 source activate bds_atac_py3
 
 ############################################################
@@ -161,8 +161,12 @@ do
     ss=`echo $s | sed -E "s/_S[0-9]+_L[0-9]+//g"`;
     ln=`grep -n "${ss}," $SETQC_DIR/sample_table.csv | cut -f1 -d:`;
     sn=`sed "${ln}q;d" $SETQC_DIR/sample_table.csv| awk -F"," '{print $3}'| sed "s/\ /\_/g"`;
-    echo -e "$s\t$sn">> $SETQC_DIR/including_libs.txt ;done
-cmd="transferTracks.sh -d $SETQC_DIR -s $track_source_dir  -l $SETQC_DIR/including_libs.txt" 
+    echo -e "$s\t$sn">> $SETQC_DIR/including_libs.txt ;
+done
+
+cmd="transferTracks.sh -d $SETQC_DIR -s $track_source_dir  -l $SETQC_DIR/including_libs.txt"
+[[ $EXP_TYPE == "chip" ]] && cmd=${cmd/transferTracks/transferTracks_chip} # handle chipseq 
+
 echo -e "(`date`): copy track files" | tee -a $LOG_FILE
 echo $cmd | tee -a $LOG_FILE
 eval $cmd 
