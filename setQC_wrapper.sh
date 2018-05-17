@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-05-08 13:50:34"
+#Time-stamp: "2018-05-17 10:11:11"
 source activate bds_atac_py3
 
 ############################################################
@@ -139,7 +139,7 @@ if [ $CHIP_SNAP == 'true' ]; then
     echo -e "############################################################"
     
     snapcnt=${SETQC_DIR}/snap.cnt
-    find  $SETQC_DIR"libQCs" -name "*snap*tab" -exec awk '{a=FILENAME; sub(".*/","",a);split(a,b,".");print  $0,b[1]}' {} + > $snapcnt
+    find  $SETQC_DIR"libQCs" -name "*snap*tab" | while read f; do  awk '(NR>9){a=FILENAME; sub(".*/","",a);split(a,b,".");print  $0,b[1]}' $f;done> $snapcnt
 fi
 
 echo -e "############################################################"
@@ -243,3 +243,4 @@ echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report.html"
 # setQC_wrapper.sh -n Set_96 -c true -p false
 # setQC_wrapper.sh -n Set_70 -c true -p false -t chip
 # setQC_wrapper.sh -n Set_70_test -p false -t chip -m false
+# setQC_wrapper.sh -n Set_113 -t atac_chip -c true -m false 
