@@ -33,9 +33,9 @@ getSetName <- function(setID=set_name_id){
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=Sys.time(),  anchor=paste0("J",3+rid))
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=paste0(surl,system(paste("cd",sdir,";git rev-parse --short HEAD"), intern = TRUE)),
                                           anchor=paste0("K",3+rid))
-  url <- ifelse(chipsnap_,paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report_chip.html"),
-         ifelse(exptype=="chip",
-                paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report_chip_test.html"),
+  url <- ifelse(exptype=="chip",paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report_chip.html"),
+         ifelse(exptype=="atac_chip",
+                paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report_atac_chip.html"),
                 paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report.html")))
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=url,  anchor=paste0("G",3+rid))
 
