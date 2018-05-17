@@ -58,6 +58,18 @@ if (exptype=="chip"){
                           chipsnap =chipsnap_
                       ),
                       output_dir=setQC_dir_)
+} else if (exptype=="atac_chip"){
+        print("run chips seq test")
+        rmarkdown::render("/home/zhc268/software/setQC/setQC_report_atac_chip.R",
+                      params = list(
+                          set_name = set_name_,
+                          libs = libs_,
+                          setQC_dir = setQC_dir_,
+                          libQC_dir = libQC_dir_,
+                          padv =padv_,
+                          chipsnap =chipsnap_
+                      ),
+                      output_dir=setQC_dir_)
 }else{
     print("run atac")
     rmarkdown::render("/home/zhc268/software/setQC/setQC_report.R",
