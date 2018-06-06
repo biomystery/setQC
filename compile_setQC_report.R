@@ -53,7 +53,7 @@ if (exptype=="chip"){
         rmarkdown::render("/home/zhc268/software/setQC/setQC_report_chip.R",
                       params = list(
                           set_name = set_name_,
-                          libs = libs_,
+                          libs_file= libs_file_,
                           setQC_dir = setQC_dir_,
                           libQC_dir = libQC_dir_,
                           padv =padv_,
@@ -77,7 +77,7 @@ if (exptype=="chip"){
     rmarkdown::render("/home/zhc268/software/setQC/setQC_report.R",
                       params = list(
                           set_name = set_name_,
-                          libs_file= libs_file_,
+                          libs= libs_,
                           setQC_dir = setQC_dir_,
                           libQC_dir = libQC_dir_,
                           padv =padv_
