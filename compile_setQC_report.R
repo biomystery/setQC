@@ -8,7 +8,9 @@ args <- commandArgs(trailingOnly = TRUE)
 (padv_<- args[4]) # peak advanced toggle
 (chipsnap_<- args[5]) # peak advanced toggle
 (exptype <-  args[6])
-(libs_<- args[7:length(args)]) # the last, sorted by name
+(libs_file_<- args[7]) # use lib_file
+(libs_ <- system(paste0("awk '{print $1}' ",libs_file_),intern=T))
+
 
 
 relative_dir <- sub("/home/zhc268/data/outputs/setQCs(/)+","",setQC_dir_)
@@ -75,7 +77,7 @@ if (exptype=="chip"){
     rmarkdown::render("/home/zhc268/software/setQC/setQC_report.R",
                       params = list(
                           set_name = set_name_,
-                          libs = libs_,
+                          libs_file= libs_file_,
                           setQC_dir = setQC_dir_,
                           libQC_dir = libQC_dir_,
                           padv =padv_

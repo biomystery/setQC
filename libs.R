@@ -225,11 +225,20 @@ showDF<- function(df){
 plotJSD <- function(){
   fs <- list.files(path = libQC_dir,pattern = "*jsd.dat",full.names = F)
   pd.jsd <- sapply(fs, plotJSD_getDat)
+  colnames(pd.jsd) <- sub("_jsd.dat.*","",colnames(pd.jsd))
   pd.jsd.2 <- do.call(rbind,pd.jsd[1,])
   pd.jsd.2 <- pd.jsd.2 %>% rownames_to_column(var = "lib")
-  pd.jsd.2$lib <- sub("_jsd.dat.*","",pd.jsd.2$lib)
-  pd.jsd.2 <- rbind(pd.jsd.2,
-                    cbind(pd.jsd[[2,1]],lib=libs[input.idx]))
+  pd.jsd.2$lib <-sub("\\..*","",pd.jsd.2$lib)
+
+   ## first libs in each group
+  flibs <-  unique((t(as.data.frame(pd.jsd['group',]))))
+
+  for (l in flibs){
+      pd.jsd.2 <- rbind(pd.jsd.2,
+                        cbind(pd.jsd[[2,l]],
+                              lib=libs.info.input[flibs[l,],"libs"]))
+  }
+
   pd.jsd.2$lib <- libs.showname.dic[pd.jsd.2$lib]
   hchart(pd.jsd.2,
          "line",hcaes(x=rank,y=frac_reads,group=lib))

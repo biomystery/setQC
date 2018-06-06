@@ -1,7 +1,7 @@
 #'---
 #'params:
 #'  set_name: "Pfizer_2017-11-30"
-#'  libs: "48 49 50 51 52 53 54 55 56 57"
+#'  libs_file: ""
 #'  setQC_dir: "./"
 #'  libQC_dir: "./"
 #'  update_gs: F
@@ -25,6 +25,11 @@
 #+ init, echo=F,warning=F,message=F
 # load the candidate files
 attach(params)
+libs.info <- read.table(libs_file,col.names=c("libs","group","input"),
+                        stringsAsFactors=F)
+libs <- libs.info$libs
+libs.info.input <- libs.info %>% filter(input=="true")
+libs.info <- libs.info%>% column_to_rownames("libs")
 no_libs <- length(libs)
 source('./libs.R')
 
@@ -166,12 +171,12 @@ tagList(tlist)
 #' # ChIP-seq specific
 #' ## Basic metrics {.tabset .tabset-fade .tabset-pills}
 #' ### JSD
-#+ jsd_plot,echo =F 
+#+ jsd_plot,echo =F
 tlist[[1]]<- plotJSD()
 tagList(tlist)
 
-#' ### CC 
-#+ cc_plots,echo =F 
+#' ### CC
+#+ cc_plots,echo =F
 cc_plots <- paste0("./libQCs/",list.files(path=libQC_dir,pattern = "trim_50bp.no_chrM.15M.cc.plot.png"))
 tmp <- sapply( 1:length(libs), function(i){
   ii <- grep(libs[i],cc_plots)
