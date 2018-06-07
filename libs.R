@@ -226,6 +226,7 @@ plotJSD <- function(){
   fs <- list.files(path = libQC_dir,pattern = "*jsd.dat",full.names = F)
   pd.jsd <- sapply(fs, plotJSD_getDat)
   colnames(pd.jsd) <- sub("_jsd.dat.*","",colnames(pd.jsd))
+  pd.jsd <- rbind(pd.jsd,group=libs.info[colnames(pd.jsd),'group'])
   pd.jsd.2 <- do.call(rbind,pd.jsd[1,])
   pd.jsd.2 <- pd.jsd.2 %>% rownames_to_column(var = "lib")
   pd.jsd.2$lib <-sub("\\..*","",pd.jsd.2$lib)
