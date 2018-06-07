@@ -41,7 +41,7 @@ if(has_sample_table) {
     libs.showname <- sample_table$`Label (for QC report)`
     kable(sample_table)
 }
-libs.showname.dic <- libs.showname;names(libs.showname.dic)<-libs
+libs.showname.dic <- libs.showname;names(libs.showname.dic)<- sample_table$`Sequencing ID`
 #input.idx <- grep(pattern = "input",libs.showname,ignore.case = T)
 
 #' # Fastq files {.tabset .tabset-fade .tabset-pills}
