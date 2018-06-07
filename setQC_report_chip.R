@@ -42,7 +42,7 @@ if(has_sample_table) {
     kable(sample_table)
 }
 libs.showname.dic <- libs.showname;names(libs.showname.dic)<-libs
-input.idx <- grep(pattern = "input",libs.showname,ignore.case = T)
+#input.idx <- grep(pattern = "input",libs.showname,ignore.case = T)
 
 #' # Fastq files {.tabset .tabset-fade .tabset-pills}
 #' ## Sequence sources (potential contamination)

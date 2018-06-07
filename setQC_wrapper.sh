@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-06-06 16:38:27"
+#Time-stamp: "2018-06-07 00:24:19"
 source activate bds_atac_py3
 
 ############################################################
@@ -81,7 +81,7 @@ fi
 
 
 ## Prepare the files and etc for runSetQCreport.sh
-LIB_ARRAY=(`awk '{print $1}  $SAMPLE_FILE`) # assume all the single libs in the same dir
+LIB_ARRAY=(`awk '{print $1}'  $SAMPLE_FILE`) # assume all the single libs in the same dir
 
 
 LIB_LEN=${#LIB_ARRAY[@]}
