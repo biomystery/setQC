@@ -192,6 +192,9 @@ if(chipsnap){
     snap.cnt <-read.table(paste0(setQC_dir,"snap.cnt"),
                           col.names = c("barcodes","cnt","sample"))
     snap.cnt <- snap.cnt[!grepl("qseqid",snap.cnt$barcodes),]
+    if(nrow(snap.cnt)==0){
+        h5("No spike-in was found!")
+    }else{
     snap.cnt.wd <- snap.cnt %>%
         separate(barcodes,c("b_id","b_target","b_rep")) %>%
         select(b_target,cnt,sample) %>%
@@ -211,8 +214,9 @@ if(chipsnap){
     df.cpm <-as.data.frame(signif(t(t(df.cnt)/as.numeric(reads_list$reads_count[1,id.nm[id.nm.me]])*1000000),2))
 
     showDF(as.data.frame(t(df.prt)))
+    }
 
-}else{p('This module is disabled')}
+}else{h5('This module is disabled')}
 
 #' ### Spikein count (raw)
 #+ snap_chip_cnt,echo =F
