@@ -47,11 +47,11 @@ getSampleTable <- function(lib_ids){
 updateCounts <- function(df){
     frow=df[1,]
     lrow=df[5,]
-    fac=ifelse(libQC_table$`Paired/Single-ended` == "Paired-ended",2,1)
+    fac=ifelse(libQC_table["Paired/Single-ended",] == "Paired-ended",2,1)
     frow=frow/fac;lrow=lrow/fac
-    rbind(`Total number of molecules sequenced`= frow,
-          df,
-          `Final number of fragments`= lrow)
+    rownames(frow) <- "Total number of molecules sequenced"
+    rownames(lrow) <- "Final number of fragments"
+    rbind(frow,          df, lrow)
 }
 
 updateSetQC_gs <- function(){
