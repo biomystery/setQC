@@ -49,9 +49,9 @@ updateCounts <- function(df){
     lrow=df[5,]
     fac=ifelse(libQC_table$`Paired/Single-ended` == "Paired-ended",2,1)
     frow=frow/fac;lrow=lrow/fac
-    rbind(`Total # of molecules sequenced`= frow,
+    rbind(`Total number of molecules sequenced`= frow,
           df,
-          `Final # of fragments`= lrow)
+          `Final number of fragments`= lrow)
 }
 
 updateSetQC_gs <- function(){
