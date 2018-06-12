@@ -44,7 +44,15 @@ getSampleTable <- function(lib_ids){
 
 }
 
-
+updateCounts <- function(df){
+    frow=df[1,]
+    lrow=df[5,]
+    fac=ifelse(libQC_table$`Paired/Single-ended` == "Paired-ended",2,1)
+    frow=frow/fac;lrow=lrow/fac
+    rbind(`Total # of molecules sequenced`= frow,
+          df,
+          `Final # of fragments`= lrow)
+}
 
 updateSetQC_gs <- function(){
   gs_auth(token="/home/zhc268/software/google/googlesheets_token.rds")

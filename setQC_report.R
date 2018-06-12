@@ -76,6 +76,7 @@ datatable(reads_list$reads_yield,colnames=libs.showname)%>%
 
 #' ### Read counts after each step
 #+ reads_counts_table, echo=F
+reads_list$reads_count <- updateCounts(reads_list$reads_count)
 datatable(reads_list$reads_count,colnames=libs.showname)%>%
     formatCurrency(1:length(libs),currency="",digits=0)
 
