@@ -221,18 +221,23 @@ if(chipsnap){
 #' ### Spikein count (raw)
 #+ snap_chip_cnt,echo =F
 if(chipsnap){
-    showDF(as.data.frame(t(df.cnt)))
+    if(nrow(snap.cnt)==0){h5("No spike-in was found!")
+    }else{
+    showDF(as.data.frame(t(df.cnt)))}
 }else{
-    p('This module is disabled')
+    h5('This module is disabled')
 }
 
 
 #' ### Spikein count (cpm)
 #+ snap_chip_prt_lib,echo =F
 if(chipsnap){
-    showDF(as.data.frame(t(df.cpm)))
+    if(nrow(snap.cnt)==0){h5("No spike-in was found!")
+    }else{
+        showDF(as.data.frame(t(df.cpm)))
+    }
 }else{
-    p('This module is disabled')
+    h5('This module is disabled')
 }
 
 

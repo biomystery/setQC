@@ -170,6 +170,10 @@ tagList(tlist)
 if(chipsnap){
     snap.cnt <-read.table(paste0(setQC_dir,"snap.cnt"),
                           col.names = c("barcodes","cnt","sample"))
+    if(nrow(snap.cnt)==0){
+        h5("No spike-in was found!")
+    }else{
+
     snap.cnt.wd <- snap.cnt %>%
         separate(barcodes,c("b_id","b_target","b_rep")) %>%
         select(b_target,cnt,sample) %>%
@@ -185,25 +189,29 @@ if(chipsnap){
     df.prt <- as.data.frame(apply(df.cnt,2,function(x) signif(x/sum(x)*100,2)))
     df.cpm <-as.data.frame(signif(t(t(df.cnt)/as.numeric(reads_list$reads_count[1,id.nm[id.nm.me]])*1000000),2))
 
-    showDF(as.data.frame(t(df.prt)))
-
-}else{p('This module is disabled')}
+        showDF(as.data.frame(t(df.prt)))
+    }
+}else{h5('This module is disabled')}
 
 #' ### Spikein count (raw)
 #+ snap_chip_cnt,echo =F
 if(chipsnap){
-    showDF(as.data.frame(t(df.cnt)))
+    if(nrow(snap.cnt)==0){h5("No spike-in was found!")
+    }else{
+    showDF(as.data.frame(t(df.cnt)))}
 }else{
-    p('This module is disabled')
+    h5('This module is disabled')
 }
 
 
 #' ### Spikein count (cpm)
 #+ snap_chip_prt_lib,echo =F
 if(chipsnap){
-    showDF(as.data.frame(t(df.cpm)))
+    if(nrow(snap.cnt)==0){h5("No spike-in was found!")
+    }else{
+    showDF(as.data.frame(t(df.cpm)))}
 }else{
-    p('This module is disabled')
+    h5('This module is disabled')
 }
 
 
