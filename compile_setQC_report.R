@@ -39,6 +39,7 @@ getSetName <- function(setID=set_name_id){
          ifelse(exptype=="atac_chip",
                 paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report_atac_chip.html"),
                 paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/setQC_report.html")))
+
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=url,  anchor=paste0("G",3+rid))
 
   # return set_name
@@ -47,9 +48,9 @@ getSetName <- function(setID=set_name_id){
 
 (set_name_= getSetName())
 
-print(" before run chip")
+(" Deciding which type of experiments")
 if (exptype=="chip"){
-        print("run chips seq test")
+        ("run chips seq test")
         rmarkdown::render("/home/zhc268/software/setQC/setQC_report_chip.R",
                       params = list(
                           set_name = set_name_,
@@ -61,7 +62,7 @@ if (exptype=="chip"){
                       ),
                       output_dir=setQC_dir_)
 } else if (exptype=="atac_chip"){
-        print("run chips seq test")
+        ("run chips seq test")
         rmarkdown::render("/home/zhc268/software/setQC/setQC_report_atac_chip.R",
                       params = list(
                           set_name = set_name_,
@@ -72,8 +73,8 @@ if (exptype=="chip"){
                           chipsnap =chipsnap_
                       ),
                       output_dir=setQC_dir_)
-}else{
-    print("run atac")
+} else{
+    ("run atac")
     rmarkdown::render("/home/zhc268/software/setQC/setQC_report.R",
                       params = list(
                           set_name = set_name_,
@@ -82,7 +83,8 @@ if (exptype=="chip"){
                           libQC_dir = libQC_dir_,
                           padv =padv_
                       ),
-                      output_dir=setQC_dir_)}
+                      output_dir=setQC_dir_)
+}
 
 
 
