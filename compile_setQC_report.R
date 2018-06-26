@@ -13,7 +13,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 
 
-relative_dir <- sub("/home/zhc268/data/outputs/setQCs(/)+","",setQC_dir_)
+relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir_)
 
 ## loading tracking sheet 5 here to update the name
 # 1. better construct a data base here

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-06-14 09:16:37"
+#Time-stamp: "2018-06-26 10:18:15"
 source activate bds_atac_py3
 
 ############################################################
@@ -25,8 +25,8 @@ usage(){
 # PART III  params
 ############################################################
 # default 
-BASE_OUTPUT_DIR="/home/zhc268/data/outputs/setQCs/"
-track_source_dir="/home/zhc268/data/outputs/"
+BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/setQCs/"
+track_source_dir="/projects/ps-epigen/outputs/"
 
 # receiving arguments
 while getopts ":s:b:n:p:m:c:l:t:" opt;
@@ -72,7 +72,7 @@ if [ ! -f "$SAMPLE_FILE" ]; then
 fi
 
 if [ ! -d "$LIBQC_DIR" ]; then
-    LIBQC_DIR="/home/zhc268/data/outputs/libQCs/"
+    LIBQC_DIR="/projects/ps-epigen/outputs/libQCs/"
 fi
 
 if [ -z "$EXP_TYPE" ]; then
@@ -182,11 +182,11 @@ echo -e "############################################################"
 
 mkdir -p $SETQC_DIR"/app"
 cd $SETQC_DIR"/app"
-cp -ufs /home/zhc268/data/software/setQC/peakApp/app.R ./;
+cp -ufs /projects/ps-epigen/software/setQC/peakApp/app.R ./;
 cp -Pfs $SETQC_DIR/data/avgOverlapFC.tab ./
 cp -Pfs $SETQC_DIR/sample_table.csv ./
 
-ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR;cp -rPfs /home/zhc268/data/outputs/setQCs/$RELATIVE_DIR/app/* /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR/"
+ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR;cp -rPfs /projects/ps-epigen/outputs/setQCs/$RELATIVE_DIR/app/* /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR/"
 
 echo -e "############################################################"
 echo -e "# Step 5. Final: prepare downloading files "
@@ -197,7 +197,7 @@ rm -rf $SETQC_DIR"/download" || true ;mkdir $SETQC_DIR"/download"
 cd $SETQC_DIR"/download"
 
 # script 
-data_dir="/home/zhc268/data/"
+data_dir="/projects/ps-epigen/data/"
 
 
 
