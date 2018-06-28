@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-06-26 10:18:15"
+#Time-stamp: "2018-06-26 11:45:19"
 source activate bds_atac_py3
 
 ############################################################
@@ -197,7 +197,7 @@ rm -rf $SETQC_DIR"/download" || true ;mkdir $SETQC_DIR"/download"
 cd $SETQC_DIR"/download"
 
 # script 
-data_dir="/projects/ps-epigen/data/"
+data_dir="/projects/ps-epigen/"
 
 
 

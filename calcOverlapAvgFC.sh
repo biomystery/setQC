@@ -11,6 +11,8 @@ done
 
 shift $((OPTIND-1))
 
+source activate bds_atac
+
 # created merged peak files
 including_libs=($@)
 
@@ -22,7 +24,7 @@ for l in ${including_libs[@]}; do find ./data -name "${l}*.ham*.gz" -exec zcat {
 sort -k1,1 -k2,2n merged.tmp.bed | uniq > merged.clip.bed # borrow this temporarily
 bedtools merge -i merged.clip.bed > merged.bed
 
-bedClip merged.bed $(find /home/zhc268/data/GENOME/ -name $genome".chrom.sizes") merged.clip.bed
+bedClip merged.bed $(find /projects/ps-epigen/GENOME/ -name $genome".chrom.sizes") merged.clip.bed
 cat merged.clip.bed | sort -k1,1 -k2,2n | uniq | awk -v OFS='\t' '{print $0,NR-1}' > merged_peak.srt.clip.named.bed
 
 # created avgOverlapFC.tab
