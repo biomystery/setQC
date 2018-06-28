@@ -12,10 +12,10 @@ track.json.simple <- gsub("\\/share\\/",paste0("\\:8088/",set_dir,"\\/data\\/"),
 # to check if pileup
 if(length(list.files("./","pileup"))>0){
     track.json.simple <- gsub(" pval"," FPMR",track.json.simple)
-    track.json.simple <- gsub("pval","pileup",track.json.simple)
+    track.json.simple <-gsub("\\.pval\\.","\\.pileup\\.",track.json.simple)
     track.json.simple <- gsub("\"thmax\":40","\"thmax\":3",track.json.simple)# scale to 0 and 25
 }else{
-    track.json.simple <- gsub("pval","fc",track.json.simple)
+    track.json.simple <-gsub("\\.pval\\.","\\.pileup\\.",track.json.simple)
     track.json.simple <- gsub("\"thmax\":40","\"thmax\":25",track.json.simple)# scale to 0 and 25
 
 }
