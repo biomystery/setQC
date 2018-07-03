@@ -17,6 +17,7 @@
 #'    toc: true
 #'    toc_depth: 2
 #'    toc_float: true
+#'author: "UCSD Center for Epigenomics"
 #'date: "`r date()`"
 #'---
 #'<hr style="border: 1px dashed grey;" />
