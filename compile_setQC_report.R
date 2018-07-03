@@ -9,8 +9,12 @@ args <- commandArgs(trailingOnly = TRUE)
 (chipsnap_<- args[5]) # peak advanced toggle
 (exptype <-  args[6])
 (libs_file_<- args[7]) # use lib_file
+(uid_<- args[8]) # uid
 (libs_ <- system(paste0("awk '{print $1}' ",libs_file_),intern=T))
 
+### users map uid-initials
+users <- c("ZC","JYH","AVD")
+names(users)<-c('zhc268','jyh063','avdowia')
 
 
 relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir_)
@@ -31,7 +35,7 @@ getSetName <- function(setID=set_name_id){
   sdir<- "/home/zhc268/software/setQC/"
 
 
-  gs_mseqts<- gs_mseqts %>% gs_edit_cells(input="ZC",  anchor=paste0("I",3+rid))
+  gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=users[uid],  anchor=paste0("I",3+rid))
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=Sys.time(),  anchor=paste0("J",3+rid))
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=paste0(surl,system(paste("cd",sdir,";git rev-parse --short HEAD"), intern = TRUE)),
                                           anchor=paste0("K",3+rid))
