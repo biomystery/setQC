@@ -35,7 +35,7 @@ getSetName <- function(setID=set_name_id){
   sdir<- "/home/zhc268/software/setQC/"
 
 
-  gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=users[uid],  anchor=paste0("I",3+rid))
+  gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=users[uid_],  anchor=paste0("I",3+rid))
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=Sys.time(),  anchor=paste0("J",3+rid))
   gs_mseqts<- gs_mseqts %>% gs_edit_cells(input=paste0(surl,system(paste("cd",sdir,";git rev-parse --short HEAD"), intern = TRUE)),
                                           anchor=paste0("K",3+rid))
