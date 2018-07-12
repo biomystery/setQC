@@ -235,17 +235,17 @@ plotJSD <- function(){
   pd.jsd <- sapply(fs, plotJSD_getDat)
   colnames(pd.jsd) <- sub("_jsd.dat.*","",colnames(pd.jsd))
   pd.jsd <- rbind(pd.jsd,group=libs.info[colnames(pd.jsd),'group'])
-  pd.jsd.2 <- do.call(rbind,pd.jsd[1,])
-  pd.jsd.2 <- pd.jsd.2 %>% rownames_to_column(var = "lib")
-  pd.jsd.2$lib <-sub("\\..*","",pd.jsd.2$lib)
+  pd.jsd.2 <- do.call(rbind,pd.jsd[1,]) # merge all treatment libs
+  pd.jsd.2 <- pd.jsd.2 %>% rownames_to_column(var = "lib")%>%
+      mutate(lib=sub("\\..*","",lib))
 
    ## first libs in each group
   flibs <-  unique((t(as.data.frame(pd.jsd['group',]))))
 
-  for (l in flibs){
+  for (l in rownames(flibs)){
       pd.jsd.2 <- rbind(pd.jsd.2,
-                        cbind(pd.jsd[[2,l]],
-                              lib=libs.info.input[flibs[l,],"libs"]))
+                        cbind(pd.jsd[[2,l]], # input
+                              lib=libs.info.input$libs[libs.info.input$group==flibs[l,]]))
   }
 
   pd.jsd.2$lib <- libs.showname.dic[pd.jsd.2$lib]

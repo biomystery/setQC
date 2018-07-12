@@ -178,7 +178,7 @@ tagList(tlist)
 
 #' ### CC
 #+ cc_plots,echo =F
-cc_plots <- paste0("./libQCs/",list.files(path=libQC_dir,pattern = "trim_50bp.no_chrM.15M.cc.plot.png"))
+cc_plots <- paste0("./libQCs/",list.files(path=libQC_dir,pattern="*.nodup.*.cc.*png"))
 tmp <- sapply( 1:length(libs), function(i){
   ii <- grep(libs[i],cc_plots)
   thumbnail(libs.showname[i],cc_plots[ii],colsize ='col-sm-3' )})
