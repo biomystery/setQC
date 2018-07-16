@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-07-14 14:33:39"
+#Time-stamp: "2018-07-16 12:22:05"
 source activate bds_atac_py3
 
 ############################################################
@@ -209,7 +209,7 @@ do
 
     echo "tranfering $a to $b"
     find $data_dir"/seqdata" \( -name $a"_R*.bz2" -o -name $a"*.gz" \)  -type f -exec ln -s {} ./  \; 
-    find $data_dir"/outputs/bams" \( -name $a"_R*.bam" -o -name $a".bam" \)  -type f -exec ln -s {} ./  \; 
+    find $data_dir"/outputs/bams" \( -name $a"_R*.bam" -o -name $a".*bam" \)  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/signals/" \( -name $a"_R*fc*" -o -name $a".nodup*fc*" \) -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/signals/" \( -name $a"_R*pval*" -o -name $a".nodup*pval*" \)  -type f -exec ln -s {} ./  \;
@@ -221,11 +221,11 @@ do
     find . -name $a"_R*.PE2SE.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE/$b\.raw/2;s/${a}_R1\.trim\.PE2SE/${b}\.raw/2" | bash 2> /dev/null
     find . -name $a".bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}/${b}\.raw/2" | bash 2> /dev/null    # SE chip 
     find . -name $a"_R*.nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup/$b\.final/2;s/${a}_R1\.trim\.PE2SE\.nodup/${b}\.final/2"  | bash 2> /dev/null
-    find . -name $a".nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}/${b}\.final/2"  | bash 2> /dev/null    #se chip 
+    find . -name $a".nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup/${b}\.final/2"  | bash 2> /dev/null    #se chip 
     find . -name $a"_R*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2;s/${a}_R1\.trim\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2" | bash 2> /dev/null
-    find . -name $a".*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup\.tagAlign/$b/2" | bash 2> /dev/null # se chip 
+    find . -name "*${a}.*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup\.tagAlign/$b/2" | bash 2> /dev/null # se chip 
     find . -name $a"_R*bigwig" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf/$b/2;s/${a}_R1\.trim\.PE2SE\.nodup\.tn5\.pf/$b/2" | bash 2> /dev/null
-    find . -name $a".*bw" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup\.tagAlign/$b/2" | bash 2> /dev/null #se chip 
+    find . -name "*${a}.*bw" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup\.tagAlign/$b/2" | bash 2> /dev/null #se chip 
     find . -name $a".*bigwig" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.pf/$b/2;s/${a}_R1\.trim\.PE2SE\.nodup\.pf/$b/2" | bash 2> /dev/null
 done
 
