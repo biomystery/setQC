@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-07-16 12:22:05"
+#Time-stamp: "2018-07-19 12:35:19"
 source activate bds_atac_py3
 
 ############################################################
@@ -229,6 +229,8 @@ do
     find . -name $a".*bigwig" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.pf/$b/2;s/${a}_R1\.trim\.PE2SE\.nodup\.pf/$b/2" | bash 2> /dev/null
 done
 
+# delete meta
+rm -f *.meta
 
 ## generate files.txt
 urlbase="http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/download/"
