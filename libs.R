@@ -232,7 +232,11 @@ showDF<- function(df){
 
 plotJSD <- function(){
     fs <- list.files(path = libQC_dir,pattern = "*jsd.dat",full.names = F)
-    fs <- fs[-sapply((libs.info %>% filter(!group %in% libs.info.input$group))$libs, function(x) grep(x,fs))]
+    fs <- fs[-sapply(
+              (libs.info %>%
+               rownames_to_column("libs")%>%
+               filter(!group %in% libs.info.input$group))$libs,
+               function(x) grep(x,fs)) ]
     pd.jsd <- sapply(fs, plotJSD_getDat)
     colnames(pd.jsd) <- sub("_jsd.dat.*","",colnames(pd.jsd))
     pd.jsd <- rbind(pd.jsd,group=libs.info[colnames(pd.jsd),'group'])
