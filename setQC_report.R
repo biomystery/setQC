@@ -241,6 +241,7 @@ if(padv){
         require(scatterD3)
         pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
         pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
+        pd.log2 <- pd.log2[apply(pd.log2,1,var)!=0,]
         pd.pca <- prcomp(t(pd.log2),center =T,scale. = T )
         perct <- as.numeric(round(summary(pd.pca)$importance[2,1:2]*100))
 
