@@ -232,11 +232,15 @@ showDF<- function(df){
 
 plotJSD <- function(){
     fs <- list.files(path = libQC_dir,pattern = "*jsd.dat",full.names = F)
-    fs <- fs[-sapply(
-              (libs.info %>%
-               rownames_to_column("libs")%>%
-               filter(!group %in% libs.info.input$group))$libs,
-               function(x) grep(x,fs)) ]
+
+    ## filter ophan input group
+    ophan.input <- libs.info %>%
+        rownames_to_column("libs")%>%
+        filter(!group %in% libs.info.input$group)
+
+    if(nrow(ophan.input)>0)
+        fs <- fs[-sapply(ophan.inputx$libs,
+                         function(x) grep(x,fs)) ]
     pd.jsd <- sapply(fs, plotJSD_getDat)
     colnames(pd.jsd) <- sub("_jsd.dat.*","",colnames(pd.jsd))
     pd.jsd <- rbind(pd.jsd,group=libs.info[colnames(pd.jsd),'group'])
@@ -244,7 +248,7 @@ plotJSD <- function(){
     pd.jsd.2 <- pd.jsd.2 %>% rownames_to_column(var = "lib")%>%
         mutate(lib=sub("\\..*","",lib))
 
-#### first libs in each group
+    ## first libs in each group
     flibs <-  unique((t(as.data.frame(pd.jsd['group',]))))
 
     for (l in rownames(flibs)){
