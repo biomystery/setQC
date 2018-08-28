@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-08-28 15:59:37"
+#Time-stamp: "2018-08-28 16:22:57"
 source activate bds_atac_py3
 
 ############################################################
@@ -218,14 +218,21 @@ do
     # rename 
     
     find . \( -name $a"_R*.fastq.gz" -o -name $a"_R*.fastq.bz2" -o -name $a".*fastq.gz" -o -name $a".*fastq.bz2" \) | xargs -n1 -I '{}' echo mv {} {} | sed "s/$a/$b/2" | bash  2> /dev/null
-    find . -name $a"_R*.PE2SE.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE/$b\.raw/2;s/${a}_R1\.trim\.PE2SE/${b}\.raw/2" | bash 2> /dev/null
+    find . -name $a"_R*.PE2SE.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE/$b\.raw/2;s/${a}_R1\.trim\.PE2SE/${b}\.raw/2" | bash 2> /dev/null #atac
+    find . -name $a"_R*.PE2SE.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.PE2SE/$b\.raw/2" | bash 2> /dev/null #PE chip
     find . -name $a".bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}/${b}\.raw/2" | bash 2> /dev/null    # SE chip 
-    find . -name $a"_R*.nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup/$b\.final/2;s/${a}_R1\.trim\.PE2SE\.nodup/${b}\.final/2"  | bash 2> /dev/null
+    find . -name $a"_R*.nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup/$b\.final/2;s/${a}_R1\.trim\.PE2SE\.nodup/${b}\.final/2"  | bash 2> /dev/null #atac
+    find . -name $a"_R*.nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.PE2SE\.nodup/$b\.final/2"  | bash 2> /dev/null #PE chip
+    
     find . -name $a".nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup/${b}\.final/2"  | bash 2> /dev/null    #se chip 
     find . -name $a"_R*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2;s/${a}_R1\.trim\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2" | bash 2> /dev/null
-    find . -name "*${a}.*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup\.tagAlign/$b/2" | bash 2> /dev/null # se chip 
+    find . -name "*${a}.*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup\.tagAlign/$b/2" | bash 2> /dev/null # se chip
+    find . -name "*${a}_R*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.PE2SE\.nodup\.tagAlign/$b/2"  | bash 2> /dev/null # pe chip
+    
     find . -name $a"_R*bigwig" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf/$b/2;s/${a}_R1\.trim\.PE2SE\.nodup\.tn5\.pf/$b/2" | bash 2> /dev/null
-    find . -name "*${a}.*bw" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup\.tagAlign/$b/2" | bash 2> /dev/null #se chip 
+    find . -name "*${a}.*bw" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup\.tagAlign/$b/2" | bash 2> /dev/null #se chip
+    find . -name "*${a}_R*bw" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.PE2SE\.nodup\.tagAlign/$b/2" | bash 2> /dev/null #pe chip
+    
     find . -name $a".*bigwig" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.pf/$b/2;s/${a}_R1\.trim\.PE2SE\.nodup\.pf/$b/2" | bash 2> /dev/null
 done
 
