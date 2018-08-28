@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-07-19 12:35:19"
+#Time-stamp: "2018-08-28 15:59:37"
 source activate bds_atac_py3
 
 ############################################################
@@ -208,7 +208,7 @@ do
     a=${libs_name_dic[2*$i-2]};b=${libs_name_dic[2*$i-1]};
 
     echo "tranfering $a to $b"
-    find $data_dir"/seqdata" \( -name $a"_R*.bz2" -o -name $a"*.gz" \)  -type f -exec ln -s {} ./  \; 
+    find $data_dir"/seqdata" \( -name $a"_R*.bz2" -o -name $a"*.gz" \) -exec ln -s {} ./  \; 
     find $data_dir"/outputs/bams" \( -name $a"_R*.bam" -o -name $a".*bam" \)  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/signals/" \( -name $a"_R*fc*" -o -name $a".nodup*fc*" \) -type f -exec ln -s {} ./  \; 
