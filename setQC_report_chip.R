@@ -158,9 +158,13 @@ tagList(tlist)
 #' ### Insert size distribution
 
 #+ insert_size,echo =F,warning=F
-tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_insert_size_Percentages.txt"),
-                         xlab="Insert Size (bp)",ylab="Percentage of Counts")
-tagList(tlist)
+
+if(length(unique(libQC_table['Paired/Single-ended',]))>1){
+    h5('This module is disabled (mixed PE&SE')}else{
+    tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_insert_size_Percentages.txt"),
+                             xlab="Insert Size (bp)",ylab="Percentage of Counts")
+    tagList(tlist)
+}
 
 #' ### GC bias in final bam
 #+ gc,echo =F,warning=F
