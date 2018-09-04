@@ -178,6 +178,7 @@ getLibQCtable <- function(lib_ids){
         qc.2
     }
     qcs <- lapply(lib_ids,parseLibQC)
+    idx <-  Reduce(intersect, lapply(qcs,rownames))
     qc_table<- t(do.call(rbind, lapply(qcs, "[", idx, )))
     rownames(qc_table) <- idx
     colnames(qc_table) <- lib_ids
