@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-08-28 16:22:57"
+#Time-stamp: "2018-09-04 16:04:50"
 source activate bds_atac_py3
 
 ############################################################
@@ -141,7 +141,16 @@ if [ $CHIP_SNAP == 'true' ]; then
     echo -e "############################################################"
     
     snapcnt=${SETQC_DIR}/snap.cnt
-    find  $SETQC_DIR"libQCs" -name "*snap*tab" | while read f; do  awk '(NR>9){a=FILENAME; sub(".*/","",a);split(a,b,".");print  $0,b[1]}' $f;done> $snapcnt
+    find  $SETQC_DIR"libQCs" -name "*snap*tab" | while read f
+    do
+        grep -q sequences $f
+        if [ $? -eq 0 ]; then
+            awk '(NR>9){a=FILENAME; sub(".*/","",a);split(a,b,".");print  $0,b[1]}' $f
+        else
+            awk '{a=FILENAME; sub(".*/","",a);split(a,b,".");print  $0,b[1]}' $f
+        fi
+        
+    done> $snapcnt
 fi
 
 echo -e "############################################################"
