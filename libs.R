@@ -177,9 +177,13 @@ getLibQCtable <- function(lib_ids){
         colnames(qc.2)<- lib
         qc.2
     }
-    qc_table <- do.call(what = cbind,args = lapply(lib_ids,parseLibQC))
-    ##qc_table<-qc_table[-c(1:2,16:24,26:27,35,37),]
+    qcs <- lapply(lib_ids,parseLibQC)
+    qc_table<- t(do.call(rbind, lapply(qcs, "[", idx, )))
+    rownames(qc_table) <- idx
+    colnames(qc_table) <- lib_ids
 
+    ##qc_table <- do.call(what = cbind,args = lapply(lib_ids,parseLibQC))
+    ##qc_table<-qc_table[-c(1:2,16:24,26:27,35,37),]
 
     if(exists("sample_table")){
         if(all.equal(sample_table$`Sequencing ID`, colnames(qc_table))){
