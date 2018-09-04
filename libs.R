@@ -196,8 +196,11 @@ getLibQCtable <- function(lib_ids){
 }
 
 getReadsTable <- function(qc_table=libQC_table){
-    rtable <- data.matrix(subset(qc_table,grepl("Read count",rownames(qc_table))))
-    ryield = apply(rtable,2,function(x) sapply(1:length(x),function(i) as.numeric(x[i])/as.numeric(x[1])))
+    a1 <- subset(qc_table,grepl("Read count",rownames(qc_table)))
+    rtable<- a1%>%  as.tibble %>% mutate_all(as.character) %>% mutate_all(as.numeric)%>%as.data.frame
+    rownames(rtable) <- rownames(a1)
+
+    ryield = apply(rtable,2,function(x) sapply(1:length(x),function(i) (x[i])/(x[1])))
     rownames(ryield) <- rownames(rtable)
     list(reads_count =rtable,
          reads_yield = ryield)
