@@ -197,8 +197,10 @@ getLibQCtable <- function(lib_ids){
 
 getReadsTable <- function(qc_table=libQC_table){
     rtable <- data.matrix(subset(qc_table,grepl("Read count",rownames(qc_table))))
+    ryield = apply(rtable,2,function(x) sapply(1:length(x),function(i) as.numeric(x[i])/as.numeric(x[1])))
+    rownames(ryield) <- rownames(rtable)
     list(reads_count =rtable,
-         reads_yield = apply(rtable,2,function(x) sapply(1:length(x),function(i) x[i]/x[1])))
+         reads_yield = ryield)
 }
 
 percent <- function(x, digits = 2, format = "f", ...) {
