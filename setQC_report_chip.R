@@ -201,7 +201,7 @@ if(chipsnap){
         h5("No spike-in was found!")
     }else{
     snap.cnt.wd <- snap.cnt %>%
-        separate(barcodes,c("b_id","b_target","b_rep")) %>%
+        separate(barcodes,c("b_id","b_target","b_rep"),sep='_') %>%
         select(b_target,cnt,sample) %>%
         group_by(b_target,sample) %>%
         summarise(b_cnt = sum(cnt)) %>%
@@ -213,7 +213,7 @@ if(chipsnap){
     id.nm.show <- as.character(libs.showname.dic[id.nm])
     id.nm.show<- sapply(1:length(id.suffix),function(i) ifelse(is.na(id.suffix[i]),id.nm.show[i],paste0(id.nm.show[i],"_R",id.suffix[i])))
     colnames(df.cnt) <- id.nm.show
-    id.nm.me <- grep("me",colnames(df.cnt))
+    id.nm.me <- grep("me|ac",colnames(df.cnt),ignore.case=T)
     df.cnt <- df.cnt[,id.nm.me];
     df.prt <- as.data.frame(apply(df.cnt,2,function(x) signif(x/sum(x)*100,2)))
     df.cpm <-as.data.frame(signif(t(t(df.cnt)/as.numeric(reads_list$reads_count[1,id.nm[id.nm.me]])*1000000),2))
