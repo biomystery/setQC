@@ -192,7 +192,7 @@ div(class='row')
 
 #' ## SNAP-ChIP spikein {.tabset .tabset-fade .tabset-pills}
 #' ### Specificty ( %,#hits/#total_hits)
-#+ snap_chip_prt,echo =F
+#+ snap_chip_prt,echo =F,warning=F
 if(chipsnap){
     snap.cnt <-read.table(paste0(setQC_dir,"snap.cnt"),
                           col.names = c("barcodes","cnt","sample"))
