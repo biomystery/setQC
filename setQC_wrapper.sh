@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-09-04 16:09:47"
+#Time-stamp: "2018-10-12 08:52:14"
 source activate bds_atac_py3
 
 ############################################################
@@ -13,7 +13,7 @@ source activate bds_atac_py3
 
 
 usage(){
-    echo "usage: setQC_wrapper.sh -n <Set_xx> -c <true|false> -p <true|false> -t <atac|chip>"
+    echo "usage: setQC_wrapper.sh -n <Set_xx> -c <true|false> -p <true|false> -t <atac|chip|atac_chip> -m <true|false>"
 }
 
 

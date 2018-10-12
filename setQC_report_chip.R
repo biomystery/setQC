@@ -25,13 +25,14 @@
 #+ init, echo=F,warning=F,message=F
 # load the candidate files
 attach(params)
+source('./libs.R')
 libs.info <- read.table(libs_file,col.names=c("libs","group","input"),
                         stringsAsFactors=F)
 libs <- libs.info$libs
 libs.info.input <- libs.info %>% filter(input=="true")
 libs.info <- libs.info%>% column_to_rownames("libs")
 no_libs <- length(libs)
-source('./libs.R')
+
 
 
 #' # Sample info.
@@ -177,8 +178,13 @@ tagList(tlist)
 #' ## Basic metrics {.tabset .tabset-fade .tabset-pills}
 #' ### JSD
 #+ jsd_plot,echo =F
-tlist[[1]]<- plotJSD()
-tagList(tlist)
+
+if(nrow(libs.info) == nrow(libs.info.input)){ # disable if all libs are input
+    h5('This module is disabled')
+}else{
+    tlist[[1]]<- plotJSD()
+    tagList(tlist)
+}
 
 #' ### CC
 #+ cc_plots,echo =F
