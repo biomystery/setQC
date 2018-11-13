@@ -177,6 +177,22 @@ getLibQCtable <- function(lib_ids){
         colnames(qc.2)<- lib
         qc.2
     }
+    parseLibQC <- function(lib=libs[1]){
+###### Parse one libQC result
+        libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,"*_qc.txt")),intern=T)
+        if(length(libQC_report_file)==0)  libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,".*_qc.txt")),intern=T)
+        if(length(libQC_report_file)==0)  libQC_report_file <- system(paste("find",libQC_dir, "-name",paste0(lib,"_qc.txt")),intern=T)
+        if(length(libQC_report_file)>1) libQC_report_file <- grep("trim",libQC_report_file,value=T)
+
+        qc <- read.table(libQC_report_file,sep = "\t",header = F,fill = T,col.names = paste0("v",seq(3)),
+                         stringsAsFactors = F)
+        qc$v3 <- signif(qc$v3,digits = 3)
+        qc.2 <- data.frame(sapply(1:nrow(qc),function(x) sub(" \\| NA","",paste(qc$v2[x],qc$v3[x],sep = " | "))),
+                           stringsAsFactors = F)
+        rownames(qc.2)<- qc$v1
+        colnames(qc.2)<- lib
+        qc.2
+    }
     qcs <- lapply(lib_ids,parseLibQC)
     idx <-  Reduce(intersect, lapply(qcs,rownames))
     qc_table<- t(do.call(rbind, lapply(qcs, "[", idx, )))

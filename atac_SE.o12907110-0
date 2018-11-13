@@ -1,0 +1,488 @@
+
+
+== git info
+Latest git commit		: 2ade8298d0072caa5fc3e592b3865ef7e7d1a58f (Wed Sep 26 15:12:15 2018)
+	Reading parameters from section (tscc*.sdsc.edu) in file(/projects/ps-epigen/software/atac_dnase_pipelines/default.env)...
+
+
+== configuration file info
+Hostname			: tscc-3-46.sdsc.edu
+Configuration file		: 
+Environment file		: /projects/ps-epigen/software/atac_dnase_pipelines/default.env
+
+
+== parallelization info
+No parallel jobs		: true
+Maximum # threads 		: 16
+
+
+== cluster/system info
+Walltime (general)		: 5h50m
+Max. memory (general)		: 7G
+Force to use a system		: local
+Process priority (niceness)	: 0
+Retiral for failed tasks	: 0
+Submit tasks to a cluster queue	: 
+Unlimited cluster mem./walltime	: false
+
+
+== shell environment info
+Conda env. 			: bds_atac
+Conda env. for python3		: bds_atac_py3
+Conda bin. directory		: /projects/ps-epigen/software/miniconda3/bin//
+
+Shell cmd. for init.		: if [[ -f $(which /projects/ps-epigen/software/miniconda3/bin//conda) && $(/projects/ps-epigen/software/miniconda3/bin//conda env list | grep bds_atac | wc -l) != "0" ]]; then source /projects/ps-epigen/software/miniconda3/bin//activate bds_atac; sleep 5; fi;  export PATH=/projects/ps-epigen/software/atac_dnase_pipelines/.:/projects/ps-epigen/software/atac_dnase_pipelines/modules:/projects/ps-epigen/software/atac_dnase_pipelines/utils:${PATH}:/bin:/usr/bin:/usr/local/bin:${HOME}/.bds; set -o pipefail; STARTTIME=$(date +%s)
+
+Shell cmd. for init.(py3)	: if [[ -f $(which /projects/ps-epigen/software/miniconda3/bin//conda) && $(/projects/ps-epigen/software/miniconda3/bin//conda env list | grep bds_atac_py3 | wc -l) != "0" ]]; then source /projects/ps-epigen/software/miniconda3/bin//activate bds_atac_py3; sleep 5; fi;  export PATH=/projects/ps-epigen/software/atac_dnase_pipelines/.:/projects/ps-epigen/software/atac_dnase_pipelines/modules:/projects/ps-epigen/software/atac_dnase_pipelines/utils:${PATH}:/bin:/usr/bin:/usr/local/bin:${HOME}/.bds; set -o pipefail; STARTTIME=$(date +%s)
+
+Shell cmd. for fin.		: TASKTIME=$[$(date +%s)-${STARTTIME}]; echo "Task has finished (${TASKTIME} seconds)."; sleep 0
+
+Cluster task min. len.		: 60
+
+Cluster task delay			: 0
+
+
+== output directory/title info
+Output dir.			: /oasis/tscc/scratch/zhc268/outputs/AVD_226
+Title (prefix)			: AVD_226
+	Reading parameters from section (default) in file(/projects/ps-epigen/software/atac_dnase_pipelines/default.env)...
+	Reading parameters from section (hg38) in file(/projects/ps-epigen/software/atac_dnase_pipelines/species/epigen.conf)...
+
+
+== species settings
+Species				: hg38
+Species file			: /projects/ps-epigen/software/atac_dnase_pipelines/species/epigen.conf
+
+Species name (WashU browser)	: hg38
+Ref. genome seq. fasta		: /projects/ps-epigen/GENOME/hg38/GRCh38_no_alt_analysis_set_GCA_000001405.15.fasta
+Chr. sizes file			: /projects/ps-epigen/GENOME/hg38/hg38.chrom.sizes
+Black list bed			: /projects/ps-epigen/GENOME/hg38/hg38.blacklist.bed.gz
+Ref. genome seq. dir.		: 
+
+
+== ENCODE accession settings
+ENCODE experiment accession	: 
+ENCODE award RFA			: 
+ENCODE assay category		: 
+ENCODE assay title		: 
+ENCODE award				: 
+ENCODE lab				: 
+ENCODE assembly genome		: 
+ENCODE alias prefix		: KLAB_PIPELINE
+ENCODE alias suffix		: 
+
+
+== report settings
+URL root for output directory	: 
+Genome coord. for browser tracks	: 
+
+
+== align multimapping settings
+# alignments reported for multimapping	: 0
+
+
+== align bowtie2 settings
+Bowtie2 index			: /projects/ps-epigen/GENOME/hg38/bowtie2_index/GRCh38_no_alt_analysis_set_GCA_000001405.15.fasta
+Replacement --score-min for bowtie2	: 
+Walltime (bowtie2)		: 47h
+Max. memory (bowtie2)		: 12G
+Extra param. (bowtie2)		: 
+
+
+== adapter trimmer settings
+Maximum allowed error rate for cutadapt	: 0.10
+Minimum trim. length for cutadapt -m	: 5
+Walltime (adapter trimming)		: 23h
+Max. memory (adapter trimming)		: 12G
+
+
+== postalign bam settings
+MAPQ reads rm thresh.		: 30
+Rm. tag reads with str.		: 
+No dupe removal in filtering raw bam	: false
+Walltime (bam filter)		: 23h
+Max. memory (bam filter)	: 12G
+Dup marker				: picard
+Use sambamba markdup (instead of picard)	: false
+
+
+== postalign bed/tagalign settings
+Max. memory for UNIX shuf			: 12G
+
+
+== postalign cross-corr. analysis settings
+Max. memory for UNIX shuf			: 12G
+User-defined cross-corr. peak strandshift	: -1
+Extra parameters for cross-corr. analysis	: 
+
+
+== callpeak macs2 settings
+Genome size (hs,mm)		: hs
+Walltime (macs2)		: 23h
+Max. memory (macs2)		: 15G
+Extra parameters for macs2 callpeak		: 
+
+
+== callpeak naiver overlap settings
+Bedtools intersect -nonamecheck	: false
+
+
+== callpeak etc settings
+# of top peaks to pick up in peak files	: 500000
+
+
+== IDR settings
+Append IDR threshold to IDR out_dir	: false
+
+
+== ATAQC settings
+TSS enrichment bed		: /projects/ps-epigen/GENOME/hg38/ataqc/hg38_gencode_tss_unique.bed.gz
+DNase bed for ataqc		: /projects/ps-epigen/GENOME/hg38/ataqc/reg2map_honeybadger2_dnase_all_p10_ucsc.hg19_to_hg38.bed.gz
+Promoter bed for ataqc		: /projects/ps-epigen/GENOME/hg38/ataqc/reg2map_honeybadger2_dnase_prom_p2.hg19_to_hg38.bed.gz
+Enhancer bed for ataqc		: /projects/ps-epigen/GENOME/hg38/ataqc/reg2map_honeybadger2_dnase_enh_p2.hg19_to_hg38.bed.gz
+Reg2map for ataqc			: /projects/ps-epigen/GENOME/hg38/ataqc/hg38_dnase_avg_fseq_signal_formatted.txt.gz
+Reg2map_bed for ataqc		: /projects/ps-epigen/GENOME/hg38/ataqc/hg38_celltype_compare_subsample.bed.gz
+Roadmap metadata for ataqc	: /projects/ps-epigen/GENOME/hg38/ataqc/hg38_dnase_avg_fseq_signal_metadata.txt
+Max. memory for ATAQC			: 20G
+Walltime for ATAQC			: 47h
+
+
+== atac pipeline settings
+Type of pipeline			: chip-seq
+Fastqs are trimmed?			: false
+Align only				: false
+# reads to subsample replicates (0 if no subsampling)	: 0
+# reads to subsample for cross-corr. analysis 	: 25000000
+No pseudo replicates			: true
+No ATAQC (advanced QC report)		: false
+No Cross-corr. analysis			: false
+Use CSEM for alignment			: false
+Smoothing window for MACS2		: 150
+Chip Seq				: false
+IDR threshold				: 0.1
+Use old trim adapters			: false
+Force to use ENCODE3 parameter set	: false
+Force to use ENCODE parameter set	: false
+Disable genome browser tracks	: false
+p-val thresh. for overlapped peaks	: 0.01
+MACS2 p-val thresh. for peaks	: 0.01
+MACS2 p-val thresh. for BIGWIGs		: 0.01
+Enable IDR on called peaks	: false
+
+== checking atac parameters ...
+
+Checking parameters and data files for ATAQC. 
+
+
+== checking adapters to be trimmed ...
+Replicate 1 adapters : automatically detected
+
+
+== checking input files ...
+
+Rep1 fastq (SE) :
+	/projects/ps-epigen/seqdata/AVD_226.fastq.gz
+Distributing 16 to ... 
+{1=16}
+
+Detected adapter for rep1 (SE) : AGATCGGAAGAGC
+Task has finished (2608 seconds).
+Task has finished (79 seconds).
+Task has finished (142 seconds).
+Task has finished (470 seconds).
+Task has finished (1399 seconds).
+Task has finished (254 seconds).
+Task has finished (70 seconds).
+################
+ChIP data: /oasis/tscc/scratch/zhc268/outputs/AVD_226/align/rep1/AVD_226.trim.nodup.25M.tagAlign.gz 
+Control data: NA 
+strandshift(min): -500 
+strandshift(step): 5 
+strandshift(max) 1500 
+user-defined peak shift NA 
+exclusion(min): 10 
+exclusion(max): NaN 
+num parallel nodes: 16 
+FDR threshold: 0.01 
+NumPeaks Threshold: NA 
+Output Directory: /oasis/tscc/scratch/zhc268/outputs/AVD_226/align/rep1 
+narrowPeak output file name: NA 
+regionPeak output file name: NA 
+Rdata filename: NA 
+plot pdf filename: /oasis/tscc/scratch/zhc268/outputs/AVD_226/qc/rep1/AVD_226.trim.nodup.25M.cc.plot.pdf 
+result filename: /oasis/tscc/scratch/zhc268/outputs/AVD_226/qc/rep1/AVD_226.trim.nodup.25M.cc.qc 
+Overwrite files?: TRUE
+
+Decompressing ChIP file
+Reading ChIP tagAlign/BAM file /oasis/tscc/scratch/zhc268/outputs/AVD_226/align/rep1/AVD_226.trim.nodup.25M.tagAlign.gz 
+opened /state/partition1/zhc268/12907110[0].tscc-mgr.local/RtmpGTywBN/AVD_226.trim.nodup.25M.tagAlign4d1744d2a88
+done. read 25000000 fragments
+ChIP data read length 75 
+[1] TRUE
+Calculating peak characteristics
+Minimum cross-correlation value 0.2933619 
+Minimum cross-correlation shift 1500 
+Top 3 cross-correlation values 0.324470981943719,0.324415982086416,0.320978002982937 
+Top 3 estimates for fragment length 405,415,535 
+Window half size 1050 
+Phantom peak location 75 
+Phantom peak Correlation 0.3132949 
+Normalized Strand cross-correlation coefficient (NSC) 1.106044 
+Relative Strand cross-correlation Coefficient (RSC) 1.56068 
+Phantom Peak Quality Tag 2 
+null device 
+          1 
+Task has finished (495 seconds).
+
+== Done do_align()
+Task has finished (8062 seconds).
+
+== Done call_peaks()
+Task has finished (6 seconds).
+
+== Done naive_overlap()
+species_ataqc: hg38
+samtools view -c -F 1804 -q 30 /oasis/tscc/scratch/zhc268/outputs/AVD_226/align/rep1/AVD_226.trim.bam
+samtools idxstats /oasis/tscc/scratch/zhc268/outputs/AVD_226/align/rep1/AVD_226.trim.bam 2> /dev/null | awk '{sum += $3+$4} END {print sum}'
+samtools idxstats /oasis/tscc/scratch/zhc268/outputs/AVD_226/align/rep1/AVD_226.trim.nodup.bam 2> /dev/null | awk '{sum += $3+$4} END {print sum}'
+samtools idxstats /oasis/tscc/scratch/zhc268/outputs/AVD_226/align/rep1/AVD_226.trim.bam 2> /dev/null | awk '{sum += $3+$4} END {print sum}'
+Run time: 0:33:59
+Task has finished (2055 seconds).
+
+== Done ataqc()
+Task has finished (2 seconds).
+Task has finished (13 seconds).
+
+== Done filter_peak_and_convert_to_bigbed()
+
+== Done report()
+running fastqc AVD_226.trim.fastq.gz ...
+Analysis complete for AVD_226.trim.fastq.gz
+
+sent 44 bytes  received 12 bytes  112.00 bytes/sec
+total size is 1857888812  speedup is 33176585.93
+AVD_226.trim.bam.bai
+       32768   1%    0.00kB/s    0:00:00     2757008 100%   57.73MB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 2757428 bytes  received 31 bytes  5514918.00 bytes/sec
+total size is 2757008  speedup is 1.00
+AVD_226.trim.bam
+       32768   0%    0.00kB/s    0:00:00    50298880   2%   47.94MB/s    0:00:42   139755520   6%   66.66MB/s    0:00:29   268730368  12%   85.47MB/s    0:00:21   385024000  18%   91.83MB/s    0:00:18   480051200  22%  102.51MB/s    0:00:15   612499456  28%  112.77MB/s    0:00:13   763396096  35%  117.64MB/s    0:00:11   850788352  40%  110.80MB/s    0:00:11  1020624896  48%  128.59MB/s    0:00:08  1197080576  56%  139.06MB/s    0:00:06  1365049344  64%  143.55MB/s    0:00:05  1565917184  73%  170.63MB/s    0:00:03  1767899136  83%  178.30MB/s    0:00:01  1925939200  90%  173.90MB/s    0:00:01  2106195968  99%  176.84MB/s    0:00:00  2122827014 100%  134.01MB/s    0:00:15 (xfer#1, to-check=0/1)
+
+sent 2123086228 bytes  received 31 bytes  90344096.13 bytes/sec
+total size is 2122827014  speedup is 1.00
+AVD_226.trim.nodup.bam.bai
+       32768   0%    0.00kB/s    0:00:00     6664264 100%   68.74MB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 6665166 bytes  received 31 bytes  13330394.00 bytes/sec
+total size is 6664264  speedup is 1.00
+AVD_226.trim.nodup.bam.meta
+         181 100%    0.00kB/s    0:00:00         181 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 272 bytes  received 31 bytes  606.00 bytes/sec
+total size is 181  speedup is 0.60
+AVD_226.trim.nodup.bam
+       32768   0%    0.00kB/s    0:00:00    67895296   3%   64.72MB/s    0:00:26   170098688   9%   81.13MB/s    0:00:20   277676032  15%   88.32MB/s    0:00:17   400359424  21%   95.52MB/s    0:00:14   541065216  29%  112.90MB/s    0:00:11   656867328  35%  116.14MB/s    0:00:09   796065792  43%  123.69MB/s    0:00:08   936935424  51%  128.03MB/s    0:00:06  1076264960  58%  127.70MB/s    0:00:05  1200488448  65%  129.71MB/s    0:00:04  1350991872  73%  132.40MB/s    0:00:03  1470660608  80%  127.35MB/s    0:00:02  1647083520  89%  136.20MB/s    0:00:01  1834778624  99%  150.66MB/s    0:00:00  1834930208 100%  124.92MB/s    0:00:14 (xfer#1, to-check=0/1)
+
+sent 1835154284 bytes  received 31 bytes  89519722.68 bytes/sec
+total size is 1834930208  speedup is 1.00
+AVD_226.trim.nodup.25M.tagAlign.gz
+       32768   0%    0.00kB/s    0:00:00    32473088  13%   30.94MB/s    0:00:06    90767360  37%   43.29MB/s    0:00:03   196149248  81%   62.39MB/s    0:00:00   240933444 100%   71.17MB/s    0:00:03 (xfer#1, to-check=0/1)
+
+sent 240962951 bytes  received 31 bytes  37071228.00 bytes/sec
+total size is 240933444  speedup is 1.00
+AVD_226.trim.nodup.tagAlign.gz
+       32768   0%    0.00kB/s    0:00:00   178880512  79%  170.56MB/s    0:00:00   223875043 100%  175.12MB/s    0:00:01 (xfer#1, to-check=0/1)
+
+sent 223902466 bytes  received 31 bytes  89560998.80 bytes/sec
+total size is 223875043  speedup is 1.00
+AVD_226.trim.nodup.pf.narrowPeak.hammock.gz
+       32768   0%    0.00kB/s    0:00:00    10117179 100%   88.23MB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 10118519 bytes  received 31 bytes  20237100.00 bytes/sec
+total size is 10117179  speedup is 1.00
+AVD_226.trim.nodup.pf.filt.narrowPeak.gz.meta
+         217 100%    0.00kB/s    0:00:00         217 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 326 bytes  received 31 bytes  714.00 bytes/sec
+total size is 217  speedup is 0.61
+AVD_226.trim.nodup.pf.narrowPeak.gz
+       32768   0%    0.00kB/s    0:00:00     6400201 100%   88.01MB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 6401080 bytes  received 31 bytes  12802222.00 bytes/sec
+total size is 6400201  speedup is 1.00
+AVD_226.trim.nodup.pf.filt.narrowPeak.gz
+       32768   0%    0.00kB/s    0:00:00     6397122 100%   87.96MB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 6398006 bytes  received 31 bytes  12796074.00 bytes/sec
+total size is 6397122  speedup is 1.00
+AVD_226.trim.nodup.pf.narrowPeak.hammock.gz.tbi
+       32768   4%    0.00kB/s    0:00:00      678017 100%   76.92MB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 678208 bytes  received 31 bytes  1356478.00 bytes/sec
+total size is 678017  speedup is 1.00
+AVD_226.trim.nodup.pf.500K.pval0.01.narrowPeak.gz
+       32768   0%    0.00kB/s    0:00:00     6419893 100%   89.58MB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 6420786 bytes  received 31 bytes  4280544.67 bytes/sec
+total size is 6419893  speedup is 1.00
+AVD_226.trim.nodup.25M.cc.qc
+         113 100%    0.00kB/s    0:00:00         113 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 205 bytes  received 31 bytes  472.00 bytes/sec
+total size is 113  speedup is 0.48
+AVD_226.trim_qc.txt
+        1434 100%    0.00kB/s    0:00:00        1434 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 1517 bytes  received 31 bytes  3096.00 bytes/sec
+total size is 1434  speedup is 0.93
+AVD_226.trim.align.log
+         220 100%    0.00kB/s    0:00:00         220 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 306 bytes  received 31 bytes  674.00 bytes/sec
+total size is 220  speedup is 0.65
+
+sent 49 bytes  received 12 bytes  122.00 bytes/sec
+total size is 3  speedup is 0.05
+AVD_226.trim.flagstat.qc
+         382 100%    0.00kB/s    0:00:00         382 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 470 bytes  received 31 bytes  1002.00 bytes/sec
+total size is 382  speedup is 0.76
+AVD_226.trim.nodup.pbc.qc
+          63 100%    0.00kB/s    0:00:00          63 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 152 bytes  received 31 bytes  366.00 bytes/sec
+total size is 63  speedup is 0.34
+AVD_226.trim_tss-enrich.png
+       32768  93%    0.00kB/s    0:00:00       35053 100%    2.18MB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 35148 bytes  received 31 bytes  70358.00 bytes/sec
+total size is 35053  speedup is 1.00
+AVD_226.trim_qc.html
+       32768  10%    0.00kB/s    0:00:00      318394 100%   12.38MB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 318514 bytes  received 31 bytes  637090.00 bytes/sec
+total size is 318394  speedup is 1.00
+AVD_226.trim.nodup.flagstat.qc
+         383 100%    0.00kB/s    0:00:00         383 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 477 bytes  received 31 bytes  1016.00 bytes/sec
+total size is 383  speedup is 0.75
+AVD_226.trim_gcSummary.txt
+        1341 100%    0.00kB/s    0:00:00        1341 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 1431 bytes  received 31 bytes  2924.00 bytes/sec
+total size is 1341  speedup is 0.92
+AVD_226.trim_large_tss-enrich.png
+       32768  22%    0.00kB/s    0:00:00      148802 100%   36.89MB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 148915 bytes  received 31 bytes  297892.00 bytes/sec
+total size is 148802  speedup is 1.00
+AVD_226.trim.log
+        3694 100%    0.00kB/s    0:00:00        3694 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 3774 bytes  received 31 bytes  7610.00 bytes/sec
+total size is 3694  speedup is 0.97
+AVD_226.trim_gc.txt
+        6633 100%    0.00kB/s    0:00:00        6633 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 6716 bytes  received 31 bytes  13494.00 bytes/sec
+total size is 6633  speedup is 0.98
+AVD_226.trim.nodup.25M.cc.plot.png
+       31077 100%    0.00kB/s    0:00:00       31077 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 31175 bytes  received 31 bytes  62412.00 bytes/sec
+total size is 31077  speedup is 1.00
+AVD_226.trim.nodup.25M.cc.plot.pdf
+        7338 100%    0.00kB/s    0:00:00        7338 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 7436 bytes  received 31 bytes  2133.43 bytes/sec
+total size is 7338  speedup is 0.98
+AVD_226.trim_gcPlot.pdf
+        6911 100%    0.00kB/s    0:00:00        6911 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 6998 bytes  received 31 bytes  14058.00 bytes/sec
+total size is 6911  speedup is 0.98
+AVD_226.trim_tss-enrich.txt
+       10000 100%    0.00kB/s    0:00:00       10000 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 10091 bytes  received 31 bytes  20244.00 bytes/sec
+total size is 10000  speedup is 0.99
+
+sent 40 bytes  received 12 bytes  104.00 bytes/sec
+total size is 410  speedup is 7.88
+AVD_226.trim.dup.qc
+        1517 100%    0.00kB/s    0:00:00        1517 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 1600 bytes  received 31 bytes  3262.00 bytes/sec
+total size is 1517  speedup is 0.93
+AVD_226_number_of_peaks.txt
+          12 100%    0.00kB/s    0:00:00          12 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 103 bytes  received 31 bytes  268.00 bytes/sec
+total size is 12  speedup is 0.09
+
+sent 49 bytes  received 12 bytes  122.00 bytes/sec
+total size is 113  speedup is 1.85
+
+sent 45 bytes  received 12 bytes  114.00 bytes/sec
+total size is 382  speedup is 6.70
+
+sent 46 bytes  received 12 bytes  116.00 bytes/sec
+total size is 63  speedup is 1.09
+
+sent 51 bytes  received 12 bytes  126.00 bytes/sec
+total size is 383  speedup is 6.08
+
+sent 40 bytes  received 12 bytes  104.00 bytes/sec
+total size is 1517  speedup is 29.17
+AVD_226.trim.nodup.pf.pval.signal.bigwig
+       32768   0%    0.00kB/s    0:00:00   165707776  32%  158.00MB/s    0:00:02   354254848  70%  168.99MB/s    0:00:00   505339589 100%  175.36MB/s    0:00:02 (xfer#1, to-check=0/1)
+
+sent 505401378 bytes  received 31 bytes  91891165.27 bytes/sec
+total size is 505339589  speedup is 1.00
+AVD_226.trim.nodup.pf.fc.signal.bigwig.meta
+         213 100%    0.00kB/s    0:00:00         213 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 320 bytes  received 31 bytes  702.00 bytes/sec
+total size is 213  speedup is 0.61
+AVD_226.trim.nodup.pf.pval.signal.bigwig.meta
+         217 100%    0.00kB/s    0:00:00         217 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 326 bytes  received 31 bytes  714.00 bytes/sec
+total size is 217  speedup is 0.61
+AVD_226.trim.nodup.pf.fc.signal.bigwig
+       32768   0%    0.00kB/s    0:00:00   168067072  27%  160.25MB/s    0:00:02   350846976  57%  167.36MB/s    0:00:01   518193152  85%  164.83MB/s    0:00:00   609111824 100%  164.83MB/s    0:00:03 (xfer#1, to-check=0/1)
+
+sent 609186279 bytes  received 31 bytes  93720970.77 bytes/sec
+total size is 609111824  speedup is 1.00
+AVD_226.trim.nodup.pf.pileup.signal.bigwig
+       32768   0%    0.00kB/s    0:00:00    41975808  14%   38.06MB/s    0:00:06    98402304  33%   45.76MB/s    0:00:04   176193536  59%   55.06MB/s    0:00:02   295374185 100%   71.61MB/s    0:00:03 (xfer#1, to-check=0/1)
+
+sent 295410348 bytes  received 31 bytes  53710978.00 bytes/sec
+total size is 295374185  speedup is 1.00
+AVD_226_tracks.json
+         773 100%    0.00kB/s    0:00:00         773 100%    0.00kB/s    0:00:00 (xfer#1, to-check=0/1)
+
+sent 856 bytes  received 31 bytes  1774.00 bytes/sec
+total size is 773  speedup is 0.87
+ENCODE_summary.json
+
+sent 8277 bytes  received 31 bytes  16616.00 bytes/sec
+total size is 8194  speedup is 0.99
+sending incremental file list
+AVD_226_report.html
+
+sent 18924 bytes  received 31 bytes  37910.00 bytes/sec
+total size is 18839  speedup is 0.99
+sending incremental file list
+report/AVD_226_workflow.dot
+report/AVD_226_workflow.svg
+report/jquery.treetable.css
+report/jquery.treetable.js
+report/jquery.treetable.theme.default.css
+
+sent 67910 bytes  received 108 bytes  136036.00 bytes/sec
+total size is 67528  speedup is 0.99
+Nodes:        tscc-3-46

@@ -169,9 +169,9 @@ if(length(unique(libQC_table['Paired/Single-ended',]))>1){
 
 #' ### GC bias in final bam
 #+ gc,echo =F,warning=F
-
-tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_gcbias_plot_1.txt"))
-tagList(tlist)
+tryCatch({
+    tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_gcbias_plot_1.txt"))
+    tagList(tlist)},error=function(e){})
 
 
 #' # ChIP-seq specific
