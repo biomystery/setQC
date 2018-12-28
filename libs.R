@@ -102,6 +102,7 @@ plotSource <- function(pd=do.call(rbind,lapply(libs, parseFastqScreen_perLib))){
     pd.new <-pd %>% group_by(name=type,
                              stack=sample)%>% do(data = .$Percentage_Aligned,
                                                  categories= .$Genome)
+    pd.new <- pd.new %>% filter(name!="")
     pd.new$color = rep(brewer.pal(4,"Set3"),each=nrow(pd.new)/4)
     pd.new$linkedTo = rep(":previous",nrow(pd.new))
     pd.new.list <- list_parse(pd.new)
