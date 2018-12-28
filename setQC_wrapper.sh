@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-#Time-stamp: "2018-12-28 11:09:10"
+#Time-stamp: "2018-12-28 11:12:09"
 source activate bds_atac_py3
-set -e # exit if any cmd failed 
+#set -e # exit if any cmd failed 
 ############################################################
 # PART I dependency check
 ############################################################
@@ -160,7 +160,7 @@ echo -e "############################################################"
 cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV $CHIP_SNAP $EXP_TYPE $SAMPLE_FILE $(whoami)" #LIR_arry sorted by name already
 echo $cmd
 eval $cmd
-
+[[ $? -ne 0 ]] && { echo "ERROR: in genrating report" ; exit $ERRCODE; } 
 
 echo -e "############################################################"
 echo -e "# Step 3. prepare tracks"
