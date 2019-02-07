@@ -168,6 +168,88 @@ tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_gc
 tagList(tlist)
 
 
+#' # Peaks
+#' ## Peak basics {.tabset .tabset-fade .tabset-pills}
+
+#' ### Raw peak numbers
+#+ raw_peak_num,echo =F
+
+raw_peak_number <- libQC_table[grep("Raw peaks",rownames(libQC_table)),]
+raw_peak_number<- sapply(raw_peak_number,function(x)
+    as.numeric(unlist(strsplit(as.character(x),split = " [-] "))[1]))
+pd.raw_peak_number <- data.frame(raw_peak_number=raw_peak_number,
+                                 libs=libs.showname)
+idx.control <- (grepl("control",libs.showname,ignore.case=T))&(grepl("atac",libs.showname,ignore.case=T))
+is.all.control <- sum(idx.control)== no_libs
+
+if(is.all.control){ # all controls
+    tlist[[1]]<- hchart(pd.raw_peak_number, "column", hcaes(x = libs, y =  raw_peak_number ))
+} else{
+    tlist[[1]]<- hchart(pd.raw_peak_number[!idx.control,], "column", hcaes(x = libs, y =  raw_peak_number ))
+}
+
+tagList(tlist)
+
+
+
+#' ### FRiP (Fraction of reads in Peak region)
+
+#+ FRip,echo=F
+
+if(is.all.control){
+    tlist[[1]]<-    hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
+}else{
+    tlist[[1]]<-    hchart(pd.3[!idx.control,], "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
+}
+tagList(tlist)
+
+#' ## Peak advanced {.tabset .tabset-fade .tabset-pills}
+
+#' ### Correlation matrix & Peak Intensity Scatter
+#+ app,echo=F,message=F,warning=F
+relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir)
+if(padv){
+    tags$iframe(class="embed-responsive-item",
+            width="90%",
+            height="750px",
+            src= paste0("http://epigenomics.sdsc.edu:3838/setQCs/",relative_dir))
+
+}else{
+    print("Module disabled")
+}
+
+
+#' ### PCA
+#+ pca,echo=F,message=F,warning=F
+if(padv){
+    if(length(system(paste0("find ",setQC_dir,"/data -mtime +1 -name 'avgOverlapFC.tab'"),intern=T))>0 | !file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
+        if (is.all.control){
+            system(paste("calcOverlapAvgFC.sh -g",libQC_table["Genome",1],"-d",setQC_dir,paste(libs,collapse=" ")))
+        }else{
+            system(paste("calcOverlapAvgFC.sh -g",libQC_table["Genome",1],"-d",setQC_dir,paste(libs[!idx.control],collapse=" ")))
+        }
+    }
+
+    if(length(libs.showname[!idx.control])>2){
+        require(scatterD3)
+        pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
+        pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
+        pd.log2 <- pd.log2[apply(pd.log2,1,var)!=0,]
+        pd.pca <- prcomp(t(pd.log2),center =T,scale. = T )
+        perct <- as.numeric(round(summary(pd.pca)$importance[2,1:2]*100))
+
+        tlist[[1]]<-scatterD3(pd.pca$x[,1],pd.pca$x[,2],lab = as.character(libs.showname[!idx.control]),point_size = 100,
+                              xlab = paste0("PC1: ",perct[1],"%"),
+                              ylab = paste0("PC2: ",perct[2],"%"),
+                              point_opacity = 0.5,hover_size = 4, hover_opacity = 1,lasso = T,
+                              width = "500px",height = "500px")
+        tagList(tlist)}else{
+                          tags$p('Lib number in this set is <=2 ')
+                      }}else{
+                           print("Module disabled")
+                       }
+
+
 #' # ChIP-seq specific
 #' ## SNAP-ChIP spikein {.tabset .tabset-fade .tabset-pills}
 #' ### Specificty ( %,#hits/#total_hits)
