@@ -215,20 +215,21 @@ tagList(tlist)
 #' ### Correlation matrix & Peak Intensity Scatter
 #+ app,echo=F,message=F,warning=F
 relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir)
-if(padv & length(grep("Raw peaks",rownames(libQC_table)))>0){
+
+if(as.logical(padv) && length(grep("Raw peaks",rownames(libQC_table)))>0){
     tags$iframe(class="embed-responsive-item",
             width="90%",
             height="750px",
             src= paste0("http://epigenomics.sdsc.edu:3838/setQCs/",relative_dir))
 
 }else{
-    print("Module disabled")
+    h5("Module disabled")
 }
 
 
 #' ### PCA
 #+ pca,echo=F,message=F,warning=F
-if(padv & length(grep("Raw peaks",rownames(libQC_table)))>0){
+if(as.logical(padv) && length(grep("Raw peaks",rownames(libQC_table)))>0){
     if(length(system(paste0("find ",setQC_dir,"/data -mtime +1 -name 'avgOverlapFC.tab'"),intern=T))>0 | !file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
         if (is.all.control){
             system(paste("calcOverlapAvgFC.sh -g",libQC_table["Genome",1],"-d",setQC_dir,paste(libs,collapse=" ")))
