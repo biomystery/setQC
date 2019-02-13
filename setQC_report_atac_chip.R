@@ -173,42 +173,49 @@ tagList(tlist)
 
 #' ### Raw peak numbers
 #+ raw_peak_num,echo =F
+if(length(grep("Raw peaks",rownames(libQC_table)))>0){
 
-raw_peak_number <- libQC_table[grep("Raw peaks",rownames(libQC_table)),]
-raw_peak_number<- sapply(raw_peak_number,function(x)
-    as.numeric(unlist(strsplit(as.character(x),split = " [-] "))[1]))
-pd.raw_peak_number <- data.frame(raw_peak_number=raw_peak_number,
-                                 libs=libs.showname)
-idx.control <- (grepl("control",libs.showname,ignore.case=T))&(grepl("atac",libs.showname,ignore.case=T))
-is.all.control <- sum(idx.control)== no_libs
+    raw_peak_number <- libQC_table[grep("Raw peaks",rownames(libQC_table)),]
+    raw_peak_number<- sapply(raw_peak_number,function(x)
+        as.numeric(unlist(strsplit(as.character(x),split = " [-] "))[1]))
+    pd.raw_peak_number <- data.frame(raw_peak_number=raw_peak_number,
+                                     libs=libs.showname)
+    idx.control <- (grepl("control",libs.showname,ignore.case=T))&(grepl("atac",libs.showname,ignore.case=T))
+    is.all.control <- sum(idx.control)== no_libs
 
-if(is.all.control){ # all controls
-    tlist[[1]]<- hchart(pd.raw_peak_number, "column", hcaes(x = libs, y =  raw_peak_number ))
-} else{
-    tlist[[1]]<- hchart(pd.raw_peak_number[!idx.control,], "column", hcaes(x = libs, y =  raw_peak_number ))
+    if(is.all.control){ # all controls
+        tlist[[1]]<- hchart(pd.raw_peak_number, "column", hcaes(x = libs, y =  raw_peak_number ))
+    } else{
+        tlist[[1]]<- hchart(pd.raw_peak_number[!idx.control,], "column", hcaes(x = libs, y =  raw_peak_number ))
+    }
+
+    tagList(tlist)
+}else{
+    h5("Peaks are not avaible for all libs!")
 }
-
-tagList(tlist)
 
 
 
 #' ### FRiP (Fraction of reads in Peak region)
 
 #+ FRip,echo=F
-
+if(length(grep("Raw peaks",rownames(libQC_table)))>0){
 if(is.all.control){
     tlist[[1]]<-    hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
 }else{
     tlist[[1]]<-    hchart(pd.3[!idx.control,], "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
 }
 tagList(tlist)
+}else{
+    h5("Peaks are not avaible for all libs!")
+}
 
 #' ## Peak advanced {.tabset .tabset-fade .tabset-pills}
 
 #' ### Correlation matrix & Peak Intensity Scatter
 #+ app,echo=F,message=F,warning=F
 relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir)
-if(padv){
+if(padv & length(grep("Raw peaks",rownames(libQC_table)))>0){
     tags$iframe(class="embed-responsive-item",
             width="90%",
             height="750px",
@@ -221,7 +228,7 @@ if(padv){
 
 #' ### PCA
 #+ pca,echo=F,message=F,warning=F
-if(padv){
+if(padv & length(grep("Raw peaks",rownames(libQC_table)))>0){
     if(length(system(paste0("find ",setQC_dir,"/data -mtime +1 -name 'avgOverlapFC.tab'"),intern=T))>0 | !file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
         if (is.all.control){
             system(paste("calcOverlapAvgFC.sh -g",libQC_table["Genome",1],"-d",setQC_dir,paste(libs,collapse=" ")))
@@ -246,7 +253,7 @@ if(padv){
         tagList(tlist)}else{
                           tags$p('Lib number in this set is <=2 ')
                       }}else{
-                           print("Module disabled")
+                           h5("Module disabled")
                        }
 
 
