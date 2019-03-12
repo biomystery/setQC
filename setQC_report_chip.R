@@ -28,6 +28,7 @@ attach(params)
 source('./libs.R')
 libs.info <- read.table(libs_file,col.names=c("libs","group","input"),
                         stringsAsFactors=F)
+libs.info$input<- tolower(libs.info$input)
 libs <- libs.info$libs
 libs.info.input <- libs.info %>% filter(input=="true")
 libs.info <- libs.info%>% column_to_rownames("libs")
