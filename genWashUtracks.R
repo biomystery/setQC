@@ -3,6 +3,7 @@ args <- commandArgs(trailingOnly = TRUE)
 set_dir<- args[1];
 track.json.simple <- readLines("./tracks_merged.json")
 track.json.simple <- gsub("\\{ \"type\":\"native_track\", \"list\":\\[ \\{ \"name\":\"gencodeV23\", \"mode\":\"full\", \\} \\] \\}, \\]\\[","",track.json.simple)
+track.json.simple <- gsub("\\{ \"type\":\"native_track\", \"list\":\\[ \\{ \"name\":\"gencodeV19\", \"mode\":\"full\", \\} \\] \\}, \\]\\[","",track.json.simple)
 track.json.simple <- gsub("\\{ \"type\":\"native_track\", \"list\":\\[ \\{ \"name\":\"ensGene\", \"mode\":\"full\", \\} \\] \\}, \\]\\[","",track.json.simple)
 track.json.simple <- gsub("\\{ \"type\":\"native_track\", \"list\":\\[ \\{ \"name\":\"refGene\", \"mode\":\"full\", \\} \\] \\}, \\]\\[","",track.json.simple)
 
