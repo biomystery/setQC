@@ -84,7 +84,7 @@ parseFastqScreen<- function(fn="JYH_109_R1_screen.txt"){
     pd$Genome[nrow(pd)] <- "No hits"; pd$`%One_hit_one_genome`[nrow(pd)] <- um
     pd[is.na(pd)] <- 0
     ##pd$`%total_alignment` <- apply(pd[,2:ncol(pd)],1,sum)
-    pd %>% gather("type","Percentage_Aligned",-1) %>% mutate(sample=sub("_screen.txt","",fn))
+    pd %>% gather("type","Percentage_Aligned",-1) %>% mutate(sample=sub("\\(\\.trim\\)\\*_screen.txt","",fn))
     ##pd %>% mutate(sample=sub("_screen.txt","",fn))
 }
 
@@ -94,7 +94,7 @@ parseFastqScreen_perLib <- function(lib){
     if(ncol(out)== 4){
         return(out)
     } else{
-        return(parseFastqScreen(fn=paste0(lib,".*_screen.txt"))) ## for SE
+        return(parseFastqScreen(fn=paste0(lib,"(.trim)*_screen.txt"))) ## for SE
     }
 }
 
