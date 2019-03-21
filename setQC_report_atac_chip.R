@@ -110,9 +110,9 @@ div(class='row')
 #+ avg_tss,echo=F,warning=F,message=F
 # read data
 l.tmp <- NULL;rd <- list()
-if(length(list.files(libQC_dir,paste0(libs[1],".*enrich.txt")))>0){
+if(length(list.files(libQC_dir,paste0(libs[1],"(.trim)*_tss-enrich.txt$")))>0){
     for(l in libs){
-        f=list.files(libQC_dir,paste0(l,".*enrich.txt"))
+        f=list.files(libQC_dir,paste0(l,"(.trim)*_tss-enrich.txt"))
         if(length(f)>0) {
             if(length(f)>1) f=grep(paste0(l,"_R"),f,value=T)
             rd[[l]] <- (read.delim(paste0(libQC_dir,f),header = F))
