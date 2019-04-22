@@ -19,7 +19,10 @@ parseLibQC <- function(i= 1,libs_=libs,libQC.files_=libQC.files){
     names(qc.2)<- qc$v1
 
     #output
-    pd <- data.frame(Genome=qc.2["Genome"],
+    pd <- data.frame(
+        lib=libs[i],
+                     Genome=qc.2["Genome"],
+                     PE=qc.2["Paired/Single-ended"],
                      Total_reads=qc.2["Read count from sequencer"],
                      Final_reads=parseFraction(qc.2["Final reads (after all filters)"])[1],
                      Final_yield=parseFraction(qc.2["Final reads (after all filters)"])[2],
@@ -27,7 +30,6 @@ parseLibQC <- function(i= 1,libs_=libs,libQC.files_=libQC.files){
                      TSS_enrichment=signif(as.numeric(qc.2["TSS_enrichment"]),4),
                      FRoP=parseFraction(qc.2["Fraction of reads in promoter regions"])[2],
                      stringsAsFactors=F)
-    rownames(pd) <- libs[i]
     pd
 }
 
