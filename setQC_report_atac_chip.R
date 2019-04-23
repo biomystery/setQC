@@ -285,9 +285,11 @@ if(chipsnap){
     id.nm.me <- grep("me|ac",colnames(df.cnt),ignore.case=T)
     if(length(id.nm.me)>0) df.cnt <- df.cnt[,id.nm.me]
     df.prt <- as.data.frame(apply(df.cnt,2,function(x) signif(x/sum(x)*100,2)))
-    df.cpm <- ifelse(length(id.nm.me)>0,as.data.frame(signif(t(t(df.cnt)/as.numeric(reads_list$reads_count[1,id.nm[id.nm.me]])*1000000),2)),
-                     as.data.frame(signif(t(t(df.cnt)/as.numeric(reads_list$reads_count[1,id.nm])*1000000),2)))
-
+    if(length(id.nm.me)>0){
+        df.cpm <- as.data.frame(signif(t(t(df.cnt)/as.numeric(reads_list$reads_count[1,id.nm[id.nm.me]])*1000000),2))
+    }else{
+        df.cpm<-    as.data.frame(signif(t(t(df.cnt)/as.numeric(reads_list$reads_count[1,id.nm])*1000000),2))
+    }
     showDF(as.data.frame(t(df.prt)))
     }
 }else{h5('This module is disabled')}
