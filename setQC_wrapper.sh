@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2019-03-11 17:45:12"
+#Time-stamp: "2019-05-07 14:49:24"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -90,7 +90,7 @@ BASE_OUTPUT_DIR="${BASE_OUTPUT_DIR}/${B_NAME}/"
 # check if there is $BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.txt
 rand_d_string=$BASE_OUTPUT_DIR/$SET_NAME.rstr.txt 
 if [ ! -f $rand_d_string ];then
-    RAND_D=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32`
+    RAND_D=`cat /dev/urandom | tr -cd 'a-f0-9' | head -c 6`
     echo $RAND_D > $BASE_OUTPUT_DIR/$B_NAME/$SET_NAME.rstr.txt 
 else
     RAND_D=`cat $rand_d_string`
