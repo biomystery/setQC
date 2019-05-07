@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2019-05-07 14:49:24"
+#Time-stamp: "2019-05-07 15:16:41"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -32,10 +32,10 @@ track_source_dir="/projects/ps-epigen/outputs/"
 while getopts ":s:b:n:p:m:c:l:t:" opt;
 do
 	case "$opt" in
-	    s) SAMPLE_FILE=$OPTARG;;  # txt file including all  sample files
+	    s) SET_NAME_LABEL=$OPTARG;;  # setname_label; real setname
             b) B_NAME=$OPTARG;; # a higher level base name on top of set name 
-	    n) SET_NAME=$OPTARG;;
-	    p) PADV=$OPTARG;;
+	    n) SET_NAME=$OPTARG;; # "Set_123" txt file including all  sample files
+	    p) PADV=$OPTARG;; # peak advance 
             m) MULTIQC=$OPTARG;; # do multiqc
             c) CHIP_SNAP=$OPTARG;; # if SNAP
             l) LIBQC_DIR=$OPTARG;; # proessed lib dir
@@ -62,13 +62,15 @@ if [  -z "$CHIP_SNAP" ]; then
     CHIP_SNAP="false"
 fi
 
-if [ -z "$SET_NAME" ]; then
-    echo "set name file not found!"
+if [ -z "$SET_NAME_LABEL" ]; then
+    echo "no set name was given!"
     exit 1
 fi
 
-if [ ! -f "$SAMPLE_FILE" ]; then
-    SAMPLE_FILE=$BASE_OUTPUT_DIR${SET_NAME}.txt
+
+if [ -z "$SET_NAME" ]; then
+    echo "set name file not found!"
+    exit 1
 fi
 
 if [ ! -d "$LIBQC_DIR" ]; then
@@ -81,6 +83,7 @@ fi
 
 
 ## Prepare the files and etc for runSetQCreport.sh
+SAMPLE_FILE=$BASE_OUTPUT_DIR${SET_NAME}.txt
 LIB_ARRAY=(`awk '{print $1}'  $SAMPLE_FILE`) # assume all the single libs in the same dir
 
 
@@ -157,7 +160,7 @@ echo -e "############################################################"
 echo -e "Step 2. genSetQCreport" 
 echo -e "############################################################"
 
-cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV $CHIP_SNAP $EXP_TYPE $SAMPLE_FILE $(whoami)" #LIR_arry sorted by name already
+cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV $CHIP_SNAP $EXP_TYPE $SAMPLE_FILE $(whoami) $SET_NAME_LABEL" #LIR_arry sorted by name already
 echo $cmd
 eval $cmd
 [[ $? -ne 0 ]] && { echo "ERROR: in genrating report" ; exit $ERRCODE; } 
