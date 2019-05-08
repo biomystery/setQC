@@ -26,24 +26,25 @@
 # load the candidate files
 attach(params)
 source('./libs.R')
-libs.info <- read.table(libs_file,col.names=c("libs","group","input"),
-                        stringsAsFactors=F)
-libs.info$input<- tolower(libs.info$input)
-libs <- libs.info$libs
-libs.info.input <- libs.info %>% filter(input=="true")
-libs.info <- libs.info%>% column_to_rownames("libs")
-no_libs <- length(libs)
+libs.info <- read.table(libs_file,stringsAsFactors=F,header=T,sep='\t')
 
-
+libs.info$`Is Input`<- tolower(libs.info$`Is Input`)
+libs.info.input <- libs.info %>% filter(`Is Input`=="true")
+libs.info <- libs.info%>% column_to_rownames("Library ID")
 
 #' # Sample info.
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
-    sample_table<- getSampleTable(libs)
-    libs.showname <- sample_table$`Label (for QC report)`
+    sample_table<- getSampleTable(libs_file)
+    libs.showname <- sample_table[,"Library Name"]
     kable(sample_table)
 }
-libs.showname.dic <- libs.showname;names(libs.showname.dic)<- sample_table$`Sequencing ID`
+
+libs <- sample_table[,"Library ID"]
+no_libs <- length(libs)
+libs.showname.dic <- libs.showname;names(libs.showname.dic)<-libs
+
+
 #input.idx <- grep(pattern = "input",libs.showname,ignore.case = T)
 
 #' # Fastq files {.tabset .tabset-fade .tabset-pills}
@@ -190,7 +191,7 @@ if(nrow(libs.info) == nrow(libs.info.input)){ # disable if all libs are input
 #' ### CC
 #+ cc_plots,echo =F
 cc_plots <- paste0("./libQCs/",list.files(path=libQC_dir,pattern="*.nodup.*.cc.*png"))
-tmp <- sapply(which(libs.info$input!="true"), function(i){
+tmp <- sapply(which(libs.info$`Is Input`!="true"), function(i){
   ii <- grep(libs[i],cc_plots)
   thumbnail(libs.showname[i],cc_plots[ii],colsize ='col-sm-3' )})
 tagList(tmp)
@@ -256,7 +257,7 @@ if(chipsnap){
 #' # LibQC table
 #+ libqc_table,echo=F,message=F
 datatable(libQC_table,colnames=libs.showname)
-
+write.table(libQC_table,file=paste0(setQC_dir,"/libQC.txt"),row.names = T,quote=F,sep="\t",col.names=T)
 
 
 #' # Tracks & Download {.tabset .tabset-fade .tabset-pills}

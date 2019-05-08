@@ -1,7 +1,7 @@
 #'---
 #'params:
 #'  set_name: "Pfizer_2017-11-30"
-#'  libs: "48 49 50 51 52 53 54 55 56 57"
+#'  libs_file: ""
 #'  setQC_dir: "./"
 #'  libQC_dir: "./"
 #'  update_gs: F
@@ -24,17 +24,19 @@
 #+ init, echo=F,warning=F,message=F
 # load the candidate files
 attach(params)
-no_libs <- length(libs)
 source('./libs.R')
-
 
 #' # Sample info.
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
-    sample_table<- getSampleTable(libs)
-    libs.showname <- sample_table$`Label (for QC report)`
+    sample_table<- getSampleTable(libs_file)
+    libs.showname <- sample_table[,"Library Name"]
     kable(sample_table)
 }
+
+libs <- sample_table[,"Library ID"]
+no_libs <- length(libs)
+libs.showname.dic <- libs.showname;names(libs.showname.dic)<-libs
 
 
 
@@ -259,7 +261,7 @@ if(padv){
 #' # LibQC table
 #+ libqc_table,echo=F,message=F
 datatable(libQC_table,colnames=libs.showname)
-
+write.table(libQC_table,file=paste0(setQC_dir,"/libQC.txt"),row.names = T,quote=F,sep="\t",col.names=T)
 
 
 #' # Tracks & Download {.tabset .tabset-fade .tabset-pills}

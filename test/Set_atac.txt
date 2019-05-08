@@ -1,0 +1,3 @@
+Library ID	Genome	Library Name	Processed Or Not	Read Type	Sample Name	Species	Experiment Type	Machine
+AVD_37	hg38	388 sh-alkbh1_6 - KD cells	No	PE	387 sh-alkbh1 #6	human	ATAC-seq	HiSeq4000
+AVD_38	hg38	ATAC control	No	PE	GM19240[44]	human	ATAC-seq	HiSeq4000
