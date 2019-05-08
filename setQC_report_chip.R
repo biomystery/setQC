@@ -257,7 +257,7 @@ if(chipsnap){
 #' # LibQC table
 #+ libqc_table,echo=F,message=F
 datatable(libQC_table,colnames=libs.showname)
-
+write.table(libQC_table,file=paste0(setQC_dir,"/libQC.txt"),row.names = T,quote=F,sep="\t",col.names=T)
 
 
 #' # Tracks & Download {.tabset .tabset-fade .tabset-pills}
