@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2019-05-07 23:52:54"
+#Time-stamp: "2019-05-08 15:26:53"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -84,7 +84,7 @@ fi
 
 ## Prepare the files and etc for runSetQCreport.sh
 SAMPLE_FILE=$BASE_OUTPUT_DIR"."${SET_NAME}.txt
-LIB_ARRAY=(`awk '{print $1}'  $SAMPLE_FILE`) # assume all the single libs in the same dir
+LIB_ARRAY=(`awk '(NR>1){print $1}'  $SAMPLE_FILE`) # assume all the single libs in the same dir
 
 
 LIB_LEN=${#LIB_ARRAY[@]}
@@ -169,16 +169,6 @@ echo -e "############################################################"
 echo -e "# Step 3. prepare tracks"
 echo -e "############################################################"
 
-# get the libnames
-> $SETQC_DIR/including_libs.txt
-for s in ${LIB_ARRAY[@]}
-do
-    ss=`echo $s | sed -E "s/_S[0-9]+_L[0-9]+//g"`;
-    ln=`grep -n "${ss}," $SETQC_DIR/sample_table.csv | cut -f1 -d:`; # line number 
-    sn=`sed "${ln}q;d" $SETQC_DIR/sample_table.csv| awk -F"," '{print $3}'| sed "s/\ /\_/g"`;
-    echo -e "$s\t$sn">> $SETQC_DIR/including_libs.txt ;
-done
-
 cmd="transferTracks.sh -d $SETQC_DIR -s $track_source_dir  -l $SETQC_DIR/including_libs.txt"
 [[ $EXP_TYPE == "chip" ]] && cmd=${cmd/transferTracks/transferTracks_chip} # handle chipseq 
 
@@ -197,7 +187,9 @@ mkdir -p $SETQC_DIR"/app"
 cd $SETQC_DIR"/app"
 cp -ufs /projects/ps-epigen/software/setQC/peakApp/app.R ./;
 cp -Pfs $SETQC_DIR/data/avgOverlapFC.tab ./
+cp -Pfs $SAMPLE_FILE ./sample_table_v2.txt
 cp -Pfs $SETQC_DIR/sample_table.csv ./
+cp -Pfs $SETQC_DIR/including_libs.txt ./
 
 ssh zhc268@epigenomics.sdsc.edu "mkdir -p /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR;cp -rPfs /projects/ps-epigen/outputs/setQCs/$RELATIVE_DIR/app/* /home/zhc268/shiny-server/setQCs/$RELATIVE_DIR/"
 
@@ -211,8 +203,6 @@ cd $SETQC_DIR"/download"
 
 # script 
 data_dir="/projects/ps-epigen/"
-
-
 
 libs_name_dic=(`cat $SETQC_DIR/including_libs.txt`)
 for i in `seq 1 $LIB_LEN`
@@ -237,7 +227,8 @@ do
     find . -name $a"_R*.nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup/$b\.final/2;s/${a}_R1\.trim\.PE2SE\.nodup/${b}\.final/2"  | bash 2> /dev/null #atac
     find . -name $a"_R*.nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.PE2SE\.nodup/$b\.final/2"  | bash 2> /dev/null #PE chip
     
-    find . -name $a".nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup/${b}\.final/2"  | bash 2> /dev/null    #se chip 
+    find . -name $a".nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup/${b}\.final/2case 
+"  | bash 2> /dev/null    #se chip 
     find . -name $a"_R*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2;s/${a}_R1\.trim\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2" | bash 2> /dev/null
     find . -name "*${a}.*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup\.tagAlign/$b/2" | bash 2> /dev/null # se chip
     find . -name "*${a}_R*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.PE2SE\.nodup\.tagAlign/$b/2"  | bash 2> /dev/null # pe chip
