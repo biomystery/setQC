@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2019-05-07 15:16:41"
+#Time-stamp: "2019-05-07 16:39:22"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -174,7 +174,7 @@ echo -e "############################################################"
 for s in ${LIB_ARRAY[@]}
 do
     ss=`echo $s | sed -E "s/_S[0-9]+_L[0-9]+//g"`;
-    ln=`grep -n "${ss}," $SETQC_DIR/sample_table.csv | cut -f1 -d:`;
+    ln=`grep -n "${ss}," $SETQC_DIR/sample_table.csv | cut -f1 -d:`; # line number 
     sn=`sed "${ln}q;d" $SETQC_DIR/sample_table.csv| awk -F"," '{print $3}'| sed "s/\ /\_/g"`;
     echo -e "$s\t$sn">> $SETQC_DIR/including_libs.txt ;
 done

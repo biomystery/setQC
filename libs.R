@@ -13,35 +13,28 @@ require(data.table)
 
 ## load sample info from msTracking --------------------------------------
 
-getSampleTable <- function(lib_ids){
-    sample_file <- paste0(setQC_dir,"/sample_table.csv")
+getSampleTable <- function(lib_file){
+### get sample's meta data from libs_file
+### save into `id\t label ` into including_libs.txt
 
-    if(length(system(paste0("find ",setQC_dir," -mtime -1 -name 'sample_table.csv'"),intern=T))>0){
-        if (system(paste0("wc -l ",sample_file,"|awk  '{print $1}'"),intern = T)!="1")
-            return(read.csv(file = sample_file,
-                            stringsAsFactors = F,check.names = F))
-    }else{
+    sample_table <- read.table(lib_file,stringsAsFactors=F,header=T,check.names=F,sep='\t')
 
-        require(googlesheets)
-        suppressPackageStartupMessages(require(dplyr))
-        gs_auth(token="/projects/ps-epigen/software/google/googlesheets_token.rds")##/home/zhc268
-        gs_ls() ## for the auth
-        gs_mseqts <- gs_key("1DqQQ0e5s2Ia6yAkwgRyhfokQzNPfDJ6S-efWkAk292Y")
-        sample_table <- gs_mseqts%>% gs_read(range=cell_limits(c(3,1),c(NA,19)))
+    ## reorder column
+    col.nm.order<- c("Library Name","Library ID","Sample Name", "Species","Experiment Type","Machine")
+    sample_table <- sample_table[,col.nm.order]
 
-        q1 <- sample_table$`Sequencing ID` %in% lib_ids
-        sample_table <- subset(sample_table, q1)[,c(1,2,3,4,9,10,12)] ##member initial, date, lib ID
+    ## handle na in label
+    na.id <- is.na(sample_table[,"Library Name"]); sample_table[na.id,"Library Name"] <- sample_table[na.id,"Library ID"]
 
-        na.id <- is.na(sample_table[,3]); sample_table[na.id,3] <- sample_table[na.id,2]
-        sample_table[,3] <- make.names(sample_table$`Label (for QC report)`,unique =T)
-        sample_table <- as.data.frame(sample_table)
-        rownames(sample_table)<- as.character(sample_table$`Sequencing ID`)
-        sample_table <- sample_table[lib_ids,] ## keep same order as libs
-        write.csv(file=sample_file,sample_table,row.names = F,quote=F)
-        sample_table
+    ## make name for label
+    sample_table[,"Library Name"] <- make.names(sample_table[,"Library Name"],unique =T)
 
-    }
+    ## export to including_libs.txt
+    write.table(sample_table[,c("Library ID","Library Name")],file=paste0(setQC_dir,"/including_libs.txt"),row.names = F,quote=F,sep="\t",col.names=F)
 
+
+    ## return
+    sample_table
 }
 
 updateCounts <- function(df){

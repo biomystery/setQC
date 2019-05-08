@@ -1,0 +1,3 @@
+Library ID	Group ID	Is Input	Genome	Library Name	Processed Or Not	Read Type	Sample Name	Species	Experiment Type	Machine
+AVD_173	1	False	hg38	hahaCVDC_D0_r1_H3K4me1	No	SE	D00_Rep1	human	ChIP-seq	NextSeq550 High
+AVD_174	1	False	hg38	hahCVDC_D3_r1_H3K4me1	No	SE	D03_Rep1	human	ChIP-seq	NextSeq550 High
