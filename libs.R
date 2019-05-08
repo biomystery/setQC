@@ -181,9 +181,9 @@ getLibQCtable <- function(lib_ids){
     ##qc_table<-qc_table[-c(1:2,16:24,26:27,35,37),]
 
     if(exists("sample_table")){
-        if(all.equal(sample_table$`Sequencing ID`, colnames(qc_table))){
-            qc_table<-rbind(sample_table$`sample ID (from MSTS)`,qc_table)
-            rownames(qc_table)[1] <- "sampleId"
+        if(all.equal(sample_table[,"Library ID"], colnames(qc_table))){
+            qc_table<-rbind(sample_table[,"Sample Name"],qc_table)
+            rownames(qc_table)[1] <- "Sample Name"
         }
     }
     qc_table

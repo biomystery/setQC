@@ -10,7 +10,7 @@ args <- commandArgs(trailingOnly = TRUE)
 (exptype <-  args[6])
 (libs_file_<- args[7]) # use lib_file
 (uid_<- args[8]) # uid
-(set_name_<- args[8]) # set name (real, name_date)
+(set_name_<- args[9]) # set name (real, name_date)
 (libs_ <- system(paste0("awk '{print $1}' ",libs_file_),intern=T))
 relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir_)
 
@@ -32,7 +32,7 @@ if (exptype=="chip"){
         rmarkdown::render("/home/zhc268/software/setQC/setQC_report_atac_chip.R",
                       params = list(
                           set_name = set_name_,
-                          libs = libs_,
+                          libs_file= libs_file_,
                           setQC_dir = setQC_dir_,
                           libQC_dir = libQC_dir_,
                           padv =padv_,
@@ -44,7 +44,7 @@ if (exptype=="chip"){
     rmarkdown::render("/home/zhc268/software/setQC/setQC_report.R",
                       params = list(
                           set_name = set_name_,
-                          libs= libs_,
+                          libs_file= libs_file_,
                           setQC_dir = setQC_dir_,
                           libQC_dir = libQC_dir_,
                           padv =padv_

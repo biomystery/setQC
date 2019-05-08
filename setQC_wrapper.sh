@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2019-05-07 16:39:22"
+#Time-stamp: "2019-05-07 23:52:54"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -83,7 +83,7 @@ fi
 
 
 ## Prepare the files and etc for runSetQCreport.sh
-SAMPLE_FILE=$BASE_OUTPUT_DIR${SET_NAME}.txt
+SAMPLE_FILE=$BASE_OUTPUT_DIR"."${SET_NAME}.txt
 LIB_ARRAY=(`awk '{print $1}'  $SAMPLE_FILE`) # assume all the single libs in the same dir
 
 
@@ -160,7 +160,7 @@ echo -e "############################################################"
 echo -e "Step 2. genSetQCreport" 
 echo -e "############################################################"
 
-cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV $CHIP_SNAP $EXP_TYPE $SAMPLE_FILE $(whoami) $SET_NAME_LABEL" #LIR_arry sorted by name already
+cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV $CHIP_SNAP $EXP_TYPE $SAMPLE_FILE $(whoami) '$SET_NAME_LABEL'" #LIR_arry sorted by name already
 echo $cmd
 eval $cmd
 [[ $? -ne 0 ]] && { echo "ERROR: in genrating report" ; exit $ERRCODE; } 
