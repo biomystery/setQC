@@ -32,7 +32,7 @@ source('./libs.R')
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
     sample_table<- getSampleTable(libs)
-    libs.showname <- sample_table$`Label (for QC report)`
+    libs.showname <- sample_table[,"Library Name"]
     kable(sample_table)
 }
 

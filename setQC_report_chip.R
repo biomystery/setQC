@@ -40,10 +40,10 @@ no_libs <- length(libs)
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
     sample_table<- getSampleTable(libs)
-    libs.showname <- sample_table$`Label (for QC report)`
+    libs.showname <- sample_table[,"Library Name"]
     kable(sample_table)
 }
-libs.showname.dic <- libs.showname;names(libs.showname.dic)<- sample_table$`Sequencing ID`
+libs.showname.dic <- libs.showname;names(libs.showname.dic)<- sample_table[,"Library ID"]
 #input.idx <- grep(pattern = "input",libs.showname,ignore.case = T)
 
 #' # Fastq files {.tabset .tabset-fade .tabset-pills}
