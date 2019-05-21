@@ -26,7 +26,7 @@
 attach(params)
 source('./libs.R')
 
-#' # Sample info.
+#' # Sample information
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
     sample_table<- getSampleTable(libs_file)

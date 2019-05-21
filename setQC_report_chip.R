@@ -32,7 +32,7 @@ libs.info$`Is Input`<- tolower(libs.info$`Is Input`)
 libs.info.input <- libs.info %>% filter(`Is Input`=="true")
 libs.info <- libs.info%>% column_to_rownames("Library ID")
 
-#' # Sample info.
+#' # Sample information
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
     sample_table<- getSampleTable(libs_file)
