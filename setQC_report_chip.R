@@ -30,17 +30,17 @@ libs.info <- read.table(libs_file,stringsAsFactors=F,header=T,sep='\t')
 
 libs.info$`Is Input`<- tolower(libs.info$`Is Input`)
 libs.info.input <- libs.info %>% filter(`Is Input`=="true")
-libs.info <- libs.info%>% column_to_rownames("Library ID")
+libs.info <- libs.info%>% column_to_rownames("Internal Library ID")
 
 #' # Sample information
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
     sample_table<- getSampleTable(libs_file)
-    libs.showname <- sample_table[,"Library Name"]
+    libs.showname <- sample_table[,"Label"]
     kable(sample_table)
 }
 
-libs <- sample_table[,"Library ID"]
+libs <- sample_table[,"Internal Library ID"]
 no_libs <- length(libs)
 libs.showname.dic <- libs.showname;names(libs.showname.dic)<-libs
 

@@ -20,7 +20,7 @@ getSampleTable <- function(lib_file){
     sample_table <- read.table(lib_file,stringsAsFactors=F,header=T,check.names=F,sep='\t')
 
     ## reorder column
-    col.nm.order<- c("Library Name","Library ID","Sample Name", "Species","Experiment Type","Machine")
+    col.nm.order<- c("Sample Name","Library Name","Species","Experiment Type","Library ID","Genome")
     sample_table <- sample_table[,col.nm.order]
 
     ## handle na in label
@@ -32,6 +32,8 @@ getSampleTable <- function(lib_file){
     ## export to including_libs.txt
     write.table(sample_table[,c("Library ID","Library Name")],file=paste0(setQC_dir,"/including_libs.txt"),row.names = F,quote=F,sep="\t",col.names=F)
 
+    ## rename for formal report
+    colnames(sample_table)<- c("Sample Name","Label","Species","Experiment Type","Internal Library ID","Reference Genome")
 
     ## return
     sample_table
