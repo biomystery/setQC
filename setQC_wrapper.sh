@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2019-05-21 11:59:25"
+#Time-stamp: "2019-05-22 10:38:01"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -200,7 +200,7 @@ echo -e "############################################################"
 
 rm -rf $SETQC_DIR"/download" || true ;mkdir $SETQC_DIR"/download"
 cd $SETQC_DIR"/download"
-
+mkdir -p  single_cell
 # script 
 data_dir="/projects/ps-epigen/"
 
@@ -211,6 +211,7 @@ do
     a=${libs_name_dic[2*$i-2]};b=${libs_name_dic[2*$i-1]};
 
     echo "tranfering $a to $b"
+    find $data_dir"/seqdata" -name ${a} -type l  |while read d;do  cp -rPsu ${d}/* ./single_cell/ ;done
     find $data_dir"/seqdata" \( -name $a"_R*.bz2" -o -name $a"*.gz" \) -exec ln -s {} ./  \; 
     find $data_dir"/outputs/bams" \( -name $a"_R*.bam" -o -name $a".*bam" \)  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \; 
@@ -248,8 +249,8 @@ urlbase="http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/download/"
 cd  $SETQC_DIR/download; ls -1 | while read f; do echo ${urlbase}${f};done >files.txt
 ## generate index for files 
 tree -C -I '*.html' -D -H '.' -L 1 --noreport --charset utf-8 -T '' > index.html #--timefmt '%F %T'
-
-
+cd  $SETQC_DIR/download/single_cell
+tree -C -I '*.html' -D -H '.' -L 1 --noreport --charset utf-8 -T '' > index.html #--timefmt '%F %T'
 ## final output msg
 echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report.html"
 
