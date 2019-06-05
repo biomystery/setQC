@@ -26,15 +26,15 @@
 attach(params)
 source('./libs.R')
 
-#' # Sample info.
+#' # Sample information
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
     sample_table<- getSampleTable(libs_file)
-    libs.showname <- sample_table[,"Library Name"]
+    libs.showname <- sample_table[,"Label"]
     kable(sample_table)
 }
 
-libs <- sample_table[,"Library ID"]
+libs <- sample_table[,"Internal Library ID"]
 no_libs <- length(libs)
 libs.showname.dic <- libs.showname;names(libs.showname.dic)<-libs
 
@@ -72,8 +72,11 @@ a(href="./multiqc_report.html",class="btn btn-link","see  details (leave setQC)"
 #+ reads_yeild,echo=F
 libQC_table <- getLibQCtable(libs) # need determined by the input
 reads_list <- getReadsTable(libQC_table)
-datatable(reads_list$reads_yield,colnames=libs.showname)%>%
-    formatPercentage(1:length(libs),digits=0)
+datatable(reads_list$reads_yield,colnames=libs.showname,
+          options =list(
+              dom = 'Bfrtip',
+              buttons = c('copy', 'csv')
+          ))%>% formatPercentage(1:length(libs),digits=0)
 
 
 #' ### Read counts after each step

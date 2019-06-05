@@ -27,15 +27,15 @@
 attach(params)
 source('./libs.R')
 
-#' # Sample info.
+#' # Sample information
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
     sample_table<- getSampleTable(libs_file)
-    libs.showname <- sample_table[,"Library Name"]
+    libs.showname <- sample_table[,"Label"]
     kable(sample_table)
 }
 
-libs <- sample_table[,"Library ID"]
+libs <- sample_table[,"Internal Library ID"]
 no_libs <- length(libs)
 libs.showname.dic <- libs.showname;names(libs.showname.dic)<-libs
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2019-05-08 15:26:53"
+#Time-stamp: "2019-06-05 11:12:29"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -29,10 +29,9 @@ BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/setQCs/"
 track_source_dir="/projects/ps-epigen/outputs/"
 
 # receiving arguments
-while getopts ":s:b:n:p:m:c:l:t:" opt;
+while getopts ":b:n:p:m:c:l:t:" opt;
 do
 	case "$opt" in
-	    s) SET_NAME_LABEL=$OPTARG;;  # setname_label; real setname
             b) B_NAME=$OPTARG;; # a higher level base name on top of set name 
 	    n) SET_NAME=$OPTARG;; # "Set_123" txt file including all  sample files
 	    p) PADV=$OPTARG;; # peak advance 
@@ -61,12 +60,6 @@ fi
 if [  -z "$CHIP_SNAP" ]; then
     CHIP_SNAP="false"
 fi
-
-if [ -z "$SET_NAME_LABEL" ]; then
-    echo "no set name was given!"
-    exit 1
-fi
-
 
 if [ -z "$SET_NAME" ]; then
     echo "set name file not found!"
@@ -160,7 +153,7 @@ echo -e "############################################################"
 echo -e "Step 2. genSetQCreport" 
 echo -e "############################################################"
 
-cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV $CHIP_SNAP $EXP_TYPE $SAMPLE_FILE $(whoami) '$SET_NAME_LABEL'" #LIR_arry sorted by name already
+cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV $CHIP_SNAP $EXP_TYPE $SAMPLE_FILE $(whoami)" #LIR_arry sorted by name already
 echo $cmd
 eval $cmd
 [[ $? -ne 0 ]] && { echo "ERROR: in genrating report" ; exit $ERRCODE; } 
@@ -200,7 +193,7 @@ echo -e "############################################################"
 
 rm -rf $SETQC_DIR"/download" || true ;mkdir $SETQC_DIR"/download"
 cd $SETQC_DIR"/download"
-
+mkdir -p  single_cell
 # script 
 data_dir="/projects/ps-epigen/"
 
@@ -211,6 +204,7 @@ do
     a=${libs_name_dic[2*$i-2]};b=${libs_name_dic[2*$i-1]};
 
     echo "tranfering $a to $b"
+    find $data_dir"/seqdata" -name ${a} -type l  |while read d;do  cp -rPsu ${d}/* ./single_cell/ ;done
     find $data_dir"/seqdata" \( -name $a"_R*.bz2" -o -name $a"*.gz" \) -exec ln -s {} ./  \; 
     find $data_dir"/outputs/bams" \( -name $a"_R*.bam" -o -name $a".*bam" \)  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \; 
@@ -248,8 +242,8 @@ urlbase="http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/download/"
 cd  $SETQC_DIR/download; ls -1 | while read f; do echo ${urlbase}${f};done >files.txt
 ## generate index for files 
 tree -C -I '*.html' -D -H '.' -L 1 --noreport --charset utf-8 -T '' > index.html #--timefmt '%F %T'
-
-
+cd  $SETQC_DIR/download/single_cell
+tree -C -I '*.html' -D -H '.' -L 1 --noreport --charset utf-8 -T '' > index.html #--timefmt '%F %T'
 ## final output msg
 echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report.html"
 
