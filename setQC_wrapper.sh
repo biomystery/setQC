@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2019-06-04 11:46:50"
+#Time-stamp: "2019-06-05 11:12:29"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -29,10 +29,9 @@ BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/setQCs/"
 track_source_dir="/projects/ps-epigen/outputs/"
 
 # receiving arguments
-while getopts ":s:b:n:p:m:c:l:t:" opt;
+while getopts ":b:n:p:m:c:l:t:" opt;
 do
 	case "$opt" in
-	    s) SET_NAME_LABEL=$OPTARG;;  # setname_label; real setname
             b) B_NAME=$OPTARG;; # a higher level base name on top of set name 
 	    n) SET_NAME=$OPTARG;; # "Set_123" txt file including all  sample files
 	    p) PADV=$OPTARG;; # peak advance 
@@ -61,12 +60,6 @@ fi
 if [  -z "$CHIP_SNAP" ]; then
     CHIP_SNAP="false"
 fi
-
-if [ -z "$SET_NAME_LABEL" ]; then
-    echo "no set name was given!"
-    exit 1
-fi
-
 
 if [ -z "$SET_NAME" ]; then
     echo "set name file not found!"
