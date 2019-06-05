@@ -11,7 +11,7 @@ args <- commandArgs(trailingOnly = TRUE)
 (libs_file_<- args[7]) # use lib_file
 (uid_<- args[8]) # uid
 ##(set_name_<- args[9]) # set name (real, name_date)
-(set_name_<- read.table(paste0("~/data/outputs/setQCs/.",set_name_i,".txt"),sep="\t",header=T,stringsAsFactors=F)$Set.Name[1])
+(set_name_<- read.table(paste0("~/data/outputs/setQCs/.",set_name_id,".txt"),sep="\t",header=T,stringsAsFactors=F)$Set.Name[1])
 (libs_ <- system(paste0("awk '{print $1}' ",libs_file_),intern=T))
 relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir_)
 
