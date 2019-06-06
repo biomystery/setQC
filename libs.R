@@ -106,8 +106,7 @@ plotSource <- function(pd=do.call(rbind,lapply(libs, parseFastqScreen_perLib))){
     ## ref = https://stackoverflow.com/questions/38093229/multiple-series-in-highcharter-r-stacked-barchart
     highchart() %>%
         hc_chart(type = "column") %>%
-        hc_xAxis(categories= pd.new$categories[[1]]
-                 )%>%
+        hc_xAxis(categories= pd.new$categories[[1]], title=list(text="Reference Genome"))%>%
         hc_yAxis(title = list(text = "Percentage Aligned"),
                  min=0,
                  max=100) %>%
