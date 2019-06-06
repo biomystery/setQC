@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2019-06-05 11:12:29"
+#Time-stamp: "2019-06-06 10:27:24"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -209,7 +209,6 @@ do
     find $data_dir"/outputs/bams" \( -name $a"_R*.bam" -o -name $a".*bam" \)  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/signals/" \( -name $a"_R*fc*" -o -name $a".nodup*fc*" \) -type f -exec ln -s {} ./  \; 
-    find $data_dir"/outputs/signals/" \( -name $a"_R*pval*" -o -name $a".nodup*pval*" \)  -type f -exec ln -s {} ./  \;
     find $data_dir"/outputs/signals/" \( -name $a"_R*pileup*" -o -name $a".nodup*pileup*" \)  -type f -exec ln -s {} ./  \;    
 
     # rename 

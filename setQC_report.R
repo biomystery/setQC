@@ -266,19 +266,8 @@ if(padv){
                            print("Module disabled")
                        }
 
-#' # LibQC table
-#+ libqc_table,echo=F,message=F
-datatable(libQC_table,colnames=libs.showname,
-          extensions = 'Buttons',
-          options =list(
-              dom = 'Bfrtlip',
-              buttons = c('copy', 'csv')
-          ))
-write.table(libQC_table,file=paste0(setQC_dir,"/libQC.txt"),row.names = T,quote=F,sep="\t",col.names=T)
 
-
-#' # Tracks & Download {.tabset .tabset-fade .tabset-pills}
-#' ## Browser
+#' # Genome browser
 #+ track,echo=F
 json_src=paste0("http://epigenomegateway.wustl.edu/browser/?genome=",
                 libQC_table["Genome",1],
@@ -294,6 +283,7 @@ tags$iframe(class="embed-responsive-item",
             height="750px",
             src= json_src)
 
+#' # Download {.tabset .tabset-fade .tabset-pills}
 #' ## Batch download
 #+ batch_download, echo=F
 p("click 'Download file list' link bellow to download a 'files.txt' that contains the list of urls to files in this report. Then run the script bellow on the terminal")
@@ -308,4 +298,13 @@ tags$iframe(class="embed-responsive-item",
             height="750px",
             src= "./download/")
 
+#' ## Metadata table
+#+ Metadata_table,echo=F,message=F
+datatable(libQC_table,colnames=libs.showname,
+          extensions = 'Buttons',
+          options =list(
+              dom = 'Bfrtlip',
+              buttons = c('copy', 'csv')
+          ))
+write.table(libQC_table,file=paste0(setQC_dir,"/libQC.txt"),row.names = T,quote=F,sep="\t",col.names=T)
 
