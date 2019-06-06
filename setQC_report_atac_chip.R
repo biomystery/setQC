@@ -69,13 +69,22 @@ a(href="./multiqc_report.html",class="btn btn-link","see  details (leave setQC)"
 #+ reads_yeild,echo=F
 libQC_table <- getLibQCtable(libs) # need determined by the input
 reads_list <- getReadsTable(libQC_table)
-datatable(reads_list$reads_yield,colnames=libs.showname)%>%
-    formatPercentage(1:length(libs),digits=0)
+datatable(reads_list$reads_yield,colnames=libs.showname,
+          extensions = 'Buttons',
+          options =list(
+              dom = 'Bfrtip',
+              buttons = c('copy', 'csv')
+          ))%>%  formatPercentage(1:length(libs),digits=0)
 
 #' ### Read counts after each step
 #+ reads_counts_table, echo=F
 reads_list$reads_count <- updateCounts(reads_list$reads_count)
-datatable(reads_list$reads_count,colnames=libs.showname)%>%
+datatable(reads_list$reads_count,colnames=libs.showname,
+          extensions = 'Buttons',
+          options =list(
+              dom = 'Bfrtip',
+              buttons = c('copy', 'csv')
+          ))%>%
     formatCurrency(1:length(libs),currency="",digits=0)
 
 #' ###  Mitochondrial reads fraction
@@ -319,7 +328,12 @@ if(chipsnap){
 
 #' # LibQC table
 #+ libqc_table,echo=F,message=F
-datatable(libQC_table,colnames=libs.showname)
+datatable(libQC_table,colnames=libs.showname,
+          extensions = 'Buttons',
+          options =list(
+              dom = 'Bfrtlip',
+              buttons = c('copy', 'csv')
+          ))
 write.table(libQC_table,file=paste0(setQC_dir,"/libQC.txt"),row.names = T,quote=F,sep="\t",col.names=T)
 
 
