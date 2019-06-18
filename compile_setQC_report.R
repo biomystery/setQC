@@ -43,6 +43,7 @@ if (exptype=="chip"){
 } else{
     ("run atac")
     rmarkdown::render("/home/zhc268/software/setQC/setQC_report.R",
+                      c("html_document"),
                       params = list(
                           set_name = set_name_,
                           libs_file= libs_file_,

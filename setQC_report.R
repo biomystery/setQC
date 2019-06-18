@@ -1,4 +1,5 @@
 #'---
+#'always_allow_html: yes
 #'params:
 #'  set_name: "Pfizer_2017-11-30"
 #'  libs_file: ""
@@ -26,6 +27,10 @@
 attach(params)
 source('./libs.R')
 
+htmltools::img(src = "http://epigenomics.sdsc.edu:8000/static/images/CFE_Brandmark-01.png",
+               alt = 'logo', style = 'position:absolute;height:100px; width:auto; top:0; right:0; padding:0px;')
+
+
 #' # Sample information
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
@@ -49,20 +54,11 @@ thumbnail("Per base N Content", grep("per_base_n_content",img_f,value=T))
 thumbnail("Mean Quality Scores", grep("base_sequence",img_f,value=T))
 thumbnail("Per Sequence Quality Scores",  grep("per_sequence_quality",img_f,value=T))
 div(class="row")
-thumbnail("Per Sequence GC content",  grep("gc.*Percentage",img_f,value=T))
-thumbnail("Sequence Duplication Levels",  grep("duplication",img_f,value=T))
-thumbnail("Sequence Length Distribution",  grep("length",img_f,value=T))
-div(class="row")
-a(href="./multiqc_report.html",class="btn btn-link","see  details (leave setQC)")
+a(href="./multiqc_report.html",class="btn btn-success btn-sm","see  details (leave setQC)")
+
 
 
 #' # Alignment metrics {.tabset .tabset-fade .tabset-pills}
-#' ## FastQ Screen
-#+ fastq_screen,echo=F,message=F,warning=F
-tlist <- list()
-tlist[[1]]<- plotSource()
-tagList(tlist)
-
 #' ## Alignment statistics (by count)
 #+ reads_counts_table, echo=F
 libQC_table <- getLibQCtable(libs) # need determined by the input
@@ -98,6 +94,13 @@ pd.3<- data.frame(apply(pd.2,2,function(x) as.numeric(x)),
 tlist <- list()
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y = Mitochondrial.reads..out.of.total. ))
 tagList(tlist)
+
+#' ## FastQ Screen
+#+ fastq_screen,echo=F,message=F,warning=F
+tlist <- list()
+tlist[[1]]<- plotSource()
+tagList(tlist)
+
 
 #' ## Fragment size distribution
 #+ insert_size,echo =F,warning=F

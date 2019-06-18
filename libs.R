@@ -2,7 +2,7 @@
 require(knitr)
 ##require(kableExtra)
 require(RColorBrewer)
-require(googlesheets)
+#require(googlesheets)
 require(DT)
 ## devtools::install_github("jennybc/googlesheets")
 require(htmltools)

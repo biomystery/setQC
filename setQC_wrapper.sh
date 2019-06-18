@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2019-06-06 10:27:24"
+#Time-stamp: "2019-06-14 13:19:19"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -241,7 +241,9 @@ urlbase="http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/download/"
 cd  $SETQC_DIR/download; ls -1 | while read f; do echo ${urlbase}${f};done >files.txt
 ## generate index for files 
 tree -C -I '*.html' -D -H '.' -L 1 --noreport --charset utf-8 -T '' > index.html #--timefmt '%F %T'
+urlbase="http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/download/single_cell/"
 cd  $SETQC_DIR/download/single_cell
+ls -1 | while read f; do echo ${urlbase}${f};done |grep -e ".gz$"  >files.txt
 tree -C -I '*.html' -D -H '.' -L 1 --noreport --charset utf-8 -T '' > index.html #--timefmt '%F %T'
 ## final output msg
 echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report.html"
