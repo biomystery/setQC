@@ -274,7 +274,7 @@ file_list <- paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/download/
 a(href=file_list,class="btn btn-outline-info",role="button","Download file list")
 pre("xargs -n 1 curl -0 -L < files.txt" )
 
-#' ## Download links
+#' ## Individual download links
 #+ track_download, echo=F
 tags$iframe(class="embed-responsive-item",
             width="1340px",
