@@ -2,7 +2,7 @@
 require(knitr)
 ##require(kableExtra)
 require(RColorBrewer)
-require(googlesheets)
+#require(googlesheets)
 require(DT)
 ## devtools::install_github("jennybc/googlesheets")
 require(htmltools)
@@ -106,8 +106,7 @@ plotSource <- function(pd=do.call(rbind,lapply(libs, parseFastqScreen_perLib))){
     ## ref = https://stackoverflow.com/questions/38093229/multiple-series-in-highcharter-r-stacked-barchart
     highchart() %>%
         hc_chart(type = "column") %>%
-        hc_xAxis(categories= pd.new$categories[[1]]
-                 )%>%
+        hc_xAxis(categories= pd.new$categories[[1]], title=list(text="Reference Genome"))%>%
         hc_yAxis(title = list(text = "Percentage Aligned"),
                  min=0,
                  max=100) %>%
@@ -134,11 +133,13 @@ plotMultiQC <- function(data.file="../Set_6/multiqc_data/mqc_picard_gcbias_plot_
 
     if(!file.exists(data.file))    return("")
     r2.list <- lapply(readLines(data.file),function(x) as.numeric((unlist(strsplit(x,split = "\t")))[-1]))
+    r2.names <- lapply(readLines(data.file),function(x) (unlist(strsplit(x,split = "\t")))[1])
+    r2.names <- lapply(r2.names,function(tmp) sub("_R1","",unlist(strsplit(tmp,split="[.]"))[1]))
 
     if(length(r2.list) > 2* no_libs){
-        df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[2*i-1]],y=r2.list[[2*i]],libs_=libs.showname[i]))
+        df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[2*i-1]],y=r2.list[[2*i]],libs_=libs.showname.dic[r2.names[[2*i]]]))
     }else{
-        df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[1]],y=r2.list[[i+1]],libs_=libs.showname[i]))
+        df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[1]],y=r2.list[[i+1]],libs_=libs.showname.dic[r2.names[[i]]]))
     }
 
     df <- do.call(rbind,c(df,row.name=NULL))

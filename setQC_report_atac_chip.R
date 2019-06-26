@@ -69,13 +69,22 @@ a(href="./multiqc_report.html",class="btn btn-link","see  details (leave setQC)"
 #+ reads_yeild,echo=F
 libQC_table <- getLibQCtable(libs) # need determined by the input
 reads_list <- getReadsTable(libQC_table)
-datatable(reads_list$reads_yield,colnames=libs.showname)%>%
-    formatPercentage(1:length(libs),digits=0)
+datatable(reads_list$reads_yield,colnames=libs.showname,
+          extensions = 'Buttons',
+          options =list(
+              dom = 'Bfrtip',
+              buttons = c('copy', 'csv')
+          ))%>%  formatPercentage(1:length(libs),digits=0)
 
 #' ### Read counts after each step
 #+ reads_counts_table, echo=F
 reads_list$reads_count <- updateCounts(reads_list$reads_count)
-datatable(reads_list$reads_count,colnames=libs.showname)%>%
+datatable(reads_list$reads_count,colnames=libs.showname,
+          extensions = 'Buttons',
+          options =list(
+              dom = 'Bfrtip',
+              buttons = c('copy', 'csv')
+          ))%>%
     formatCurrency(1:length(libs),currency="",digits=0)
 
 #' ###  Mitochondrial reads fraction
@@ -111,9 +120,9 @@ div(class='row')
 #+ avg_tss,echo=F,warning=F,message=F
 # read data
 l.tmp <- NULL;rd <- list()
-if(length(list.files(libQC_dir,paste0(libs[1],"(.trim)*_tss-enrich.txt$")))>0){
+if(length(list.files(libQC_dir,paste0(libs[1],".*(.trim)*_tss-enrich.txt$")))>0){
     for(l in libs){
-        f=list.files(libQC_dir,paste0(l,"(.trim)*_tss-enrich.txt"))
+        f=list.files(libQC_dir,paste0(l,".*(.trim)*_tss-enrich.txt"))
         if(length(f)>0) {
             if(length(f)>1) f=grep(paste0(l,"_R"),f,value=T)
             rd[[l]] <- (read.delim(paste0(libQC_dir,f),header = F))
@@ -319,7 +328,12 @@ if(chipsnap){
 
 #' # LibQC table
 #+ libqc_table,echo=F,message=F
-datatable(libQC_table,colnames=libs.showname)
+datatable(libQC_table,colnames=libs.showname,
+          extensions = 'Buttons',
+          options =list(
+              dom = 'Bfrtlip',
+              buttons = c('copy', 'csv')
+          ))
 write.table(libQC_table,file=paste0(setQC_dir,"/libQC.txt"),row.names = T,quote=F,sep="\t",col.names=T)
 
 

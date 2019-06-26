@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2019-06-05 11:12:29"
+#Time-stamp: "2019-06-14 13:19:19"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -209,7 +209,6 @@ do
     find $data_dir"/outputs/bams" \( -name $a"_R*.bam" -o -name $a".*bam" \)  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/signals/" \( -name $a"_R*fc*" -o -name $a".nodup*fc*" \) -type f -exec ln -s {} ./  \; 
-    find $data_dir"/outputs/signals/" \( -name $a"_R*pval*" -o -name $a".nodup*pval*" \)  -type f -exec ln -s {} ./  \;
     find $data_dir"/outputs/signals/" \( -name $a"_R*pileup*" -o -name $a".nodup*pileup*" \)  -type f -exec ln -s {} ./  \;    
 
     # rename 
@@ -242,7 +241,9 @@ urlbase="http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/download/"
 cd  $SETQC_DIR/download; ls -1 | while read f; do echo ${urlbase}${f};done >files.txt
 ## generate index for files 
 tree -C -I '*.html' -D -H '.' -L 1 --noreport --charset utf-8 -T '' > index.html #--timefmt '%F %T'
+urlbase="http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/download/single_cell/"
 cd  $SETQC_DIR/download/single_cell
+ls -1 | while read f; do echo ${urlbase}${f};done |grep -e ".gz$"  >files.txt
 tree -C -I '*.html' -D -H '.' -L 1 --noreport --charset utf-8 -T '' > index.html #--timefmt '%F %T'
 ## final output msg
 echo "link: http://epigenomics.sdsc.edu:8088/$RELATIVE_DIR/setQC_report.html"

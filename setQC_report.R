@@ -1,4 +1,5 @@
 #'---
+#'always_allow_html: yes
 #'params:
 #'  set_name: "Pfizer_2017-11-30"
 #'  libs_file: ""
@@ -26,6 +27,10 @@
 attach(params)
 source('./libs.R')
 
+htmltools::img(src = "http://epigenomics.sdsc.edu:8000/static/images/CFE_Brandmark-01.png",
+               alt = 'logo', style = 'position:absolute;height:100px; width:auto; top:0; right:0; padding:0px;')
+
+
 #' # Sample information
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
 if(has_sample_table) {
@@ -40,15 +45,7 @@ libs.showname.dic <- libs.showname;names(libs.showname.dic)<-libs
 
 
 
-#' # Fastq files {.tabset .tabset-fade .tabset-pills}
-
-#' ## Sequence sources (potential contamination)
-#+ fastq_screen,echo=F,message=F,warning=F
-tlist <- list()
-tlist[[1]]<- plotSource()
-tagList(tlist)
-
-#' ## Sequencing Quality
+#' # Sequencing metrics
 #+ fastq_module,echo=F,message=F,warning=F
 # need runMutliQC and move the figures to here first
 fastqcfils <- list.files(path = paste0(setQC_dir,"/multiqc_plots/png/"),pattern = "fastqc*")
@@ -57,35 +54,34 @@ thumbnail("Per base N Content", grep("per_base_n_content",img_f,value=T))
 thumbnail("Mean Quality Scores", grep("base_sequence",img_f,value=T))
 thumbnail("Per Sequence Quality Scores",  grep("per_sequence_quality",img_f,value=T))
 div(class="row")
-thumbnail("Per Sequence GC content",  grep("gc.*Percentage",img_f,value=T))
-thumbnail("Sequence Duplication Levels",  grep("duplication",img_f,value=T))
-thumbnail("Sequence Length Distribution",  grep("length",img_f,value=T))
-div(class="row")
-a(href="./multiqc_report.html",class="btn btn-link","see  details (leave setQC)")
+a(href="./multiqc_report.html",class="btn btn-success btn-sm","see  details (leave setQC)")
 
 
-#' # Mappability
 
-#' ## Reads yeild table {.tabset .tabset-fade .tabset-pills}
-
-#' ### Read yield (%) after each step
-#+ reads_yeild,echo=F
+#' # Alignment metrics {.tabset .tabset-fade .tabset-pills}
+#' ## Alignment statistics (by count)
+#+ reads_counts_table, echo=F
 libQC_table <- getLibQCtable(libs) # need determined by the input
 reads_list <- getReadsTable(libQC_table)
+
+reads_list$reads_count <- updateCounts(reads_list$reads_count)
+datatable(reads_list$reads_count,colnames=libs.showname,
+          extensions = 'Buttons',
+          options =list(
+              dom = 'Bfrtip',
+              buttons = c('copy', 'csv')
+          ))%>% formatCurrency(1:length(libs),currency="",digits=0)
+
+#' ## Alignment statistics (by %)
+#+ reads_yeild,echo=F
 datatable(reads_list$reads_yield,colnames=libs.showname,
+          extensions = 'Buttons',
           options =list(
               dom = 'Bfrtip',
               buttons = c('copy', 'csv')
           ))%>% formatPercentage(1:length(libs),digits=0)
 
-
-#' ### Read counts after each step
-#+ reads_counts_table, echo=F
-reads_list$reads_count <- updateCounts(reads_list$reads_count)
-datatable(reads_list$reads_count,colnames=libs.showname)%>%
-    formatCurrency(1:length(libs),currency="",digits=0)
-
-#' ##  Mitochondrial reads fraction
+#' ##  Mitochondrial read fraction
 #+ mito_frac,echo=F,warning=F
 
 pd <- libQC_table[grep('(Mitochondrial reads)|( peak regions)|(Fraction of reads in promoter regions)',rownames(libQC_table)),]
@@ -99,9 +95,27 @@ tlist <- list()
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y = Mitochondrial.reads..out.of.total. ))
 tagList(tlist)
 
-#' ##  TSS enrichment {.tabset .tabset-fade .tabset-pills}
-#' ### TSS enrichement plots
+#' ## FastQ Screen
+#+ fastq_screen,echo=F,message=F,warning=F
+tlist <- list()
+tlist[[1]]<- plotSource()
+tagList(tlist)
 
+
+#' ## Fragment size distribution
+#+ insert_size,echo =F,warning=F
+tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_insert_size_Percentages.txt"),
+                         xlab="Insert Size (bp)",ylab="Percentage of Counts")
+tagList(tlist)
+
+#' ## GC content after alignment
+#+ gc,echo =F,warning=F
+
+tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_gcbias_plot_1.txt"))
+tagList(tlist)
+
+#' #  Signal-to-noise metrics {.tabset .tabset-fade .tabset-pills}
+#' ## TSS enrichement (TSSe)
 #+ tss_enrich_plot,echo =F, warning=F
 #require(evaluate)
 tss_plots <- getherTSSplot()
@@ -114,7 +128,7 @@ tmp <- sapply( 1:length(libs), function(i){
 tagList(tmp)
 div(class='row')
 
-#' ### Average TSS enrichement compare
+#' ## TSSe average profile
 #+ avg_tss,echo=F,warning=F,message=F
 # read data
 l.tmp <- NULL;rd <- list()
@@ -138,10 +152,9 @@ if(length(list.files(libQC_dir,paste0(libs[1],".*enrich.txt")))>0){
 }
 
 
-#' ### Max TSS enrichement compare
+#' ## TSSe barplot
 #+ max_tss,echo=F,warning=F,message=F
 # bargraph for the
-
 tss_enrich.pd <- data.frame(libs=libs.showname,
                             TSS_enrichment = as.numeric(tss_enrich))
 #plt <- ggplot(tss_enrich.pd,aes(libs,tss_enrich)) + geom_bar(stat = 'identity')
@@ -157,33 +170,14 @@ tagList(tlist)
 
 
 
-#' ### FROT (Fraction of reads overlap TSS)
-
+#' ## Fraction of Reads that Overlap TSS (FROT)
 #+ FRoT, echo=F
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.promoter.regions ))
 tagList(tlist)
 
 
-#' ## Insert size & GC bias {.tabset .tabset-fade .tabset-pills}
-#' ### Insert size distribution
-
-#+ insert_size,echo =F,warning=F
-tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_insert_size_Percentages.txt"),
-                         xlab="Insert Size (bp)",ylab="Percentage of Counts")
-tagList(tlist)
-
-#' ### GC bias in final bam
-#+ gc,echo =F,warning=F
-
-tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_gcbias_plot_1.txt"))
-tagList(tlist)
-
-
-
-#' # Peaks
-#' ## Peak basics {.tabset .tabset-fade .tabset-pills}
-
-#' ### Raw peak numbers
+#' # Peaks metrics {.tabset .tabset-fade .tabset-pills}
+#' ## Peak counts
 #+ raw_peak_num,echo =F
 
 raw_peak_number <- libQC_table[grep("Raw peaks",rownames(libQC_table)),]
@@ -202,10 +196,7 @@ if(is.all.control){ # all controls
 
 tagList(tlist)
 
-
-
-#' ### FRiP (Fraction of reads in Peak region)
-
+#' ## Fraction of Reads in Peaks (FRiP)
 #+ FRip,echo=F
 
 if(is.all.control){
@@ -215,23 +206,8 @@ if(is.all.control){
 }
 tagList(tlist)
 
-#' ## Peak advanced {.tabset .tabset-fade .tabset-pills}
 
-#' ### Correlation matrix & Peak Intensity Scatter
-#+ app,echo=F,message=F,warning=F
-relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir)
-if(padv){
-    tags$iframe(class="embed-responsive-item",
-            width="90%",
-            height="750px",
-            src= paste0("http://epigenomics.sdsc.edu:3838/setQCs/",relative_dir))
-
-}else{
-    print("Module disabled")
-}
-
-
-#' ### PCA
+#' ## PCA
 #+ pca,echo=F,message=F,warning=F
 if(padv){
     if(length(system(paste0("find ",setQC_dir,"/data -mtime +1 -name 'avgOverlapFC.tab'"),intern=T))>0 | !file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
@@ -261,14 +237,20 @@ if(padv){
                            print("Module disabled")
                        }
 
-#' # LibQC table
-#+ libqc_table,echo=F,message=F
-datatable(libQC_table,colnames=libs.showname)
-write.table(libQC_table,file=paste0(setQC_dir,"/libQC.txt"),row.names = T,quote=F,sep="\t",col.names=T)
+#' ## Correlation matrix
+#+ app,echo=F,message=F,warning=F
+relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir)
+if(padv){
+    tags$iframe(class="embed-responsive-item",
+            width="90%",
+            height="750px",
+            src= paste0("http://epigenomics.sdsc.edu:3838/setQCs/",relative_dir))
 
+}else{
+    print("Module disabled")
+}
 
-#' # Tracks & Download {.tabset .tabset-fade .tabset-pills}
-#' ## Browser
+#' # Genome browser
 #+ track,echo=F
 json_src=paste0("http://epigenomegateway.wustl.edu/browser/?genome=",
                 libQC_table["Genome",1],
@@ -284,6 +266,7 @@ tags$iframe(class="embed-responsive-item",
             height="750px",
             src= json_src)
 
+#' # Download {.tabset .tabset-fade .tabset-pills}
 #' ## Batch download
 #+ batch_download, echo=F
 p("click 'Download file list' link bellow to download a 'files.txt' that contains the list of urls to files in this report. Then run the script bellow on the terminal")
@@ -291,11 +274,20 @@ file_list <- paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/download/
 a(href=file_list,class="btn btn-outline-info",role="button","Download file list")
 pre("xargs -n 1 curl -0 -L < files.txt" )
 
-#' ## Download links
+#' ## Individual download links
 #+ track_download, echo=F
 tags$iframe(class="embed-responsive-item",
             width="1340px",
             height="750px",
             src= "./download/")
 
+#' ## Metadata table
+#+ Metadata_table,echo=F,message=F
+datatable(libQC_table,colnames=libs.showname,
+          extensions = 'Buttons',
+          options =list(
+              dom = 'Bfrtlip',
+              buttons = c('copy', 'csv')
+          ))
+write.table(libQC_table,file=paste0(setQC_dir,"/libQC.txt"),row.names = T,quote=F,sep="\t",col.names=T)
 
