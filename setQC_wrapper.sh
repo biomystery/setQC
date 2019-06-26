@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2019-06-14 13:19:19"
+#Time-stamp: "2019-06-26 12:33:32"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -200,11 +200,29 @@ data_dir="/projects/ps-epigen/"
 libs_name_dic=(`cat $SETQC_DIR/including_libs.txt`)
 for i in `seq 1 $LIB_LEN`
 do 
-    
-    a=${libs_name_dic[2*$i-2]};b=${libs_name_dic[2*$i-1]};
+    a=${libs_name_dic[2*$i-2]};b=${libs_name_dic[2*$i-1]}; #a is id; b is label
 
     echo "tranfering $a to $b"
-    find $data_dir"/seqdata" -name ${a} -type l  |while read d;do  cp -rPsu ${d}/* ./single_cell/ ;done
+
+    ## handle single cell with _1_2 and etc. 
+    nf=$(echo $a| awk -F'_' '{print NF}')
+    if [ $nf -lt 4 ]
+    then
+        #echo 1
+        find $data_dir"/seqdata" -name ${a} -type l  |while read d;do  cp -rPsu ${d}/* ./single_cell/ ;done
+    else
+        echo 2
+        allfields=($(echo $a| sed 's/_/ /g'))
+        for subf in $(seq 0 $[nf-3])
+        do
+            abase=${allfields[0]}"_"${allfields[1]}
+            find $data_dir"/seqdata" -name ${abase} -type l  |while read d;do  cp -rPsu ${d}/* ./single_cell/ ;done            
+            aa=${abase}_${allfields[$[subf+2]]}
+            find $data_dir"/seqdata" -name ${aa} -type l  |while read d;do  cp -rPsu ${d}/* ./single_cell/ ;done                        
+        done
+    fi
+    
+    
     find $data_dir"/seqdata" \( -name $a"_R*.bz2" -o -name $a"*.gz" \) -exec ln -s {} ./  \; 
     find $data_dir"/outputs/bams" \( -name $a"_R*.bam" -o -name $a".*bam" \)  -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \; 
