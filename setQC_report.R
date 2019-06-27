@@ -271,9 +271,9 @@ tags$iframe(class="embed-responsive-item",
 #' # Download {.tabset .tabset-fade .tabset-pills}
 #' ## Batch download
 #+ batch_download, echo=F
-p("click 'Download file list' link bellow to download a 'files.txt' that contains the list of urls to files in this report. Then run the script bellow on the terminal")
 file_list <- paste0("http://epigenomics.sdsc.edu:8088/",relative_dir,"/download/files.txt")
-a(href=file_list,class="btn btn-outline-info",role="button","Download file list")
+div(class="alert alert-info","Click",a(href=file_list,'Download file list'), "to download a",
+    code("files.txt"), "that contains the list of urls to files in this report. Then run the script bellow on the terminal:")
 pre("xargs -n 1 curl -0 -L < files.txt" )
 
 #' ## Individual download links
@@ -285,6 +285,11 @@ tags$iframe(class="embed-responsive-item",
 
 #' ## Metadata table
 #+ Metadata_table,echo=F,message=F
+div(class="alert alert-info","This table contains a variety of QC metrics for each library. For more information about ATAC-seq QC metrics please see:",
+            a(href="https://www.encodeproject.org/atac-seq/","https://www.encodeproject.org/atac-seq/"))
+idx <- ! rownames(libQC_table) %in% c("`Naive overlap peaks`","`IDR peaks`","`Fraction of reads in enhancer regions`","`Duplicates that are mitochondrial (out of all dups)`")
+libQC_table <- libQC_table[idx,]
+
 datatable(libQC_table,colnames=libs.showname,
           extensions = 'Buttons',
           options =list(
