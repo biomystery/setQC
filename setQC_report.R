@@ -56,7 +56,7 @@ thumbnail("Per base N Content", grep("per_base_n_content",img_f,value=T))
 thumbnail("Mean Quality Scores", grep("base_sequence",img_f,value=T))
 thumbnail("Per Sequence Quality Scores",  grep("per_sequence_quality",img_f,value=T))
 div(class="row")
-a(href="./multiqc_report.html",class="btn btn-success btn-sm","see  details (leave setQC)")
+a(href="./multiqc_report.html",class="btn btn-success btn-sm","View full MultiQC report (in new window)")
 
 
 
