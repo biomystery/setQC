@@ -18,6 +18,8 @@
 #'    toc: true
 #'    toc_depth: 2
 #'    toc_float: true
+#'    includes:
+#'      after_body: footer.html
 #'author: "UCSD Center for Epigenomics"
 #'date: "`r date()`"
 #'---
@@ -27,8 +29,8 @@
 attach(params)
 source('./libs.R')
 
-htmltools::img(src = "http://epigenomics.sdsc.edu:8000/static/images/CFE_Brandmark-01.png",
-               alt = 'logo', style = 'position:absolute;height:100px; width:auto; top:0; right:0; padding:0px;')
+#htmltools::img(src = "http://epigenomics.sdsc.edu:8000/static/images/CFE_Brandmark-01.png",
+#               alt = 'logo', style = 'position:absolute;height:100px; width:auto; top:0; right:0; padding:0px;')
 
 
 #' # Sample information
