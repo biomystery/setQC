@@ -106,13 +106,14 @@ tagList(tlist)
 
 #' ## Fragment size distribution
 #+ insert_size,echo =F,warning=F
+div(class="alert alert-info","ATAC-seq fragments show a characteristic multimodal size distribution reflecting sub-nucleosomal fragments (<100bp), mono-nucleosomal (~200bp), and sometimes multi-nucleosomal fragments at ~150bp intervals beyond that.")
 tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_insert_size_Percentages.txt"),
                          xlab="Insert Size (bp)",ylab="Percentage of Counts")
 tagList(tlist)
 
 #' ## GC content after alignment
 #+ gc,echo =F,warning=F
-
+div(class="alert alert-info","ATAC-seq alignments tend to have high GC content due to enrichment in promoters and other regulatory sequencing.")
 tlist[[1]]<- plotMultiQC(data.file=paste0(setQC_dir,"/multiqc_data/mqc_picard_gcbias_plot_1.txt"))
 tagList(tlist)
 
@@ -254,6 +255,7 @@ if(padv){
 
 #' # Genome browser
 #+ track,echo=F
+
 json_src=paste0("http://epigenomegateway.wustl.edu/browser/?genome=",
                 libQC_table["Genome",1],
                 "&tknamewidth=275&datahub=http://epigenomics.sdsc.edu:8088/",
