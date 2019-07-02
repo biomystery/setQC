@@ -175,6 +175,7 @@ tagList(tlist)
 
 #' ## Fraction of Reads that Overlap TSS (FROT)
 #+ FRoT, echo=F
+
 tlist[[1]]<- hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.promoter.regions ))
 tagList(tlist)
 
@@ -182,7 +183,7 @@ tagList(tlist)
 #' # Peaks metrics {.tabset .tabset-fade .tabset-pills}
 #' ## Peak counts
 #+ raw_peak_num,echo =F
-
+div(class="alert alert-info","The number of peaks called per sample. Usually ~100K-200K.")
 raw_peak_number <- libQC_table[grep("Raw peaks",rownames(libQC_table)),]
 raw_peak_number<- sapply(raw_peak_number,function(x)
     as.numeric(unlist(strsplit(as.character(x),split = " [-] "))[1]))
@@ -201,7 +202,7 @@ tagList(tlist)
 
 #' ## Fraction of Reads in Peaks (FRiP)
 #+ FRip,echo=F
-
+div(class="alert alert-info","A metric of signal-to-noise ratio. We generally prefer TSSe or FROT, because these metrics are independent of peak calls which vary between libraries.")
 if(is.all.control){
     tlist[[1]]<-    hchart(pd.3, "column", hcaes(x = libs, y =  Fraction.of.reads.in.called.peak.regions ))
 }else{
@@ -212,6 +213,7 @@ tagList(tlist)
 
 #' ## PCA
 #+ pca,echo=F,message=F,warning=F
+div(class="alert alert-info","Principal Component Analysis of samples based on peak intensity (fold enrichment of calculated background from MACS2).")
 if(padv){
     if(length(system(paste0("find ",setQC_dir,"/data -mtime +1 -name 'avgOverlapFC.tab'"),intern=T))>0 | !file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
         if (is.all.control){
