@@ -8,7 +8,7 @@
 #'  update_gs: F
 #'  has_sample_table: T
 #'  padv: T
-#'title: "Report for `r params$set_name`"
+#'title: "`r params$set_name`"
 #'output:
 #'  html_document:
 #'    theme: united
