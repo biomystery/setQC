@@ -125,7 +125,7 @@ if(length(list.files(libQC_dir,paste0(libs[1],".*(.trim)*_tss-enrich.txt$")))>0)
         f=list.files(libQC_dir,paste0(l,".*(.trim)*_tss-enrich.txt"))
         if(length(f)>0) {
             if(length(f)>1& length(grep(paste0(l,"_R"),f,value=T))==1) f= grep(paste0(l,"_R"),f,value=T)
-            if(length(f)>1& length(grep(paste0(l,"[.]"),f,value=T))==1) f= grep(paste0(l,"."),f,value=T)
+            if(length(f)>1& length(grep(paste0(l,"[.]"),f,value=T))==1) f= grep(paste0(l,"[.]"),f,value=T)
             rd[[l]] <- (read.delim(paste0(libQC_dir,f),header = F))
             l.tmp <- c(l.tmp,which(libs==l))
     }}
