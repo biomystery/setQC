@@ -28,9 +28,9 @@ attach(params)
 source('./libs.R')
 libs.info <- read.table(libs_file,stringsAsFactors=F,header=T,sep='\t')
 
-libs.info$`Is Input`<- tolower(libs.info$`Is Input`)
-libs.info.input <- libs.info %>% filter(`Is Input`=="true")
-libs.info <- libs.info%>% column_to_rownames("Internal Library ID")
+libs.info$Is.Input<- tolower(libs.info$Is.Input)
+libs.info.input <- libs.info %>% filter(Is.Input=="true")
+libs.info <- libs.info%>% column_to_rownames("Library.ID")
 
 #' # Sample information
 #+ check_sample_info,echo=F,warning=F,cache=F,message=F
@@ -201,7 +201,7 @@ if(nrow(libs.info) == nrow(libs.info.input)){ # disable if all libs are input
 #' ### CC
 #+ cc_plots,echo =F
 cc_plots <- paste0("./libQCs/",list.files(path=libQC_dir,pattern="*.nodup.*.cc.*png"))
-tmp <- sapply(which(libs.info$`Is Input`!="true"), function(i){
+tmp <- sapply(which(libs.info$Is.Input=="true"), function(i){
   ii <- grep(libs[i],cc_plots)
   thumbnail(libs.showname[i],cc_plots[ii],colsize ='col-sm-3' )})
 tagList(tmp)

@@ -241,25 +241,25 @@ plotJSD <- function(){
     ## filter ophan input group
     ophan.input <- libs.info %>%
         rownames_to_column("libs")%>%
-        filter(!group %in% libs.info.input$group)
+        filter(!Group.ID %in% libs.info.input$Group.ID)
 
     if(nrow(ophan.input)>0)
         fs <- fs[-sapply(ophan.inputx$libs,
                          function(x) grep(x,fs)) ]
     pd.jsd <- sapply(fs, plotJSD_getDat)
     colnames(pd.jsd) <- sub("_jsd.dat.*","",colnames(pd.jsd))
-    pd.jsd <- rbind(pd.jsd,group=libs.info[colnames(pd.jsd),'group'])
+    pd.jsd <- rbind(pd.jsd,Group.ID=libs.info[colnames(pd.jsd),'Group.ID'])
     pd.jsd.2 <- do.call(rbind,pd.jsd[1,]) ## merge all treatment libs
     pd.jsd.2 <- pd.jsd.2 %>% rownames_to_column(var = "lib")%>%
         mutate(lib=sub("\\..*","",lib))
 
     ## first libs in each group
-    flibs <-  unique((t(as.data.frame(pd.jsd['group',]))))
+    flibs <-  unique((t(as.data.frame(pd.jsd['Group.ID',]))))
 
     for (l in rownames(flibs)){
         pd.jsd.2 <- rbind(pd.jsd.2,
-                          cbind(pd.jsd[[2,l]], ## input
-                                lib=libs.info.input$libs[libs.info.input$group==flibs[l,]]))
+                          cbind(lib=libs.info.input$Library.ID[libs.info.input$Group.ID==flibs[l,]],
+                              pd.jsd[[2,l]])) ## input
     }
 
     pd.jsd.2$lib <- libs.showname.dic[pd.jsd.2$lib]
