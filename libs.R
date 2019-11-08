@@ -134,8 +134,15 @@ plotMultiQC <- function(data.file="../Set_6/multiqc_data/mqc_picard_gcbias_plot_
     r2.names <- lapply(readLines(data.file),function(x) (unlist(strsplit(x,split = "\t")))[1])
     r2.names <- lapply(r2.names,function(tmp) sub("_R1","",unlist(strsplit(tmp,split="[.]"))[1]))
 
-    if(length(r2.list) > 2* no_libs){
+    ## handle SE caused NAs
+    null.idx <- which(lapply(r2.list,length)==0)
+    if(length(null.idx)>0)  r2.names<- r2.names[-null.idx]
+
+    if(length(r2.list) > 2* no_libs ){
+        ## handle different bins
         df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[2*i-1]],y=r2.list[[2*i]],libs_=libs.showname.dic[r2.names[[2*i]]]))
+    }else if (sum(is.na(r2.names))==sum(!is.na(r2.names))){
+        df <- lapply(1:which(is.na( r2.names)),function(i) data.frame(x=r2.list[[i]],y=r2.list[[i+1]],libs_=libs.showname.dic[r2.names[[i+1]]]))
     }else{
         df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[1]],y=r2.list[[i+1]],libs_=libs.showname.dic[r2.names[[i+1]]]))
     }
