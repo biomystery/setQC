@@ -25,6 +25,7 @@ if (exptype=="chip"){
                           padv =padv_,
                           chipsnap =chipsnap_
                       ),
+                      intermediates_dir=tempdir(),
                       output_dir=setQC_dir_)
 } else if (exptype=="atac_chip"){
         ("run chips seq test")
@@ -37,6 +38,7 @@ if (exptype=="chip"){
                           padv =padv_,
                           chipsnap =chipsnap_
                       ),
+                      intermediates_dir=tempdir(),
                       output_dir=setQC_dir_)
 } else{
     ("run atac")
@@ -49,6 +51,7 @@ if (exptype=="chip"){
                           libQC_dir = libQC_dir_,
                           padv =padv_
                       ),
+                      intermediates_dir=tempdir(),
                       output_dir=setQC_dir_)
 }
 

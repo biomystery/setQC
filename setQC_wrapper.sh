@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2020-01-27 11:33:11"
+#Time-stamp: "2020-01-28 14:18:15"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
