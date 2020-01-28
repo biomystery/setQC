@@ -96,13 +96,15 @@ plotSource <- function(pd=do.call(rbind,lapply(libs, parseFastqScreen_perLib))){
                              stack=sample)%>% do(data = .$Percentage_Aligned,
                                                  categories= .$Genome)
     pd.new <- pd.new %>% filter(name!="")
+    pd.new$data <- lapply(pd.new$data,as.numeric)
     pd.new$color = rep(brewer.pal(4,"Set3"),each=nrow(pd.new)/4)
     pd.new$linkedTo = rep(":previous",nrow(pd.new))
     pd.new.list <- list_parse(pd.new)
     for(i in seq(1,nrow(pd.new),by = nrow(pd.new)/4)) pd.new.list[[i]]$linkedTo =NULL
 
-    ## ref = https://stackoverflow.com/questions/38093229/multiple-series-in-highcharter-r-stacked-barchart
-    highchart() %>%
+    if (no_libs <=6){
+            ## ref = https://stackoverflow.com/questions/38093229/multiple-series-in-highcharter-r-stacked-barchart
+        highchart() %>%
         hc_chart(type = "column") %>%
         hc_xAxis(categories= pd.new$categories[[1]], title=list(text="Reference Genome"))%>%
         hc_yAxis(title = list(text = "Percentage Aligned"),
@@ -121,6 +123,18 @@ plotSource <- function(pd=do.call(rbind,lapply(libs, parseFastqScreen_perLib))){
                             'Total Alignment: ' + this.point.stackTotal + '%';}"))
     ## ref: https://github.com/jbkunst/highcharter/issues/54
     ## ref: https://github.com/ewels/MultiQC/blob/master/multiqc/modules/fastq_screen/fastq_screen.py
+
+    }else{
+        pd.sub <- do.call(rbind, pd.new$data) %>% as.data.frame() %>% setNames(pd.new$categories[[1]]) %>%
+            cbind(pd.new[, 1:2]) %>% gather("Genome", "Percentage", 1:9) %>% group_by(stack,Genome) %>%
+            summarise(Percentage = sum(Percentage)) %>% ungroup() %>%  spread(key = Genome,value = Percentage)
+        generated_chart <- highchart() %>% hc_xAxis(categories = pd.sub$stack, title = list(text = "Library")) %>%
+            hc_yAxis(title = list(text = "Percentage Aligned"))
+        invisible(lapply(pd.new.list[[1]]$categories %>% rev, function(column) {
+            generated_chart <<- hc_add_series(hc = generated_chart, name = column, data = pd.sub[, column] %>% unlist %>% as.numeric)
+        }))
+        generated_chart %>% hc_chart(type = "bar") %>% hc_plotOptions(series = list(stacking = "normal"))%>% hc_legend(reversed = TRUE)
+    }
 
 }
 
