@@ -18,8 +18,6 @@
 #'    toc: true
 #'    toc_depth: 2
 #'    toc_float: true
-#'    includes:
-#'      after_body: footer.html
 #'author: "UCSD Center for Epigenomics"
 #'date: "`r date()`"
 #'---
