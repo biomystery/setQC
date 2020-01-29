@@ -235,11 +235,13 @@ if(padv){
                               ylab = paste0("PC2: ",perct[2],"%"),
                               point_opacity = 0.5,hover_size = 4, hover_opacity = 1,lasso = T,
                               width = "500px",height = "500px")
-        tagList(tlist)}else{
-                          tags$p('Lib number in this set is <=2 ')
-                      }}else{
-                           print("Module disabled")
-                       }
+        tagList(tlist)
+    }else{
+        tags$p('Lib number in this set is <=2 ')
+    }
+}else{
+    print("Module disabled")
+}
 
 #' ## Correlation matrix
 #+ app,echo=F,message=F,warning=F

@@ -304,5 +304,5 @@ plotJSD_getDat <- function(f){
 
 plotCorrelation <- function(dat=pd.log2){
     correlation <- round(cor(dat, method = "spearman"), 3)
-    hchart(correlation) %>% hc_colorAxis(stops = color_stops(colors = Reds(n = 9)))
+    hchart(correlation) %>% hc_colorAxis(stops = color_stops(colors = brewer.pal(9,'Reds')))
 }
