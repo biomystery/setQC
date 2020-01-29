@@ -212,6 +212,7 @@ tagList(tlist)
 #' ## PCA
 #+ pca,echo=F,message=F,warning=F
 div(class="alert alert-info","Principal Component Analysis of samples based on peak intensity (fold enrichment of calculated background from MACS2).")
+padv <- as.logical(padv)
 if(padv){
     if(length(system(paste0("find ",setQC_dir,"/data -mtime +1 -name 'avgOverlapFC.tab'"),intern=T))>0 | !file.exists(paste0(setQC_dir,"/data/avgOverlapFC.tab"))){
         if (is.all.control){
@@ -244,13 +245,12 @@ if(padv){
 #+ app,echo=F,message=F,warning=F
 div(class="alert alert-info","Spearman's correlation matrix based on peak intensity (fold enrichment of calculated background from MACS2).")
 relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir)
-if(padv & no_libs<=10){
+if(padv && no_libs<=10 ){
     tags$iframe(class="embed-responsive-item",
             width="90%",
             height="750px",
             src= paste0("http://epigenomics.sdsc.edu:3838/setQCs/",relative_dir))
-
-}else if(padv & no_libs >10){
+}else if(padv && no_libs>10){
     plotCorrelation(pd.log2)
 }else{
     print("Module disabled")
