@@ -242,13 +242,16 @@ if(padv){
 
 #' ## Correlation matrix
 #+ app,echo=F,message=F,warning=F
+div(class="alert alert-info","Spearman's correlation matrix based on peak intensity (fold enrichment of calculated background from MACS2).")
 relative_dir <- sub("/projects/ps-epigen/outputs/setQCs(/)+","",setQC_dir)
-if(padv){
+if(padv & no_libs<=10){
     tags$iframe(class="embed-responsive-item",
             width="90%",
             height="750px",
             src= paste0("http://epigenomics.sdsc.edu:3838/setQCs/",relative_dir))
 
+}else if(padv & no_libs >10){
+    plotCorrelation(pd.log2)
 }else{
     print("Module disabled")
 }

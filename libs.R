@@ -301,3 +301,8 @@ plotJSD_getDat <- function(f){
     names(dt) <- c("treat","input")
     pd.jdf <- lapply(dt,plotJSD_genDF)
 }
+
+plotCorrelation <- function(dat=pd.log2){
+    correlation <- round(cor(dat, method = "spearman"), 3)
+    hchart(correlation) %>% hc_colorAxis(stops = color_stops(colors = Reds(n = 9)))
+}
