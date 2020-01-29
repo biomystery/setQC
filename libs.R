@@ -126,8 +126,8 @@ plotSource <- function(pd=do.call(rbind,lapply(libs, parseFastqScreen_perLib))){
 
     }else{
         pd.sub <- do.call(rbind, pd.new$data) %>% as.data.frame() %>% setNames(pd.new$categories[[1]]) %>%
-            cbind(pd.new[, 1:2]) %>% gather("Genome", "Percentage", 1:9) %>% group_by(stack,Genome) %>%
-            summarise(Percentage = sum(Percentage)) %>% ungroup() %>%  spread(key = Genome,value = Percentage)
+            cbind(pd.new[, 1:2]) %>% gather("Genome", "Percentage", 1:9) %>% filter(name =="%One_hit_one_genome") %>%
+            select(-name)%>% spread(key = Genome,value = Percentage)
         generated_chart <- highchart() %>% hc_xAxis(categories = pd.sub$stack, title = list(text = "Library")) %>%
             hc_yAxis(title = list(text = "Percentage Aligned"))
         invisible(lapply(pd.new.list[[1]]$categories %>% rev, function(column) {
