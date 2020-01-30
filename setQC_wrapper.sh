@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2020-01-28 14:18:15"
+#Time-stamp: "2020-01-30 09:20:27"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -13,7 +13,7 @@ source activate bds_atac_py3
 
 
 usage(){
-    echo "usage: setQC_wrapper.sh -n <Set_xx> -c <true|false> -p <true|false> -t <atac|chip|atac_chip> -m <true|false>"
+    echo "usage: setQC_wrapper.sh -n <Set_xx> -c <true|false> -p <true|false> -t <atac|chip|atac_chip> -m <true|false> -s<true|false>"
 }
 
 
@@ -29,7 +29,7 @@ BASE_OUTPUT_DIR="/projects/ps-epigen/outputs/setQCs/"
 track_source_dir="/projects/ps-epigen/outputs/"
 
 # receiving arguments
-while getopts ":b:n:p:m:c:l:t:" opt;
+while getopts ":b:n:p:m:c:l:t:s:" opt;
 do
 	case "$opt" in
             b) B_NAME=$OPTARG;; # a higher level base name on top of set name 
@@ -39,6 +39,7 @@ do
             c) CHIP_SNAP=$OPTARG;; # if SNAP
             l) LIBQC_DIR=$OPTARG;; # proessed lib dir
             t) EXP_TYPE=$OPTARG;; # experimental type
+            s) SKIP_COPY=$OPTARG;; # skip copy
 	    \?) usage
 		echo "input error"
 		exit 1
@@ -109,25 +110,36 @@ echo -e "# Step 1. runMultiQC"
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
 echo -e "############################################################"
 
-# cp s all libqc files to one folder
-# prefered trim
-rm -rf $SETQC_DIR"/libQCs/" || true ; rm -rf $SETQC_DIR"/data/" || true ;
-mkdir -p $SETQC_DIR"/libQCs/";mkdir -p $SETQC_DIR"/data/";
+if [ $SKIP_COPY == 'true' ]
+then
+    echo "skipped copy"
+else
+    # cp s all libqc files to one folder
+    # prefered trim
+    rm -rf $SETQC_DIR"/libQCs/" || true ; rm -rf $SETQC_DIR"/data/" || true ;
+    mkdir -p $SETQC_DIR"/libQCs/";mkdir -p $SETQC_DIR"/data/";
 
-for l in ${LIB_ARRAY[@]}
-do
-    echo "cp $l libqc files..."
-    find $LIBQC_DIR$l -type f -exec cp -Psu '{}' $SETQC_DIR"/libQCs/" \; 2> /dev/null
-    echo "cp $l peaks files"
-    find  $track_source_dir"peaks" \( -name "${l}_R*hammock*" -o -name "${l}.*hammock*" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
-    find  $track_source_dir"signals" \( -name "${l}_R*.signal.bigwig" -o -name "${l}.*.signal.bigwig" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
-    find  $track_source_dir"signals" \( -name "${l}_R*.signal.bw" -o -name "${l}.*.signal.bw" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;    
-done
+    for l in ${LIB_ARRAY[@]}
+    do
+        echo "cp $l libqc files..."
+        find $LIBQC_DIR$l -type f -exec cp -Psu '{}' $SETQC_DIR"/libQCs/" \; 2> /dev/null
+        echo "cp $l peaks files"
+        find  $track_source_dir"peaks" \( -name "${l}_R*hammock*" -o -name "${l}.*hammock*" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
+        find  $track_source_dir"signals" \( -name "${l}_R*.signal.bigwig" -o -name "${l}.*.signal.bigwig" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
+        find  $track_source_dir"signals" \( -name "${l}_R*.signal.bw" -o -name "${l}.*.signal.bw" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;    
+    done
+fi
 
 cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
 echo $cmd
 
-[[ $MULTIQC == "true" ]] && eval $cmd
+if [ $MULTIQC == "true" ]
+then
+    eval $cmd
+else
+    echo "Skipped multiQC" 
+fi
+
 
 ## deal with snap chip option 
 if [ $CHIP_SNAP == 'true' ]; then
