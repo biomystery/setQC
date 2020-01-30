@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2020-01-30 09:20:27"
+#Time-stamp: "2020-01-30 09:22:34"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -130,11 +130,11 @@ else
     done
 fi
 
-cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
-echo $cmd
+## multiQC
 
 if [ $MULTIQC == "true" ]
 then
+    cmd="multiqc -k tsv -f -p $SETQC_DIR/libQCs  -o $SETQC_DIR"
     eval $cmd
 else
     echo "Skipped multiQC" 
