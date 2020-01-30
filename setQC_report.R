@@ -224,7 +224,7 @@ if(padv){
 
     if(length(libs.showname[!idx.control])>2){
         require(scatterD3)
-        pd <- read.table(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
+        pd <- fread(paste0(setQC_dir,"/data/avgOverlapFC.tab"))
         pd.log2 <- log2(subset(pd,apply(pd,1,max)>2)+1)
         pd.log2 <- pd.log2[apply(pd.log2,1,var)!=0,]
         pd.pca <- prcomp(t(pd.log2),center =T,scale. = T )
@@ -253,6 +253,7 @@ if(padv && no_libs<=10 ){
             height="750px",
             src= paste0("http://epigenomics.sdsc.edu:3838/setQCs/",relative_dir))
 }else if(padv && no_libs>10){
+    colnames(pd.log2)<-libs.showname[!idx.control]
     plotCorrelation(pd.log2)
 }else{
     print("Module disabled")
