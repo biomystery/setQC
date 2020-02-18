@@ -253,6 +253,7 @@ if(padv && no_libs<=10 ){
             height="750px",
             src= paste0("http://epigenomics.sdsc.edu:3838/setQCs/",relative_dir))
 }else if(padv && no_libs>10){
+    rm(pd);gc()
     colnames(pd.log2)<-libs.showname[!idx.control]
     plotCorrelation(pd.log2)
 }else{

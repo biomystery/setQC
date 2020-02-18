@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2020-01-30 09:22:34"
+#Time-stamp: "2020-01-30 09:39:24"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -110,23 +110,19 @@ echo -e "# Step 1. runMultiQC"
 echo -e "(`date`): running mutliQC" | tee -a $LOG_FILE
 echo -e "############################################################"
 
-if [ $SKIP_COPY == 'true' ]
+if [ "$SKIP_COPY" == "true" ]
 then
     echo "skipped copy"
 else
     # cp s all libqc files to one folder
     # prefered trim
-    rm -rf $SETQC_DIR"/libQCs/" || true ; rm -rf $SETQC_DIR"/data/" || true ;
-    mkdir -p $SETQC_DIR"/libQCs/";mkdir -p $SETQC_DIR"/data/";
+    rm -rf $SETQC_DIR"/libQCs/" || true
+    mkdir -p $SETQC_DIR"/libQCs/"
 
     for l in ${LIB_ARRAY[@]}
     do
         echo "cp $l libqc files..."
         find $LIBQC_DIR$l -type f -exec cp -Psu '{}' $SETQC_DIR"/libQCs/" \; 2> /dev/null
-        echo "cp $l peaks files"
-        find  $track_source_dir"peaks" \( -name "${l}_R*hammock*" -o -name "${l}.*hammock*" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
-        find  $track_source_dir"signals" \( -name "${l}_R*.signal.bigwig" -o -name "${l}.*.signal.bigwig" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
-        find  $track_source_dir"signals" \( -name "${l}_R*.signal.bw" -o -name "${l}.*.signal.bw" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;    
     done
 fi
 
@@ -164,6 +160,25 @@ fi
 echo -e "############################################################"
 echo -e "Step 2. genSetQCreport" 
 echo -e "############################################################"
+
+if [ "$SKIP_COPY" == "true" ]
+then
+    echo "skipped copy"
+else
+    # cp  to data folder
+    # prefered trim
+    #rm -rf $SETQC_DIR"/data/" || true ;
+    mkdir -p $SETQC_DIR"/data/"
+
+    for l in ${LIB_ARRAY[@]}
+    do
+        echo "cp $l peaks files"
+        find  $track_source_dir"peaks" \( -name "${l}_R*hammock*" -o -name "${l}.*hammock*" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
+        find  $track_source_dir"signals" \( -name "${l}_R*.signal.bigwig" -o -name "${l}.*.signal.bigwig" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
+        find  $track_source_dir"signals" \( -name "${l}_R*.signal.bw" -o -name "${l}.*.signal.bw" \)  -exec cp -Prfs {} $SETQC_DIR"/data/" \;
+    done
+fi
+
 
 cmd="Rscript $(which compile_setQC_report.R) $SET_NAME $SETQC_DIR ${SETQC_DIR}/libQCs/ $PADV $CHIP_SNAP $EXP_TYPE $SAMPLE_FILE $(whoami)" #LIR_arry sorted by name already
 echo $cmd

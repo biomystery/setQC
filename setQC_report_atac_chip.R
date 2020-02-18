@@ -111,7 +111,7 @@ tss_enrich <- libQC_table[grep('TSS',rownames(libQC_table)),]
 show_tss <- function(i) paste(libs.showname[i],signif(as.numeric(tss_enrich[i]),4),sep = ' : ')
 
 tmp <- sapply( 1:length(libs), function(i){
-    ii <- grep(libs[i],tss_plots)
+    ii <- which(grepl(paste0(libs[i],"_R"),tss_plots) | grepl(paste0(libs[i],"[.]"),tss_plots))
     thumbnail(show_tss(i),tss_plots[ii],colsize ='col-sm-3' )})
 tagList(tmp)
 div(class='row')
