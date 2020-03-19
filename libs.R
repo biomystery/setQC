@@ -161,7 +161,7 @@ plotMultiQC <- function(data.file="../Set_6/multiqc_data/mqc_picard_gcbias_plot_
         ## handle different bins
         df <- lapply(1:no_libs,function(i) data.frame(x=r2.list[[2*i-1]],y=r2.list[[2*i]],libs_=libs.showname.dic[r2.names[[2*i]]]))
     }else if (sum(is.na(r2.names))==sum(!is.na(r2.names))){
-        df <- lapply(which(is.na( r2.names)),function(i) data.frame(x=r2.list[[i]],y=r2.list[[i-1]],libs_=libs.showname.dic[r2.names[[i]]]))
+        df <- lapply(which(is.na( r2.names)),function(i) data.frame(x=r2.list[[i-1]],y=r2.list[[i]],libs_=libs.showname.dic[r2.names[[i-1]]]))
     }else{
         df <- lapply(1:no.names,function(i) data.frame(x=r2.list[[1]],y=r2.list[[i+1]],libs_=libs.showname.dic[r2.names[[i]]]))
     }
