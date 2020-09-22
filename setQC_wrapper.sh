@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2020-04-28 17:24:57"
+#Time-stamp: "2020-09-22 12:15:15"
 source activate bds_atac_py3
 #set -e # exit if any cmd failed 
 ############################################################
@@ -229,7 +229,7 @@ for i in `seq 1 $LIB_LEN`
 do 
     a=${libs_name_dic[2*$i-2]};b=${libs_name_dic[2*$i-1]}; #a is id; b is label
 
-    echo "tranfering $a to $b"
+    echo "tranfering $a to $b ...."
 
     ## handle single cell with _1_2 and etc. 
     nf=$(echo $a| awk -F'_' '{print NF}')
@@ -251,13 +251,21 @@ do
     
     
     find $data_dir"/seqdata" \( -name $a"_R*.bz2" -o -name $a"*.gz" \) -exec ln -s {} ./  \; 
-    find $data_dir"/outputs/bams" \( -name $a"_R*.bam" -o -name $a".*bam" \)  -type f -exec ln -s {} ./  \; 
-    find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \; 
+    find $data_dir"/outputs/bams" \( -name $a"_R*.bam" -o -name $a".*bam" \)  -type f -exec ln -s {} ./  \;
+
+    if [ $(find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f|wc -l ) -eq 0 ]
+    then
+        find $data_dir"/outputs/peaks/"$a -name "*.pf.narrowPeak.gz"  -type f -exec ln -s {} ./  \;         
+    else
+        find $data_dir"/outputs/peaks/"$a -name "*.filt.narrowPeak.gz"  -type f -exec ln -s {} ./  \;         
+    fi
+    
+
     find $data_dir"/outputs/signals/" \( -name $a"_R*fc*" -o -name $a".nodup*fc*" \) -type f -exec ln -s {} ./  \; 
     find $data_dir"/outputs/signals/" \( -name $a"_R*pileup*" -o -name $a".nodup*pileup*" \)  -type f -exec ln -s {} ./  \;    
 
     # rename 
-    
+    echo "Start renaming the files ...." 
     find . \( -name $a"_R*.fastq.gz" -o -name $a"_R*.fastq.bz2" -o -name $a".*fastq.gz" -o -name $a".*fastq.bz2" \) | xargs -n1 -I '{}' echo mv {} {} | sed "s/$a/$b/2" | bash  2> /dev/null
     find . -name $a"_R*.PE2SE.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE/$b\.raw/2;s/${a}_R1\.trim\.PE2SE/${b}\.raw/2" | bash 2> /dev/null #atac
     find . -name $a"_R*.PE2SE.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.PE2SE/$b\.raw/2" | bash 2> /dev/null #PE chip
@@ -267,7 +275,8 @@ do
     
     find . -name $a".nodup.bam" | xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup/${b}\.final/2case 
 "  | bash 2> /dev/null    #se chip 
-    find . -name $a"_R*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2;s/${a}_R1\.trim\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2" | bash 2> /dev/null
+    find . -name $a"_R*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.fastq\.bz2\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2;s/${a}_R1\.trim\.PE2SE\.nodup\.tn5\.pf\.filt/$b/2;s/${a}_R1\.trim\.PE2SE\.nodup\.tn5\.pf/$b/2" | bash 2> /dev/null
+
     find . -name "*${a}.*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}\.nodup\.tagAlign/$b/2" | bash 2> /dev/null # se chip
     find . -name "*${a}_R*narrowPeak.gz" |xargs -n1 -I '{}' echo mv {} {} | sed "s/${a}_R1\.PE2SE\.nodup\.tagAlign/$b/2"  | bash 2> /dev/null # pe chip
     
