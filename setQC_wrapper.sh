@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-#Time-stamp: "2020-09-22 12:15:15"
+#Time-stamp: "2020-11-11 21:20:50"
 source activate bds_atac_py3
+export LC_ALL=en_US.utf-8
+export LANG=en_US.utf-8
 #set -e # exit if any cmd failed 
 ############################################################
 # PART I dependency check
