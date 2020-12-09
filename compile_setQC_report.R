@@ -1,5 +1,6 @@
 require(googlesheets)
 require(tidyverse)
+require(data.table)
 
 args <- commandArgs(trailingOnly = TRUE)
 (set_name_id <- args[1])
@@ -11,11 +12,11 @@ args <- commandArgs(trailingOnly = TRUE)
 (libs_file_<- args[7]) # use lib_file
 (uid_<- args[8]) # uid
 ##(set_name_<- args[9]) # set name (real, name_date)
-(set_name_<- read.table(paste0("~/data/outputs/setQCs/.",set_name_id,".txt"),sep="\t",header=T,stringsAsFactors=F)$Set.Name[1])
+(set_name_<- fread(paste0("~/data/outputs/setQCs/.",set_name_id,".txt"),sep="\t",header=T,stringsAsFactors=F)$Set.Name[1])
 
 (" Deciding which type of experiments")
 if (exptype=="chip"){
-        ("run chips seq test")
+        message("run chips seq test")
         rmarkdown::render("/home/zhc268/software/setQC/setQC_report_chip.R",
                       params = list(
                           set_name = set_name_,
@@ -28,7 +29,7 @@ if (exptype=="chip"){
                       intermediates_dir=tempdir(),
                       output_dir=setQC_dir_)
 } else if (exptype=="atac_chip"){
-        ("run chips seq test")
+        message("run chips seq test")
         rmarkdown::render("/home/zhc268/software/setQC/setQC_report_atac_chip.R",
                       params = list(
                           set_name = set_name_,
@@ -41,7 +42,7 @@ if (exptype=="chip"){
                       intermediates_dir=tempdir(),
                       output_dir=setQC_dir_)
 } else{
-    ("run atac")
+    message("run atac")
     rmarkdown::render("/home/zhc268/software/setQC/setQC_report.R",
                       c("html_document"),
                       params = list(

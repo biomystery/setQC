@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Time-stamp: "2020-11-11 21:20:50"
+#Time-stamp: "2020-12-08 15:50:17"
 source activate bds_atac_py3
 export LC_ALL=en_US.utf-8
 export LANG=en_US.utf-8

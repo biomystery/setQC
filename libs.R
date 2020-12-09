@@ -15,7 +15,7 @@ getSampleTable <- function(lib_file){
 ### get sample's meta data from libs_file
 ### save into `id\t label ` into including_libs.txt
 
-    sample_table <- read.table(lib_file,stringsAsFactors=F,header=T,check.names=F,sep='\t')
+        sample_table <- fread(lib_file,stringsAsFactors=F,header=T,check.names=F,sep='\t',quote="")%>% as.data.frame(stringsAsFactors=F)
 
     ## reorder column
     col.nm.order<- c("Sample Name","Library Name","Species","Experiment Type","Library ID","Genome")
